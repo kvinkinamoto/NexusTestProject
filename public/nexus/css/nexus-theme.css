@@ -1,0 +1,192 @@
+/*
+ * Nexus theme — visual layer only.
+ * Loaded after bootstrap.min.css + app.min.css (Skote), whose layout mechanics
+ * (fixed sidebar/topbar positioning, grid, responsive collapse, JS-driven
+ * data-sidebar/data-topbar variants) are kept as-is. This file overrides the
+ * Bootstrap 5 CSS custom properties app.min.css already consumes, plus a
+ * handful of hardcoded colors Skote didn't route through variables, to reach
+ * a distinct, non-Skote, non-Filament look: warm amber accent, soft slate
+ * neutrals, generous radius, quiet shadows, Inter typography.
+ */
+
+:root,
+[data-bs-theme=light] {
+    --bs-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --bs-body-font-family: var(--bs-font-sans-serif);
+    --bs-body-bg: #f8fafc;
+    --bs-body-color: #334155;
+
+    --bs-primary: #d97706;
+    --bs-primary-rgb: 217, 119, 6;
+    --bs-primary-text-emphasis: #92400e;
+
+    --bs-border-radius: 0.6rem;
+    --bs-border-radius-sm: 0.45rem;
+    --bs-border-radius-lg: 0.85rem;
+    --bs-border-radius-xl: 1.1rem;
+    --bs-border-color: #e2e8f0;
+
+    --bs-header-bg: #ffffff;
+    --bs-header-item-color: #475569;
+    --bs-topbar-search-bg: 226, 232, 240;
+    --bs-secondary-bg: #f1f5f9;
+    --bs-tertiary-bg: #f8fafc;
+
+    --nexus-shadow-sm: 0 1px 2px rgba(15, 23, 42, .04);
+    --nexus-shadow: 0 1px 3px rgba(15, 23, 42, .06), 0 1px 2px rgba(15, 23, 42, .04);
+    --nexus-shadow-lg: 0 4px 12px rgba(15, 23, 42, .06), 0 2px 4px rgba(15, 23, 42, .04);
+}
+
+body {
+    font-family: var(--bs-font-sans-serif);
+    color: var(--bs-body-color);
+}
+
+/* ---------- Sidebar ---------- */
+
+.vertical-menu {
+    box-shadow: var(--nexus-shadow);
+    border-right: 1px solid var(--bs-border-color);
+}
+
+.navbar-brand-box {
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+#sidebar-menu ul li.menu-title {
+    color: #94a3b8;
+    font-weight: 600;
+    letter-spacing: .06em;
+}
+
+#sidebar-menu ul li a {
+    color: #475569;
+    border-radius: var(--bs-border-radius-sm);
+    margin: 1px 0.75rem;
+    padding: 0.55rem 1rem;
+}
+
+#sidebar-menu ul li a:hover,
+#sidebar-menu ul li a:hover i {
+    color: var(--bs-primary);
+    background-color: #fffbeb;
+}
+
+.mm-active > a,
+.mm-active > a i,
+.mm-active .active,
+.mm-active .active i {
+    color: var(--bs-primary) !important;
+}
+
+.mm-active > a {
+    background-color: #fffbeb;
+    font-weight: 600;
+}
+
+/* ---------- Topbar ---------- */
+
+#page-topbar {
+    box-shadow: var(--nexus-shadow);
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.app-search .form-control {
+    border-radius: 999px;
+}
+
+/* ---------- Cards ---------- */
+
+.card {
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius-lg);
+    box-shadow: var(--nexus-shadow);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--bs-border-color);
+    font-weight: 600;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+    border-radius: var(--bs-border-radius-sm);
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #b45309;
+    border-color: #b45309;
+}
+
+.btn-outline-primary {
+    color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+/* ---------- Badges / pills ---------- */
+
+.badge {
+    border-radius: 999px;
+    font-weight: 500;
+    padding: 0.35em 0.75em;
+}
+
+/* ---------- Forms ---------- */
+
+.form-control,
+.form-select {
+    border-radius: var(--bs-border-radius-sm);
+    border-color: var(--bs-border-color);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 3px rgba(217, 119, 6, .15);
+}
+
+.form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+/* ---------- Tables ---------- */
+
+.table > :not(caption) > * > * {
+    border-bottom-color: var(--bs-border-color);
+}
+
+.table thead th {
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: #64748b;
+    font-weight: 600;
+    background: transparent;
+}
+
+.table-hover > tbody > tr:hover > * {
+    background-color: #fffbeb;
+}
+
+/* ---------- Dropdowns ---------- */
+
+.dropdown-menu {
+    border-radius: var(--bs-border-radius);
+    border: 1px solid var(--bs-border-color);
+    box-shadow: var(--nexus-shadow-lg);
+}
