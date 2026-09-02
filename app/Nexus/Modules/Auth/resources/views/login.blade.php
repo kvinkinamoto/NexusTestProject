@@ -19,7 +19,7 @@
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
-<body class="h-full font-outfit bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white/90" x-data="{ show: false }">
+<body class="h-full font-outfit bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white/90">
 
 <div class="flex min-h-screen flex-col items-center justify-center px-4 py-10">
     <div class="w-full max-w-md">
@@ -64,16 +64,16 @@
                     </label>
                     <div class="relative">
                         <input
-                            :type="show ? 'text' : 'password'"
+                            type="password"
                             id="password"
                             name="password"
                             placeholder="Enter your password"
                             value="{{ old('password') }}"
                             class="h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 pr-10 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white/90 {{ $errors->get('password') ? 'border-error-500 focus:ring-3 focus:ring-error-500/10' : 'border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700' }}"
                         >
-                        <button type="button" @click="show = !show" tabindex="-1"
+                        <button type="button" id="togglePasswordBtn" tabindex="-1"
                             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-                            <i :class="show ? '{{ nexus_icon('eye_closed') }}' : '{{ nexus_icon('eye') }}'"></i>
+                            <i id="togglePasswordIcon" class="{{ nexus_icon('eye') }}"></i>
                         </button>
                     </div>
                     @if($errors->get('password'))
@@ -140,6 +140,19 @@
     //         btn.classList.add('disabled-turnstile');
     //     }
     // }
+
+    (function () {
+        const input = document.getElementById('password');
+        const btn = document.getElementById('togglePasswordBtn');
+        const icon = document.getElementById('togglePasswordIcon');
+        if (!input || !btn || !icon) return;
+
+        btn.addEventListener('click', function () {
+            const showing = input.type === 'text';
+            input.type = showing ? 'password' : 'text';
+            icon.className = showing ? '{{ nexus_icon('eye') }}' : '{{ nexus_icon('eye_closed') }}';
+        });
+    })();
 </script>
 
 </body>
