@@ -203,6 +203,39 @@
     }
 }
 
+/*
+  Global Livewire "busy" feedback — resources/js/app.js adds this class to
+  whatever [wire:click] element was just clicked for the duration of the
+  request it triggers (dims it + shows a small spinner), so clicks that
+  don't visibly change the page (sort headers, toggles, pagination) still
+  give the user feedback that something is happening.
+*/
+@utility nexus-wire-busy {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.6;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: 6px;
+        width: 14px;
+        height: 14px;
+        margin-top: -7px;
+        border-radius: 9999px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        animation: nexus-wire-busy-spin 0.6s linear infinite;
+    }
+}
+
+@keyframes nexus-wire-busy-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 /* Collapsed (icon-only) sidebar expands to full width on hover */
 .sidebar:hover {
     width: 290px;

@@ -60,12 +60,12 @@ class User extends Authenticatable implements MustVerifyEmail
     #[Field(type: 'string', section: 'information', label: 'name', required: false)]
     protected $name;
 
-    #[Column(label: 'last_name', sortable: true)]
-    #[Field(type: 'string', section: 'information', label: 'last_name', required: false)]
-    protected $last_name;
-
-    #[Field(type: 'string', section: 'information', label: 'middle_name', required: false)]
-    protected $middle_name;
+//    #[Column(label: 'last_name', sortable: true)]
+//    #[Field(type: 'string', section: 'information', label: 'last_name', required: false)]
+//    protected $last_name;
+//
+//    #[Field(type: 'string', section: 'information', label: 'middle_name', required: false)]
+//    protected $middle_name;
 
     // Method, not property: RoutesNotifications::routeNotificationForMail() and
     // CanResetPassword::getEmailForPasswordReset() read $this->email directly

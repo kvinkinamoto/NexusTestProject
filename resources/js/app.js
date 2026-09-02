@@ -45,3 +45,30 @@ document.addEventListener('alpine:init', () => {
         },
     });
 });
+
+/**
+ * Global "is this doing anything?" feedback for Livewire actions: whatever
+ * [wire:click] element the user just clicked gets a dimmed/spinner state
+ * for the duration of the request it triggers. Covers sort headers, row
+ * actions, toggles, pagination etc. without touching each blade partial —
+ * the dedicated save-button spinner (wire:loading wire:target="save") is
+ * unaffected since that button doesn't carry wire:click itself.
+ */
+document.addEventListener('livewire:init', () => {
+    let pendingEl = null;
+
+    document.addEventListener('click', (e) => {
+        pendingEl = e.target.closest('[wire\\:click]');
+    }, true);
+
+    Livewire.hook('request', ({ succeed, fail }) => {
+        const el = pendingEl;
+        pendingEl = null;
+        if (!el) return;
+
+        el.classList.add('nexus-wire-busy');
+        const clear = () => el.classList.remove('nexus-wire-busy');
+        succeed(clear);
+        fail(clear);
+    });
+});
