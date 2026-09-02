@@ -1,0 +1,37 @@
+<?php
+
+return [
+  'role' => 'role',
+  'Role' => 'Role',
+  'index_title' => 'Roles',
+  'User' => 'User',
+  'user' => 'user',
+  'guard_name' => 'Guard name',
+  'name' => 'name',
+  'id' => 'id',
+  'permissions' => 'permissions',
+  'Permissions' => 'Permissions',
+  'users' => 'users',
+  'relations' => 'relations',
+  'Relations' => 'Relations',
+  'Users' => 'Users',
+  'information' => 'information',
+  'First name' => 'First name',
+  'Display name' => 'Display name',
+  'docs' => 
+  [
+    'title' => 'Role Management',
+    'subtitle' => 'Creating and configuring access groups for users.',
+    'permissions_title' => 'Relationship with Permissions',
+    'permissions_desc' => 'Roles allow grouping individual permissions. Assigning a role to a role automatically grants them all permissions associated with that role.',
+    'tech_title' => 'Technical Details',
+    'admin_part' => 'Admin Part',
+    'api_part' => 'API Part',
+    'endpoints' => 'Endpoints',
+    'fields' => 'Fields',
+  ],
+  'module_name' => 'Role',
+  'display_name' => 'Display name',
+  'edit' => 'Edit',
+  'delete' => 'Delete',
+];

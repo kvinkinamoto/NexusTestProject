@@ -1,0 +1,37 @@
+<?php
+
+return [
+  'permission' => 'permission',
+  'Permission' => 'Permission',
+  'index_title' => 'Permissions',
+  'User' => 'User',
+  'user' => 'user',
+  'guard_name' => 'Guard name',
+  'name' => 'name',
+  'id' => 'id',
+  'roles' => 'roles',
+  'Roles' => 'Roles',
+  'users' => 'users',
+  'relations' => 'relations',
+  'Relations' => 'Relations',
+  'Users' => 'Users',
+  'information' => 'information',
+  'First name' => 'First name',
+  'Display name' => 'Display name',
+  'docs' => 
+  [
+    'title' => 'Permission Management',
+    'subtitle' => 'Detailed configuration of access rights for system features.',
+    'naming_title' => 'Naming Convention',
+    'naming_desc' => 'Permissions should be named following the `module.action` pattern (e.g., `user.create`, `blog.delete`] for easy identification.',
+    'tech_title' => 'Technical Details',
+    'admin_part' => 'Admin Part',
+    'api_part' => 'API Part',
+    'endpoints' => 'Endpoints',
+    'fields' => 'Fields',
+  ],
+  'module_name' => 'Permission',
+  'display_name' => 'Display name',
+  'edit' => 'Edit',
+  'delete' => 'Delete',
+];
