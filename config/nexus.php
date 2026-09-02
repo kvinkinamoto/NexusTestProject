@@ -1,9 +1,11 @@
 <?php
 
+use Nodex\Nexus\Http\Middleware\NexusAdminMiddleware;
+
 return [
-    'template' => env('ZENTARA_TEMPLATE', 'nexus'), // nexus (skote/larkon archived, see archive/themes/)
+    'template' => env('ZENTARA_TEMPLATE', 'tailadmin'), // tailadmin (nexus theme archived, see resources/views/nexus/ removed in Stage 2)
     'admin_prefix' => env('ADMIN_PREFIX', 'admin'),
-    'admin_middleware' => ['web', 'auth', \Nodex\Nexus\Http\Middleware\NexusAdminMiddleware::class],
+    'admin_middleware' => ['web', 'auth', NexusAdminMiddleware::class],
 
     'api_prefix' => env('API_PREFIX', 'api'),
     'api_middleware' => ['api'],
@@ -20,7 +22,7 @@ return [
 
     'toast' => [
         'enabled' => true,
-        'delay'   => 5000
+        'delay' => 5000,
     ],
 
     /*

@@ -1,182 +1,130 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Admin Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- CSS Files -->
-{{--  TODO Потрібно якийсь хелпер через який централізовано можна підтягувати інші стилі автоматично  --}}
-    <link rel="stylesheet" href="{{asset('nexus/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="{{asset('nexus/css/icons.min.css')}}">
-    <link rel="stylesheet" href="{{asset('nexus/css/app.min.css')}}">
-    <link rel="stylesheet" href="{{asset('nexus/css/nexus-theme.css')}}">
-    <link rel="stylesheet" href="{{asset('adminlte/plugins/jquery-colorbox/example1/colorbox.css')}}">
+    <title>Admin Login</title>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('nexus/css/icons.min.css') }}" type="text/css">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-    <style>
-        .disabled-turnstile {
-            pointer-events: none;
-            opacity: 0.6;
-        }
-
-        .disabled-turnstile:hover {
-            background-color: inherit;
-            color: inherit;
-            cursor: not-allowed;
-        }
-    </style>
-
-
 </head>
-{{--TODO implement later--}}
-{{--@php $activeLocale = app()->getLocale(); @endphp--}}
-{{--<body @if(isset($activeLocale) && $activeLocale->is_rtl) dir="rtl" class="body-rtl" @else dir="ltr" @endif >--}}
 
+<body class="h-full font-outfit bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-white/90" x-data="{ show: false }">
 
-<body dir="ltr">
-
-<div class="d-flex flex-column h-100 p-3">
-    <div class="d-flex flex-column flex-grow-1">
-        <div class="row justify-content-center h-100">
-            <div class="col-lg-4 py-lg-5">
-                <div class="d-flex flex-column h-100 justify-content-center">
-                    <div class="auth-logo mb-4">
-                        <a href="#" class="logo-dark">
-                            <img src="{{ asset('nexus/images/logo-dark.svg') }}" height="26"
-                                 alt="logo dark">
-                        </a>
-
-                        <a href="#" class="logo-light">
-                            <img src="{{ asset('nexus/images/logo-light.svg') }}" height="26"
-                                 alt="logo light">
-                        </a>
-                    </div>
-
-                    <h2 class="fw-bold fs-24">
-                        @lang('auth::translate.sign_in')
-                    </h2>
-
-                    <p class="text-muted mt-1 mb-4">
-                        @lang('auth::translate.enter_your_email_and_password_to_access_admin_panel')
-                    </p>
-
-                    <div class="mb-5">
-
-                        <form action="{{ route('login') }}"
-                              method="POST"
-                              class="authentication-form">
-                            @csrf
-
-                            <div class="mb-3 ">
-                                <label class="form-label" for="email">
-                                    @lang('auth::translate.email')
-                                </label>
-                                <input
-                                    id="email"
-                                    name="email"
-                                    class="form-control @if($errors->get('email')) is-invalid @endif"
-                                    placeholder="Enter your email"
-                                    value="{{ old('email') }}"
-                                >
-                                @if($errors->get('email'))
-                                    <div id="validationemail" class="invalid-feedback">
-                                        {!! implode('<br>', $errors->get('email')) !!}
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="mb-3 @if($errors->get('password')) error @endif">
-                                <label class="form-label" for="password">
-                                    @lang('auth::translate.password')
-                                </label>
-                                <input type="password"
-                                       id="password"
-                                       class="form-control @if($errors->get('password')) is-invalid @endif"
-                                       name="password"
-                                       placeholder="Enter your password"
-                                       value="{{ old('password') }}"
-                                >
-                                @if($errors->get('password'))
-                                    <div id="validationPassword" class="invalid-feedback">
-                                        {!! implode('<br>', $errors->get('password')) !!}
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="mb-3 @if($errors->get('remember')) error @endif">
-                                <div class="form-check">
-                                    <input type="checkbox"
-                                           id="remember"
-                                           name="remember"
-                                           class="form-check-input @if($errors->get('remember')) is-invalid @endif"
-                                        {{ old('remember') ? 'checked' : '' }}>
-                                    <label class="form-check-label" for="remember">
-                                        @lang('auth::translate.remeber')
-                                    </label>
-                                    @if($errors->get('remember'))
-                                        <div class="invalid-feedback">
-                                            {!! implode('<br>', $errors->get('remember')) !!}
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="cf-turnstile"
-                                 data-sitekey="{{ config('brilara.cf_turnstile_site_key') }}"
-                                 data-callback="onTurnstileSuccess"
-                                 data-expired-callback="onTurnstileExpired">
-                            </div>
-                            <div class="mb-3 @if($errors->get('cf-turnstile-response')) error @endif">
-                                @if($errors->get('cf-turnstile-response'))
-                                    <div id="validationCfTurnstile" class="invalid-feedback d-block">
-                                        {!! implode('<br>', $errors->get('cf-turnstile-response')) !!}
-                                    </div>
-                                @endif
-                            </div>
-
-                            <div class="mb-1 text-center d-grid">
-                                <button class="btn btn-soft-primary " type="submit" id="login-submit-btn">
-                                    @lang('auth::translate.sign_in')
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
+<div class="flex min-h-screen flex-col items-center justify-center px-4 py-10">
+    <div class="w-full max-w-md">
+        <div class="mb-8 flex justify-center">
+            <img src="{{ asset('nexus/images/logo.svg') }}" alt="Logo" class="h-10 dark:hidden">
+            <img src="{{ asset('nexus/images/logo-light.svg') }}" alt="Logo" class="hidden h-10 dark:block">
         </div>
-        <footer class="footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <?php echo date("Y"); ?> Made by
-                        <iconify-icon icon="iconamoon:heart-duotone"
-                                      class="fs-18 align-middle text-danger"></iconify-icon>
-                        <a href="https://nodexsoft.com" class="fw-bold footer-text" target="_blank">Nodex</a>
-                    </div>
+
+        <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-theme-lg sm:p-8 dark:border-gray-800 dark:bg-gray-900">
+            <h2 class="mb-2 text-title-sm font-semibold text-gray-800 dark:text-white/90">
+                @lang('auth::translate.sign_in')
+            </h2>
+            <p class="mb-6 text-sm text-gray-500 dark:text-gray-400">
+                @lang('auth::translate.enter_your_email_and_password_to_access_admin_panel')
+            </p>
+
+            <form action="{{ route('login') }}" method="POST">
+                @csrf
+
+                <div class="mb-4">
+                    <label for="email" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        @lang('auth::translate.email')
+                    </label>
+                    <input
+                        id="email"
+                        name="email"
+                        type="text"
+                        placeholder="Enter your email"
+                        value="{{ old('email') }}"
+                        class="h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white/90 {{ $errors->get('email') ? 'border-error-500 focus:ring-3 focus:ring-error-500/10' : 'border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700' }}"
+                    >
+                    @if($errors->get('email'))
+                        <p id="validationemail" class="mt-1.5 text-xs text-error-500">
+                            {!! implode('<br>', $errors->get('email')) !!}
+                        </p>
+                    @endif
                 </div>
-            </div>
+
+                <div class="mb-4">
+                    <label for="password" class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                        @lang('auth::translate.password')
+                    </label>
+                    <div class="relative">
+                        <input
+                            :type="show ? 'text' : 'password'"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            value="{{ old('password') }}"
+                            class="h-11 w-full rounded-lg border bg-transparent px-4 py-2.5 pr-10 text-sm text-gray-800 shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-900 dark:text-white/90 {{ $errors->get('password') ? 'border-error-500 focus:ring-3 focus:ring-error-500/10' : 'border-gray-300 focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700' }}"
+                        >
+                        <button type="button" @click="show = !show" tabindex="-1"
+                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                            <i :class="show ? '{{ nexus_icon('eye_closed') }}' : '{{ nexus_icon('eye') }}'"></i>
+                        </button>
+                    </div>
+                    @if($errors->get('password'))
+                        <p id="validationPassword" class="mt-1.5 text-xs text-error-500">
+                            {!! implode('<br>', $errors->get('password')) !!}
+                        </p>
+                    @endif
+                </div>
+
+                <div class="mb-4">
+                    <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-400">
+                        <input type="checkbox" id="remember" name="remember"
+                            {{ old('remember') ? 'checked' : '' }}
+                            class="h-4 w-4 rounded border-gray-300 text-brand-500 focus:ring-brand-500 dark:border-gray-700">
+                        @lang('auth::translate.remeber')
+                    </label>
+                    @if($errors->get('remember'))
+                        <p class="mt-1.5 text-xs text-error-500">
+                            {!! implode('<br>', $errors->get('remember')) !!}
+                        </p>
+                    @endif
+                </div>
+
+                <div class="cf-turnstile mb-4"
+                     data-sitekey="{{ config('brilara.cf_turnstile_site_key') }}"
+                     data-callback="onTurnstileSuccess"
+                     data-expired-callback="onTurnstileExpired">
+                </div>
+                @if($errors->get('cf-turnstile-response'))
+                    <p id="validationCfTurnstile" class="mb-4 text-xs text-error-500">
+                        {!! implode('<br>', $errors->get('cf-turnstile-response')) !!}
+                    </p>
+                @endif
+
+                <button type="submit" id="login-submit-btn"
+                    class="flex w-full items-center justify-center rounded-lg bg-brand-500 px-4 py-3 text-sm font-medium text-white shadow-theme-xs hover:bg-brand-600">
+                    @lang('auth::translate.sign_in')
+                </button>
+            </form>
+        </div>
+
+        <footer class="mt-6 text-center text-xs text-gray-400 dark:text-gray-500">
+            {{ date('Y') }} Made by
+            <a href="https://nodexsoft.com" class="font-medium text-gray-500 hover:text-brand-500 dark:text-gray-400" target="_blank">Nodex</a>
         </footer>
     </div>
 </div>
 
 @yield('js')
 
-
-<script src="https://unpkg.com/imask"></script>
 <script>
-    // const emailInput = document.getElementById('email');
-
-    // const mask = IMask(emailInput, {
-    //     mask: '+{380} (00)-00-00-000',
-    //     lazy: false,
-    // });
-
-    // const form = emailInput.closest('form');
-    // form.addEventListener('submit', function () {
-    //     emailInput.value = '+' + emailInput.value.replace(/\D/g, '');
-    // });
-
     // function onTurnstileSuccess(token) {
     //     const btn = document.getElementById('login-submit-btn');
     //     if (btn) {
