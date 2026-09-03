@@ -352,7 +352,7 @@
 
 .choices__list--dropdown .choices__item--selectable.is-highlighted,
 .choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
-    @apply bg-gray-50 dark:bg-white/5;
+    @apply bg-gray-100 dark:bg-white/10;
 }
 
 /*
