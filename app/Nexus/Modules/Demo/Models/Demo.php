@@ -64,9 +64,11 @@ class Demo extends Model
     #[Field(type: 'text', section: 'text_inputs', label: 'Description', required: false)]
     protected $description;
 
+    #[Column(label: 'Count', sortable: true)]
     #[Field(type: 'number', section: 'text_inputs', label: 'Count', required: false, rules: ['nullable', 'integer', 'min:0'])]
     protected $count;
 
+    #[Column(label: 'Email')]
     #[Field(type: 'email', section: 'text_inputs', label: 'Email', required: false, storeRules: ['nullable', 'email', 'unique:demos,email'], updateRules: ['nullable', 'email'])]
     protected $email;
 
@@ -85,6 +87,7 @@ class Demo extends Model
 
     // ---- Tab: media ----
 
+    #[Column(label: 'Image', customField: 'image')]
     #[Field(type: 'image', section: 'media', label: 'Image', required: false)]
     protected $image;
 
@@ -97,6 +100,7 @@ class Demo extends Model
     #[Field(type: 'enum', section: 'choices', label: 'Status', required: false, enum: DemoStatus::class, default: 'draft')]
     protected $status;
 
+    #[Column(label: 'Priority')]
     #[Field(type: 'select', section: 'choices', label: 'Priority', required: false)]
     protected $priority;
 
@@ -150,6 +154,7 @@ class Demo extends Model
 
     // ---- Tab: advanced ----
 
+    #[Column(label: 'Rating', customField: 'rating')]
     #[Field(type: 'ratingStars', section: 'advanced', label: 'Rating', required: false)]
     protected $rating;
 
