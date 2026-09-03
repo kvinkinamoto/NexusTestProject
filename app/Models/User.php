@@ -6,7 +6,10 @@ use App\Nexus\Modules\Auth\Notifications\ResetPasswordNotification;
 use App\Nexus\Modules\Auth\Notifications\VerifyEmailNotification;
 use App\Nexus\Modules\User\Enums\Gender;
 use App\Nexus\Modules\User\Models\UserAddress;
+use App\Nexus\Modules\User\Requests\AdminStoreRequest;
+use App\Nexus\Modules\User\Requests\AdminUpdateRequest;
 use App\Nexus\Modules\User\Traits\UserModelTrait;
+use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -44,7 +47,7 @@ use Nodex\Nexus\Enums\RelationConfigParamsEnum;
     menuResolver: 'App\Nexus\Modules\User\Services\UserMenuResolver',
     livewire: true,
 )]
-#[Requests(store: \App\Nexus\Modules\User\Requests\AdminStoreRequest::class, update: \App\Nexus\Modules\User\Requests\AdminUpdateRequest::class)]
+#[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableAction(name: 'restore', label: 'Restore', icon: 'restore', isConfirm: true)]
@@ -61,12 +64,12 @@ class User extends Authenticatable implements MustVerifyEmail
     #[Field(type: 'string', section: 'information', label: 'name', required: false)]
     protected $name;
 
-//    #[Column(label: 'last_name', sortable: true)]
-//    #[Field(type: 'string', section: 'information', label: 'last_name', required: false)]
-//    protected $last_name;
-//
-//    #[Field(type: 'string', section: 'information', label: 'middle_name', required: false)]
-//    protected $middle_name;
+    //    #[Column(label: 'last_name', sortable: true)]
+    //    #[Field(type: 'string', section: 'information', label: 'last_name', required: false)]
+    //    protected $last_name;
+    //
+    //    #[Field(type: 'string', section: 'information', label: 'middle_name', required: false)]
+    //    protected $middle_name;
 
     // Method, not property: RoutesNotifications::routeNotificationForMail() and
     // CanResetPassword::getEmailForPasswordReset() read $this->email directly
@@ -75,9 +78,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // reset and email verification, the same way $password broke login.
     #[Column(label: 'email', sortable: true)]
     #[Field(type: 'email', section: 'information', label: 'email', required: false)]
-    public function email(): void
-    {
-    }
+    public function email(): void {}
 
     #[Column(label: 'phone')]
     #[Field(type: 'phone', section: 'information', label: 'phone', required: false)]
@@ -96,14 +97,14 @@ class User extends Authenticatable implements MustVerifyEmail
     // UserModelTrait aliases the trait's real implementations to
     // baseRoles()/basePermissions() so these just delegate to them.
     #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Permission', required: false)]
-    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name')]
+    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name')]
     public function permissions(): BelongsToMany
     {
         return $this->basePermissions();
     }
 
-    #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Roles', required: false )]
-    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name')]
+    #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Roles', required: false)]
+    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name')]
     public function roles(): BelongsToMany
     {
         return $this->baseRoles();
@@ -123,8 +124,8 @@ class User extends Authenticatable implements MustVerifyEmail
     #[Column(label: 'ID', sortable: true)]
     private $id;
 
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, UserModelTrait, HasAttributeSchemaProperties;
+    /** @use HasFactory<UserFactory> */
+    use HasAttributeSchemaProperties, HasFactory, Notifiable, UserModelTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -184,6 +185,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function sendEmailVerificationNotification(): void
     {
-        $this->notify(new VerifyEmailNotification());
+        $this->notify(new VerifyEmailNotification);
     }
 }
