@@ -29,6 +29,8 @@ return [
     'event at' => 'Дата й час події',
     'image' => 'Зображення',
     'video' => 'Відео',
+    'gallery images' => 'Галерея зображень',
+    'gallery videos' => 'Галерея відео',
     'status' => 'Статус',
     'priority' => 'Пріоритет',
     'permissions (preload)' => 'Дозволи (preload)',

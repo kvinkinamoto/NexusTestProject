@@ -32,6 +32,8 @@ return [
     'event at' => 'Event at',
     'image' => 'Image',
     'video' => 'Video',
+    'gallery images' => 'Gallery images',
+    'gallery videos' => 'Gallery videos',
     'status' => 'Status',
     'priority' => 'Priority',
     'permissions (preload)' => 'Permissions (preload)',

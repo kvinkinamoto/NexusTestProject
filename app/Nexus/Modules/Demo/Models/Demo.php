@@ -61,7 +61,7 @@ class Demo extends Model
     #[Field(type: 'string', section: 'text_inputs', label: 'Translated title', required: false, translated: true)]
     protected $title_i18n;
 
-    #[Field(type: 'text', section: 'text_inputs', label: 'Description', required: false)]
+    #[Field(type: 'text', section: 'text_inputs', label: 'Description', required: false, editor: true)]
     protected $description;
 
     #[Column(label: 'Count', sortable: true)]
@@ -93,6 +93,12 @@ class Demo extends Model
 
     #[Field(type: 'video', section: 'media', label: 'Video', required: false)]
     protected $video;
+
+    #[Field(type: 'images', section: 'media', label: 'Gallery images', required: false)]
+    protected $images;
+
+    #[Field(type: 'videos', section: 'media', label: 'Gallery videos', required: false)]
+    protected $videos;
 
     // ---- Tab: choices ----
 
@@ -183,7 +189,7 @@ class Demo extends Model
 
     protected $fillable = [
         'title', 'title_i18n', 'description', 'count', 'email', 'secret', 'is_active',
-        'event_date', 'event_at', 'image', 'video', 'status', 'priority',
+        'event_date', 'event_at', 'image', 'video', 'images', 'videos', 'status', 'priority',
         'primary_permission_id', 'rating', 'phone', 'show_extra', 'extra_field',
         'notes_json', 'api_only_note', 'locked_field',
     ];
@@ -194,5 +200,7 @@ class Demo extends Model
         'event_date' => 'date',
         'event_at' => 'datetime',
         'notes_json' => 'array',
+        'images' => 'array',
+        'videos' => 'array',
     ];
 }

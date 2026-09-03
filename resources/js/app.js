@@ -102,26 +102,106 @@ document.addEventListener('change', (e) => {
 });
 
 /**
- * Re-init Choices.js on Livewire-rendered [data-choices] selects after every
- * component update. Choices wraps the original <select> in its own markup;
- * Livewire's morph diffs against the plain server-rendered <select> and
- * strips that wrapper back off on each update, so the widget needs rebuilding
- * every time — same parsing of the data-choices-* modifier attributes as the
- * layouts' own DOMContentLoaded init (see layouts/adminpanel.blade.php and
- * layouts/blank.blade.php), which still handles the very first render.
- * A once-initialized select is hidden (display:none) by Choices itself, so
- * that's used as the "already live" check instead of a separate registry.
- *
- * The <select> itself survives the morph (only Choices' wrapper around it is
- * stripped), so a prior Choices instance's event listeners are still live on
- * it — without cleanup, that orphaned instance and the freshly-created one
- * both react to the next selection, and the orphaned one (unaware anything
- * changed) stomps the value straight back. There's no reference to call that
- * instance's own .destroy() with, so the element is cloned instead — a clone
- * carries no listeners — before wiring up the new instance on the clone.
+ * #[Field(type: 'images'|'videos')] gallery pickers (field_types/images.blade.php,
+ * videos.blade.php) — each has one static hidden <input data-multi-field="{name}">
+ * that the shared elFinder popup (processSelectedFile() in layouts/adminpanel.blade.php
+ * and layouts/blank.blade.php) writes a chosen path into, firing a native
+ * 'input' event. Delegated (not bound per-element) so it survives Livewire
+ * re-rendering that input, same reasoning as the Choices.js 'change'
+ * listener above. Calls ManagesMultiFileFields::addMultiFileValue() directly
+ * — an array of unknown/changing length has no single element a plain
+ * wire:model could bind to.
  */
+document.addEventListener('input', (e) => {
+    const el = e.target;
+    const fieldName = el.dataset && el.dataset.multiField;
+    if (!fieldName || !el.value) return;
+
+    const root = el.closest('[wire\\:id]');
+    if (!root) return;
+
+    window.Livewire?.find(root.getAttribute('wire:id'))?.call('addMultiFileValue', fieldName, el.value);
+    el.value = '';
+});
+
+/**
+ * #[Field(type: 'text', editor: true)] / #[Field(type: 'editor')] — CKEditor
+ * on the textarea marked data-ckeditor (text.blade.php). CKEditor replaces
+ * the textarea with its own iframe chrome, which Livewire's morph strips
+ * back to the bare textarea on every update (identical problem to Choices.js
+ * above), so every [data-ckeditor] textarea is (re)initialized on each
+ * morph, destroying any stale instance for that id first. CKEditor's own
+ * 'change' event (not a native DOM event — content lives inside its iframe)
+ * is what actually reaches Livewire, via .set() exactly like the Choices.js
+ * listener, reading the plain (non-.live) wire:model path directly off the
+ * textarea's own attribute.
+ */
+function initCKEditorField(textarea) {
+    if (typeof CKEDITOR === 'undefined' || !textarea.id) {
+        return;
+    }
+    if (CKEDITOR.instances[textarea.id]) {
+        CKEDITOR.instances[textarea.id].destroy(true);
+    }
+
+    const editor = CKEDITOR.replace(textarea.id, {
+        filebrowserImageBrowseUrl: '/elfinder/ckeditor',
+        allowedContent: true,
+        // CKEditor auto-measures the source <textarea>'s width at replace()
+        // time; inside a CSS grid cell it sometimes reads 0 before the grid
+        // has laid out, collapsing the whole toolbar. An explicit width
+        // sidesteps that measurement entirely.
+        width: '100%',
+    });
+
+    const syncToLivewire = () => {
+        const modelPath = textarea.getAttribute('wire:model');
+        const root = textarea.closest('[wire\\:id]');
+        if (!modelPath || !root) return;
+
+        window.Livewire?.find(root.getAttribute('wire:id'))?.set(modelPath, editor.getData(), false);
+    };
+
+    // 'change' is CKEditor 4's own content-change event, but in practice it
+    // doesn't reliably fire while typing in this build/config — 'blur' (the
+    // user tabbing/clicking away, which also happens right before they hit
+    // Save) is what actually, consistently fires, so that's the sync this
+    // depends on; 'change' stays wired too as a harmless best-effort extra.
+    editor.on('change', syncToLivewire);
+    editor.on('blur', syncToLivewire);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-ckeditor]').forEach(initCKEditorField);
+});
+
 document.addEventListener('livewire:init', () => {
     Livewire.hook('morphed', ({ el }) => {
+        el.querySelectorAll('[data-ckeditor]').forEach(initCKEditorField);
+
+        /**
+         * Re-init Choices.js on Livewire-rendered [data-choices] selects
+         * after every component update. Choices wraps the original
+         * <select> in its own markup; Livewire's morph diffs against the
+         * plain server-rendered <select> and strips that wrapper back off
+         * on each update, so the widget needs rebuilding every time — same
+         * parsing of the data-choices-* modifier attributes as the
+         * layouts' own DOMContentLoaded init (see layouts/adminpanel.blade.php
+         * and layouts/blank.blade.php), which still handles the very first
+         * render. A once-initialized select is hidden (display:none) by
+         * Choices itself, so that's used as the "already live" check
+         * instead of a separate registry.
+         *
+         * The <select> itself survives the morph (only Choices' wrapper
+         * around it is stripped), so a prior Choices instance's event
+         * listeners are still live on it — without cleanup, that orphaned
+         * instance and the freshly-created one both react to the next
+         * selection, and the orphaned one (unaware anything changed)
+         * stomps the value straight back. There's no reference to call
+         * that instance's own .destroy() with, so the element is cloned
+         * instead — a clone carries no listeners — before wiring up the
+         * new instance on the clone.
+         */
         el.querySelectorAll('[data-choices]').forEach((original) => {
             if (getComputedStyle(original).display === 'none') return;
 
