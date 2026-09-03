@@ -96,7 +96,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // either name would shadow that and silently break every permission check.
     // UserModelTrait aliases the trait's real implementations to
     // baseRoles()/basePermissions() so these just delegate to them.
-    #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Permission', required: false)]
+    #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Permission', required: false,)]
     #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name')]
     public function permissions(): BelongsToMany
     {
@@ -104,7 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Roles', required: false)]
-    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name')]
+    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name',ajaxMode: 'load')]
     public function roles(): BelongsToMany
     {
         return $this->baseRoles();

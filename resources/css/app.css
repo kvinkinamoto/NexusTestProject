@@ -275,3 +275,110 @@
 .form-check-input:checked ~ span {
     @apply border-[6px] border-brand-500 dark:border-brand-500;
 }
+
+/*
+  Choices.js dark-theme overrides. Its own CSS (CDN, choices.min.css) is a
+  light-only theme with no dark-mode variant, so every field carrying
+  data-choices (see livewire/field_types/{select,enum,gender,...}.blade.php
+  and templates/field_types/{select,enum,relation,...}.blade.php) rendered
+  as a plain white box against the rest of the dark UI. Re-themed here to
+  match the same input look (h-11, rounded-lg, border-gray-300/gray-700,
+  focus:ring brand-500) used everywhere else — loads after choices.min.css
+  (see layouts/adminpanel.blade.php) so equal-specificity selectors win
+  without !important.
+*/
+.choices {
+    margin-bottom: 0;
+}
+
+.choices__inner {
+    @apply min-h-11 w-full rounded-lg border border-gray-300 bg-transparent px-3 py-1.5 text-sm text-gray-800 shadow-theme-xs dark:border-gray-700 dark:bg-gray-900 dark:text-white/90;
+}
+
+.choices.is-open .choices__inner,
+.choices.is-focused .choices__inner {
+    @apply border-brand-300 ring-3 ring-brand-500/10 dark:border-brand-800;
+}
+
+.choices[data-type*='select-one'] .choices__inner {
+    @apply py-2.5 pl-4;
+}
+
+.choices[data-type*='select-one'] .choices__input {
+    @apply border-gray-200 bg-gray-50 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white/90;
+}
+
+.choices__list--single {
+    padding: 0;
+}
+
+.choices__list--single .choices__item,
+.choices__placeholder {
+    @apply text-gray-800 opacity-100 dark:text-white/90;
+}
+
+.choices__list--multiple .choices__item {
+    @apply rounded-full border border-gray-200 bg-gray-50 text-xs font-medium text-gray-700 dark:border-gray-800 dark:bg-white/5 dark:text-gray-300;
+}
+
+.choices__list--multiple .choices__item.is-highlighted {
+    @apply bg-gray-100 dark:bg-white/10;
+}
+
+.choices__button {
+    filter: none;
+    opacity: 0.6;
+}
+:where(.dark) .choices__button {
+    filter: invert(1);
+}
+
+.choices__input {
+    @apply bg-transparent text-sm text-gray-800 dark:text-white/90;
+}
+.choices__input::placeholder {
+    @apply text-gray-400;
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+    @apply rounded-lg border border-gray-200 bg-white shadow-theme-lg dark:border-gray-800 dark:bg-gray-900;
+}
+
+.choices__list--dropdown .choices__item--selectable,
+.choices__list[aria-expanded] .choices__item--selectable {
+    @apply text-sm text-gray-700 dark:text-gray-300;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted,
+.choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    @apply bg-gray-50 dark:bg-white/5;
+}
+
+/*
+  .is-selected marks whichever option matches the field's current value —
+  separate from .is-highlighted (hover/keyboard nav) above. Choices' own
+  default is a flat light gray (#f2f2f2) with no dark variant, which is what
+  actually read as "too light" against the rest of this overrides block.
+*/
+.choices__list--dropdown .choices__item--selectable.is-selected,
+.choices__list[aria-expanded] .choices__item--selectable.is-selected {
+    @apply bg-brand-50 text-brand-500 dark:bg-brand-500/[0.12] dark:text-brand-400;
+}
+
+.choices__list--dropdown .choices__list,
+.choices__list[aria-expanded] .choices__list {
+    @apply custom-scrollbar;
+}
+
+.choices[data-type*='select-one']:after {
+    border-color: var(--color-gray-400) transparent transparent transparent;
+}
+.choices[data-type*='select-one'].is-open:after {
+    border-color: transparent transparent var(--color-gray-400) transparent;
+}
+
+.choices.is-disabled .choices__inner,
+.choices.is-disabled .choices__input {
+    @apply cursor-not-allowed opacity-50;
+}
