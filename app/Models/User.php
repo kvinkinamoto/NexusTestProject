@@ -104,7 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Roles', required: false)]
-    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name',ajaxMode: 'load')]
+    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name',ajax: true, ajaxMode: 'load')]
     public function roles(): BelongsToMany
     {
         return $this->baseRoles();
