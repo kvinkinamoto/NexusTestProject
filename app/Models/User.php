@@ -22,6 +22,7 @@ use Nodex\Nexus\Attributes\Section;
 use Nodex\Nexus\Attributes\TableAction;
 use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
+use Nodex\Nexus\Enums\RelationConfigParamsEnum;
 
 /**
  * Minimal baseline shipped by nodex/nexus (published together with the
@@ -95,14 +96,14 @@ class User extends Authenticatable implements MustVerifyEmail
     // UserModelTrait aliases the trait's real implementations to
     // baseRoles()/basePermissions() so these just delegate to them.
     #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Permission', required: false)]
-    #[Relation(type: 'bELONGSTOMANY', show: 'display_name')]
+    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name')]
     public function permissions(): BelongsToMany
     {
         return $this->basePermissions();
     }
 
-    #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Roles', required: false)]
-    #[Relation(type: 'bELONGSTOMANY', show: 'display_name')]
+    #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Roles', required: false )]
+    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name')]
     public function roles(): BelongsToMany
     {
         return $this->baseRoles();
