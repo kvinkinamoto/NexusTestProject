@@ -44,6 +44,53 @@ document.addEventListener('alpine:init', () => {
             document.documentElement.classList.toggle('dark', this.theme === 'dark');
         },
     });
+
+    /**
+     * #[Field(type: 'text', editor: true)] / #[Field(type: 'editor')] —
+     * CKEditor on the textarea inside this component's root (text.blade.php).
+     * That root carries wire:ignore, so Livewire's morph never touches
+     * anything under it — init() below runs exactly once, on first mount,
+     * instead of needing to destroy and recreate the editor on every single
+     * render the way a global [data-ckeditor] querySelectorAll scan (this
+     * project's previous approach, and Choices.js's before that — see
+     * .ai/rules/views.md) had to.
+     *
+     * modelPath is the Livewire property this editor's content syncs to
+     * (e.g. 'data.description') — passed in from the Blade attribute rather
+     * than read off a wire:model on the textarea, since wire:ignore means
+     * Livewire itself never binds to anything in here.
+     */
+    Alpine.data('nexusCkEditor', (modelPath) => ({
+        editor: null,
+
+        init() {
+            if (typeof CKEDITOR === 'undefined') {
+                return;
+            }
+
+            this.editor = CKEDITOR.replace(this.$el.querySelector('textarea'), {
+                filebrowserImageBrowseUrl: '/elfinder/ckeditor',
+                allowedContent: true,
+                // CKEditor auto-measures the source <textarea>'s width at
+                // replace() time; inside a CSS grid cell it sometimes reads 0
+                // before the grid has laid out, collapsing the whole
+                // toolbar. An explicit width sidesteps that measurement
+                // entirely.
+                width: '100%',
+            });
+
+            const syncToLivewire = () => this.$wire.set(modelPath, this.editor.getData(), false);
+
+            // 'change' is CKEditor 4's own content-change event, but in
+            // practice it doesn't reliably fire while typing in this
+            // build/config — 'blur' (the user tabbing/clicking away, which
+            // also happens right before they hit Save) is what actually,
+            // consistently fires, so that's the sync this depends on;
+            // 'change' stays wired too as a harmless best-effort extra.
+            this.editor.on('change', syncToLivewire);
+            this.editor.on('blur', syncToLivewire);
+        },
+    }));
 });
 
 /**
@@ -74,41 +121,12 @@ document.addEventListener('livewire:init', () => {
 });
 
 /**
- * Choices.js fires a real 'change' event on the underlying <select> when a
- * choice is picked (see Choices' dispatchEvent/_triggerChange), which is
- * what a plain wire:model binding relies on to pick up the new value. In
- * practice that races Livewire's own DOM-sync-back for <select> elements —
- * it wins occasionally and resets the option back to blank right after
- * Choices set it correctly, discarding the pick client-side. Choices' change
- * event carries the authoritative value in event.detail.value regardless of
- * what the DOM ends up showing, so that's pushed into the component
- * explicitly via Livewire.find(...).set() instead of trusting the DOM read.
- * Delegated on `document` so it covers every [data-choices] select without
- * caring whether Choices was (re)initialized by this file or by the layouts'
- * own DOMContentLoaded script (see layouts/adminpanel.blade.php and
- * layouts/blank.blade.php, which still handle each element's first init).
- */
-document.addEventListener('change', (e) => {
-    if (!e.detail || typeof e.detail.value === 'undefined') return;
-
-    const item = e.target.closest('[data-choices]');
-    if (!item) return;
-
-    const modelAttr = [...item.attributes].find((a) => a.name === 'wire:model' || a.name.startsWith('wire:model.'));
-    const root = item.closest('[wire\\:id]');
-    if (!modelAttr || !root) return;
-
-    window.Livewire?.find(root.getAttribute('wire:id'))?.set(modelAttr.value, e.detail.value, modelAttr.name.includes('.live'));
-});
-
-/**
  * #[Field(type: 'images'|'videos')] gallery pickers (field_types/images.blade.php,
  * videos.blade.php) — each has one static hidden <input data-multi-field="{name}">
  * that the shared elFinder popup (processSelectedFile() in layouts/adminpanel.blade.php
  * and layouts/blank.blade.php) writes a chosen path into, firing a native
  * 'input' event. Delegated (not bound per-element) so it survives Livewire
- * re-rendering that input, same reasoning as the Choices.js 'change'
- * listener above. Calls ManagesMultiFileFields::addMultiFileValue() directly
+ * re-rendering that input. Calls ManagesMultiFileFields::addMultiFileValue() directly
  * — an array of unknown/changing length has no single element a plain
  * wire:model could bind to.
  */
@@ -125,110 +143,25 @@ document.addEventListener('input', (e) => {
 });
 
 /**
- * #[Field(type: 'text', editor: true)] / #[Field(type: 'editor')] — CKEditor
- * on the textarea marked data-ckeditor (text.blade.php). CKEditor replaces
- * the textarea with its own iframe chrome, which Livewire's morph strips
- * back to the bare textarea on every update (identical problem to Choices.js
- * above), so every [data-ckeditor] textarea is (re)initialized on each
- * morph, destroying any stale instance for that id first. CKEditor's own
- * 'change' event (not a native DOM event — content lives inside its iframe)
- * is what actually reaches Livewire, via .set() exactly like the Choices.js
- * listener, reading the plain (non-.live) wire:model path directly off the
- * textarea's own attribute.
+ * Neither CKEditor nor Choices.js need a [data-*] querySelectorAll scan or a
+ * Livewire.hook('morphed', ...) re-init here anymore. CKEditor moved to a
+ * wire:ignore + Alpine.data('nexusCkEditor', ...) component (see the
+ * alpine:init listener above) that initializes once and is never touched by
+ * morph again. Every Livewire-rendered field type that used to carry
+ * data-choices (select, enum, gender, wishlistable_type_field,
+ * custom_delivery_type, custom_delivery_method, custom_payment_method) now
+ * renders its own plain Alpine dropdown instead (see
+ * livewire/field_types/_native_select.blade.php) — Choices' morph-survival
+ * needs (wrapper stripped on every update, stale listeners orphaned on the
+ * pre-morph element, the picked value only reflected via the `selected`
+ * HTML attribute at (re)init time) had turned into a standing source of
+ * "reverts to placeholder after a pick" bugs, five of those seven field
+ * types still had that bug live before this rewrite (see .ai/rules/views.md
+ * for the sibling rule this class of bug prompted).
+ *
+ * [data-choices] remains for the legacy (non-Livewire, full-page-reload)
+ * pipeline's own field_types/*.blade.php partials, which have no morph
+ * cycle to survive and so don't need any of this — their own
+ * DOMContentLoaded init in layouts/adminpanel.blade.php and
+ * layouts/blank.blade.php still handles them.
  */
-function initCKEditorField(textarea) {
-    if (typeof CKEDITOR === 'undefined' || !textarea.id) {
-        return;
-    }
-    if (CKEDITOR.instances[textarea.id]) {
-        CKEDITOR.instances[textarea.id].destroy(true);
-    }
-
-    const editor = CKEDITOR.replace(textarea.id, {
-        filebrowserImageBrowseUrl: '/elfinder/ckeditor',
-        allowedContent: true,
-        // CKEditor auto-measures the source <textarea>'s width at replace()
-        // time; inside a CSS grid cell it sometimes reads 0 before the grid
-        // has laid out, collapsing the whole toolbar. An explicit width
-        // sidesteps that measurement entirely.
-        width: '100%',
-    });
-
-    const syncToLivewire = () => {
-        const modelPath = textarea.getAttribute('wire:model');
-        const root = textarea.closest('[wire\\:id]');
-        if (!modelPath || !root) return;
-
-        window.Livewire?.find(root.getAttribute('wire:id'))?.set(modelPath, editor.getData(), false);
-    };
-
-    // 'change' is CKEditor 4's own content-change event, but in practice it
-    // doesn't reliably fire while typing in this build/config — 'blur' (the
-    // user tabbing/clicking away, which also happens right before they hit
-    // Save) is what actually, consistently fires, so that's the sync this
-    // depends on; 'change' stays wired too as a harmless best-effort extra.
-    editor.on('change', syncToLivewire);
-    editor.on('blur', syncToLivewire);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('[data-ckeditor]').forEach(initCKEditorField);
-});
-
-document.addEventListener('livewire:init', () => {
-    Livewire.hook('morphed', ({ el }) => {
-        el.querySelectorAll('[data-ckeditor]').forEach(initCKEditorField);
-
-        /**
-         * Re-init Choices.js on Livewire-rendered [data-choices] selects
-         * after every component update. Choices wraps the original
-         * <select> in its own markup; Livewire's morph diffs against the
-         * plain server-rendered <select> and strips that wrapper back off
-         * on each update, so the widget needs rebuilding every time — same
-         * parsing of the data-choices-* modifier attributes as the
-         * layouts' own DOMContentLoaded init (see layouts/adminpanel.blade.php
-         * and layouts/blank.blade.php), which still handles the very first
-         * render. A once-initialized select is hidden (display:none) by
-         * Choices itself, so that's used as the "already live" check
-         * instead of a separate registry.
-         *
-         * The <select> itself survives the morph (only Choices' wrapper
-         * around it is stripped), so a prior Choices instance's event
-         * listeners are still live on it — without cleanup, that orphaned
-         * instance and the freshly-created one both react to the next
-         * selection, and the orphaned one (unaware anything changed)
-         * stomps the value straight back. There's no reference to call
-         * that instance's own .destroy() with, so the element is cloned
-         * instead — a clone carries no listeners — before wiring up the
-         * new instance on the clone.
-         */
-        el.querySelectorAll('[data-choices]').forEach((original) => {
-            if (getComputedStyle(original).display === 'none') return;
-
-            const item = original.cloneNode(true);
-            original.replaceWith(item);
-
-            const choiceData = {};
-            const attrs = item.attributes;
-            if (attrs['data-choices-groups']) choiceData.placeholderValue = 'This is a placeholder set in the config';
-            if (attrs['data-choices-search-false']) choiceData.searchEnabled = false;
-            if (attrs['data-choices-search-true']) choiceData.searchEnabled = true;
-            if (attrs['data-choices-removeItem']) choiceData.removeItemButton = true;
-            if (attrs['data-choices-sorting-false']) choiceData.shouldSort = false;
-            if (attrs['data-choices-sorting-true']) choiceData.shouldSort = true;
-            if (attrs['data-choices-multiple-remove']) choiceData.removeItemButton = true;
-            if (attrs['data-choices-limit']) choiceData.maxItemCount = attrs['data-choices-limit'].value.toString();
-            if (attrs['data-choices-editItem-true']) choiceData.maxItemCount = true;
-            if (attrs['data-choices-editItem-false']) choiceData.maxItemCount = false;
-            if (attrs['data-choices-text-unique-true']) {
-                choiceData.duplicateItemsAllowed = false;
-                choiceData.paste = false;
-            }
-            if (attrs['data-choices-text-disabled-true']) choiceData.addItems = false;
-
-            attrs['data-choices-text-disabled-true']
-                ? new Choices(item, choiceData).disable()
-                : new Choices(item, choiceData);
-        });
-    });
-});
