@@ -76,4 +76,20 @@ return [
     'media_library' => [
         'enabled' => env('NEXUS_MEDIA_LIBRARY_ENABLED', true),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Plugins
+    |--------------------------------------------------------------------------
+    | PluginManager::autoDiscover() scans app/Nexus/Plugins/** for classes
+    | carrying #[TargetModule]/#[Filter]/#[Action] (see Services/PluginManager.php,
+    | commands/MakePluginCommand.php) and registers every one it finds — list
+    | a plugin's fully-qualified class name here to skip it without deleting
+    | the file (e.g. while debugging one plugin among several).
+    */
+    'plugins' => [
+        'disabled' => [
+            // App\Nexus\Plugins\Example\ExamplePlugin::class,
+        ],
+    ],
 ];
