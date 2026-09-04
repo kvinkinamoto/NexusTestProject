@@ -12,7 +12,6 @@ use Nodex\Nexus\Contracts\Widgets\WidgetInterface;
 use Nodex\Nexus\Dto\Widgets\WidgetContext;
 use Nodex\Nexus\Enums\AdminPanelPermissionEnum;
 use Nodex\Nexus\Enums\WidgetSurface;
-use Nodex\Nexus\Services\ModuleManifestCache;
 use Nodex\Nexus\Services\Widgets\AdminDashboardRenderer;
 use Nodex\Nexus\Services\Widgets\DashboardLayoutResolver;
 use Nodex\Nexus\Services\Widgets\WidgetRegistry;
@@ -46,20 +45,21 @@ it('discovers both app-global widgets through the live registry', function () {
         ->and($registry->find('recentDemoRecords'))->not->toBeNull();
 });
 
-it('discovers a module-scoped widget (demoRecordsCount) via ModuleManifestCache::discoverWidgets()', function () {
-    // Unlike the app-global pair above, a module's own Widgets/ folder is
-    // only scanned by loadWidgets() for modules already enabled at the
-    // moment the app boots (Illuminate\Foundation\Testing\TestCase boots a
-    // fresh app before beforeEach() runs nexus:module:install) — so this
-    // exercises the real discovery mechanism directly instead of the
-    // boot-time registry, which can't see it within a single test's
-    // lifecycle no matter when install() runs. Confirmed working the
-    // normal way (registry has it after a real page load) via tinker
-    // against the actual dev database, outside this test suite.
-    $entries = app(ModuleManifestCache::class)
-        ->discoverWidgets(app_path('Nexus/Modules/Demo/Widgets'), 'App\\Nexus\\Modules\\Demo');
+it('makes a module-scoped widget (demoRecordsCount) visible in the live registry right after install, without a fresh boot', function () {
+    // Regression test for the module-scoped widget boot-timing gap:
+    // NexusServiceProvider::loadWidgets() only scans an enabled module's own
+    // Widgets/ folder for modules already enabled at the moment the app
+    // boots — Illuminate\Foundation\Testing\TestCase boots a fresh app
+    // before beforeEach() runs nexus:module:install, so demoRecordsCount
+    // used to be invisible to WidgetRegistry for the rest of this (or any)
+    // single process, until the next full reboot. ModuleManager::
+    // instanceInstall() now registers a module's widgets into the
+    // already-booted WidgetRegistry singleton immediately, closing that gap
+    // — beforeEach()'s nexus:module:install call above is what this
+    // assertion is actually proving.
+    $registry = app(WidgetRegistry::class);
 
-    expect(collect($entries)->pluck('name'))->toContain('demoRecordsCount');
+    expect($registry->find('demoRecordsCount'))->not->toBeNull();
 });
 
 it('renders both a ProvidesMetric-only and a RendersHtml widget through AdminDashboardRenderer', function () {
@@ -145,13 +145,12 @@ it('renders the correct widget key (not a groupBy-renumbered index) on a not-yet
 
 it('nexus:make:widget generates a class that actually implements WidgetInterface', function () {
     $classFile = app_path('Nexus/Widgets/GeneratorRegressionCheck/GeneratorRegressionCheck.php');
-    $viewFile = resource_path('views/widgets/generatorRegressionCheck.blade.php');
+    // Co-located with the class, not resources/views/widgets/ — see
+    // RendersHtml's docblock and MakeWidgetCommand.
+    $viewFile = app_path('Nexus/Widgets/GeneratorRegressionCheck/generatorRegressionCheck.blade.php');
 
     if (File::exists(dirname($classFile))) {
         File::deleteDirectory(dirname($classFile));
-    }
-    if (File::exists($viewFile)) {
-        File::delete($viewFile);
     }
 
     try {
@@ -170,6 +169,5 @@ it('nexus:make:widget generates a class that actually implements WidgetInterface
         expect($reflection->getAttributes(Widget::class))->not->toBeEmpty();
     } finally {
         File::deleteDirectory(dirname($classFile));
-        File::delete($viewFile);
     }
 });

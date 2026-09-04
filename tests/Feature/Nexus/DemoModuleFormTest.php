@@ -76,3 +76,15 @@ it('rethrows a real save() failure instead of masking it, with debug on', functi
     expect(fn () => $component->set('data.title', 'Updated title')->call('save'))
         ->toThrow(ModelNotFoundException::class);
 });
+
+it('translates wizard tab labels instead of showing the raw translation key', function () {
+    // Regression test: wizard_progress.blade.php built the translation
+    // namespace as $module->name . '::...' (e.g. "Demo::translate.basic")
+    // while loadTranslation() registers every module's lang files under
+    // Str::lcfirst($module['name']) (e.g. "demo") — the mismatched casing
+    // meant Laravel's translator found no match and echoed the raw key
+    // straight into the wizard's tab bar instead of "Basic".
+    Livewire::test(ModuleForm::class, ['moduleName' => 'Demo'])
+        ->assertSee('Basic')
+        ->assertDontSee('Demo::translate.basic', false);
+});

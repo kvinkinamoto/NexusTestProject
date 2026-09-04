@@ -12,10 +12,11 @@ use Nodex\Nexus\Enums\WidgetSurface;
 /**
  * First real RendersHtml implementor in the codebase — every other widget
  * built this session (UsersCount, DemoRecordsCount) is ProvidesMetric-only,
- * falling back to the package's built-in metric_card.blade.php. This one
- * has genuine custom Blade output (resources/views/widgets/recentDemoRecords.blade.php)
- * instead, and declares both Admin and Front surfaces so the same class
- * backs a dashboard card AND a front-placed widget via
+ * falling back to the package's built-in metric_card.blade.php. This one has
+ * genuine custom Blade output — recentDemoRecords.blade.php, co-located in
+ * this same folder rather than resources/views/widgets/, resolved via
+ * View::file() below — and declares both Admin and Front surfaces so the
+ * same class backs a dashboard card AND a front-placed widget via
  * WidgetInstance::render()/@position() — see App\Nexus\Modules\WidgetPlacement
  * for how an admin actually places it on a page.
  */
@@ -43,9 +44,13 @@ class RecentDemoRecords implements RendersHtml, WidgetInterface
         return [];
     }
 
+    /**
+     * @return array<string, string> Blade file name (relative to this class's
+     *                               own folder) => display name.
+     */
     public function availableViews(): array
     {
-        return ['widgets.recentDemoRecords' => 'Default'];
+        return ['recentDemoRecords.blade.php' => 'Default'];
     }
 
     public function viewFor(?string $name): ?string
@@ -58,11 +63,12 @@ class RecentDemoRecords implements RendersHtml, WidgetInterface
     public function render(array $config, WidgetContext $context): string
     {
         $view = $this->viewFor($context->params['view'] ?? null);
+        $path = $view ? __DIR__.DIRECTORY_SEPARATOR.$view : null;
 
-        if (! $view || ! view()->exists($view)) {
+        if (! $path || ! is_file($path)) {
             return '';
         }
 
-        return view($view, $this->getData($config, $context))->render();
+        return view()->file($path, $this->getData($config, $context))->render();
     }
 }
