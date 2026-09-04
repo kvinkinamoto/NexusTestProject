@@ -20,15 +20,18 @@ class PopulateDemoSelectOptions
             return;
         }
 
-        foreach ($event->config->form->fields as $field) {
-            if ($field->name === 'priority') {
-                $field->customData = [
-                    ['value' => 'low', 'name' => 'Low'],
-                    ['value' => 'medium', 'name' => 'Medium'],
-                    ['value' => 'high', 'name' => 'High'],
-                ];
+        $options = [
+            ['value' => 'low', 'name' => 'Low'],
+            ['value' => 'medium', 'name' => 'Medium'],
+            ['value' => 'high', 'name' => 'High'],
+        ];
 
-                break;
+        foreach ($event->config->form->fields as $field) {
+            // Same options, two renderings — 'priority' (select dropdown)
+            // and 'priority_radio' (#[Field(type: 'radio')]) both read
+            // customData the same way, see select.blade.php/radio.blade.php.
+            if ($field->name === 'priority' || $field->name === 'priority_radio') {
+                $field->customData = $options;
             }
         }
     }

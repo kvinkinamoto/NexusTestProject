@@ -11,10 +11,12 @@ return [
     'relations' => 'Звʼязки',
     'repeater' => 'Repeater',
     'advanced' => 'Розширене',
+    'extra' => 'Додатково',
 
     'text_inputs' => 'Текстові поля',
     'toggles_dates' => 'Перемикачі й дати',
     'repeater_sect' => 'Repeater',
+    'extra_fields' => 'Додаткові типи полів',
 
     'id' => 'ID',
     'title' => 'Заголовок',
@@ -47,6 +49,20 @@ return [
     'notes (read-only json)' => 'Нотатки (json, лише читання)',
     'api only note' => 'Нотатка тільки для API',
     'locked after create' => 'Заблоковано після створення',
+
+    'event time' => 'Час події',
+    'office location' => 'Адреса офісу',
+    'tags' => 'Теги',
+    'priority (radio)' => 'Пріоритет (radio)',
+    'slug' => 'Slug',
+    'theme color' => 'Колір теми',
+    'nav icon' => 'Іконка меню',
+    'attachment' => 'Вкладення',
+    'notes (markdown)' => 'Нотатки (markdown)',
+    'volume' => 'Гучність',
+    'price' => 'Ціна',
+    'stars' => 'Зірки',
+    'website' => 'Сайт',
 
     'draft' => 'Чернетка',
     'published' => 'Опубліковано',

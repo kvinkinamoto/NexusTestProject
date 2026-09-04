@@ -12,11 +12,13 @@ return [
     'relations' => 'Relations',
     'repeater' => 'Repeater',
     'advanced' => 'Advanced',
+    'extra' => 'Extra',
 
     // sections (keyed by the raw section name — same convention as tabs above)
     'text_inputs' => 'Text inputs',
     'toggles_dates' => 'Toggles & dates',
     'repeater_sect' => 'Repeater',
+    'extra_fields' => 'Extra field types',
 
     // field labels (keyed lowercase — _label.blade.php looks up Str::lower($field->label))
     'id' => 'ID',
@@ -50,6 +52,20 @@ return [
     'notes (read-only json)' => 'Notes (read-only json)',
     'api only note' => 'Api only note',
     'locked after create' => 'Locked after create',
+
+    'event time' => 'Event time',
+    'office location' => 'Office location',
+    'tags' => 'Tags',
+    'priority (radio)' => 'Priority (radio)',
+    'slug' => 'Slug',
+    'theme color' => 'Theme color',
+    'nav icon' => 'Nav icon',
+    'attachment' => 'Attachment',
+    'notes (markdown)' => 'Notes (markdown)',
+    'volume' => 'Volume',
+    'price' => 'Price',
+    'stars' => 'Stars',
+    'website' => 'Website',
 
     // enum values (DemoStatus — enum.blade.php falls back to {module}::translate.{value})
     'draft' => 'Draft',

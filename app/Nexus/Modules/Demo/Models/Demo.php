@@ -52,6 +52,7 @@ use Spatie\Translatable\HasTranslations;
 #[Section(name: 'relations', column: 'relations_col', type: 'base', icon: 'solar:link-bold', tab: 'relations')]
 #[Section(name: 'repeater_sect', column: 'repeater_col', type: 'base', icon: 'solar:layers-bold', tab: 'repeater')]
 #[Section(name: 'advanced', column: 'advanced_col', type: 'base', icon: 'solar:settings-bold', tab: 'advanced')]
+#[Section(name: 'extra_fields', column: 'extra_col', type: 'base', icon: 'solar:magic-stick-3-bold', tab: 'extra')]
 class Demo extends Model implements HasMedia
 {
     use HasAttributeSchemaProperties, HasNexusMedia, HasTranslations;
@@ -198,6 +199,50 @@ class Demo extends Model implements HasMedia
     #[Field(type: 'string', section: 'advanced', label: 'Locked after create', required: false, disabled: 'edit')]
     protected $locked_field;
 
+    // ---- Tab: extra (field types ported/added to the Livewire pipeline in this pass) ----
+
+    #[Field(type: 'time', section: 'extra_fields', label: 'Event time', required: false)]
+    protected $event_time;
+
+    #[Field(type: 'location', section: 'extra_fields', label: 'Office location', required: false)]
+    protected $office_location;
+
+    #[Field(type: 'multiple_string', section: 'extra_fields', label: 'Tags', required: false)]
+    protected $tags;
+
+    // Same options as 'priority' above (see Listeners/PopulateDemoSelectOptions),
+    // radio-rendered instead of a dropdown — proves a field can switch
+    // between select/radio by #[Field(type:)] alone, no other config change.
+    #[Field(type: 'radio', section: 'extra_fields', label: 'Priority (radio)', required: false)]
+    protected $priority_radio;
+
+    #[Field(type: 'slug', section: 'extra_fields', label: 'Slug', required: false, slugSource: 'title')]
+    protected $slug;
+
+    #[Field(type: 'color', section: 'extra_fields', label: 'Theme color', required: false)]
+    protected $theme_color;
+
+    #[Field(type: 'icon', section: 'extra_fields', label: 'Nav icon', required: false)]
+    protected $nav_icon;
+
+    #[Field(type: 'file', section: 'extra_fields', label: 'Attachment', required: false)]
+    protected $attachment;
+
+    #[Field(type: 'markdown', section: 'extra_fields', label: 'Notes (markdown)', required: false)]
+    protected $notes_markdown;
+
+    #[Field(type: 'range', section: 'extra_fields', label: 'Volume', required: false)]
+    protected $volume;
+
+    #[Field(type: 'currency', section: 'extra_fields', label: 'Price', required: false)]
+    protected $price;
+
+    #[Field(type: 'rating', section: 'extra_fields', label: 'Stars', required: false)]
+    protected $stars;
+
+    #[Field(type: 'url', section: 'extra_fields', label: 'Website', required: false)]
+    protected $website;
+
     public $translatable = ['title_i18n'];
 
     protected $fillable = [
@@ -205,6 +250,8 @@ class Demo extends Model implements HasMedia
         'event_date', 'event_at', 'image', 'video', 'images', 'videos', 'status', 'priority',
         'primary_permission_id', 'rating', 'phone', 'show_extra', 'extra_field',
         'notes_json', 'api_only_note', 'locked_field',
+        'event_time', 'office_location', 'tags', 'priority_radio', 'slug', 'theme_color',
+        'nav_icon', 'attachment', 'notes_markdown', 'volume', 'price', 'stars', 'website',
     ];
 
     protected $casts = [
@@ -215,5 +262,9 @@ class Demo extends Model implements HasMedia
         'notes_json' => 'array',
         'images' => 'array',
         'videos' => 'array',
+        'tags' => 'array',
+        'price' => 'decimal:2',
+        'volume' => 'integer',
+        'stars' => 'integer',
     ];
 }

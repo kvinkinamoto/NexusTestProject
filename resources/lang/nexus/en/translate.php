@@ -117,7 +117,7 @@ return [
     'created' => 'Created',
     'updated' => 'Updated',
     'skipped' => 'Skipped',
-    
+
     'universal_filters' => 'Universal Filters',
     'active_filters' => 'active filters',
     'add_condition' => 'Add Condition',
@@ -131,7 +131,10 @@ return [
     'custom' => 'Custom',
     'value' => 'Value',
     'remove' => 'Remove',
+    'generate' => 'Generate',
     'chooseImage' => 'Choose image',
+    'chooseFile' => 'Choose file',
+    'addTag' => 'Add',
     'add' => 'Add',
     'searching' => 'Searching...',
     'error_loading_data' => 'Error loading data',
@@ -140,7 +143,7 @@ return [
     'error_removing_filters' => 'Error removing filters.',
     'filter_column_not_found' => "Filter: Column ':column' not found in table ':table'. Condition ignored.",
     'filter_relation_column_not_found' => "Filter: Column ':column' not found in relation ':relation'. Condition ignored.",
-    
+
     'operators' => [
         '=' => 'Equals',
         '!=' => 'Not Equals',
@@ -156,7 +159,7 @@ return [
         'IN' => 'In',
         'NOT IN' => 'Not In',
         'IS NULL' => 'Is Null',
-        'IS NOT NULL' => 'Is Not Null'
+        'IS NOT NULL' => 'Is Not Null',
     ],
     'load' => 'Loading',
     'error' => 'Error',
