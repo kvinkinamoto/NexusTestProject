@@ -1,11 +1,14 @@
 <?php
 
+use App\Models\User;
 use App\Nexus\Plugins\Example\ExamplePlugin;
+use Nodex\Nexus\Enums\AdminPanelPermissionEnum;
 use Nodex\Nexus\Services\FieldTypeRegistry;
 use Nodex\Nexus\Services\HookManager;
 use Nodex\Nexus\Services\ModuleManager;
 use Nodex\Nexus\Services\PluginManager;
 use Nodex\Nexus\Services\Validation\NexusRuleCollector;
+use Spatie\Permission\Models\Permission;
 
 /**
  * Regression coverage for the plugin ecosystem fix: PluginManager::autoDiscover()
@@ -54,4 +57,28 @@ it('still discovers the plugin when it is not disabled', function () {
     $manager->autoDiscover();
 
     expect($manager->getPlugins('Demo'))->toContain(ExamplePlugin::class);
+});
+
+it('applies the nexus.validation.rules filter to a real Demo store request through its dedicated AdminStoreRequest', function () {
+    // Regression test for the gap this filter used to have: Demo's own
+    // AdminStoreRequest (app/Nexus/Modules/Demo/Requests/AdminStoreRequest.php)
+    // hand-writes rules() directly, which previously meant NexusRuleCollector
+    // ::collect() — and so this filter — never ran for a real Demo save.
+    // NexusFormRequest::withValidator() (final, un-overridable) now closes
+    // that gap for every dedicated Request regardless of how it built its
+    // rules(). Goes through the real HTTP route (not Livewire::test() or a
+    // direct collect() call) specifically so request()->route('module')/
+    // ('action') — what withValidator() resolves the module/action from —
+    // are populated exactly as they would be for a real browser submission.
+    Permission::findOrCreate(AdminPanelPermissionEnum::ALL->value, 'web');
+    Permission::findOrCreate(AdminPanelPermissionEnum::ADMIN_PANEL->value, 'web');
+    $admin = User::factory()->create();
+    $admin->givePermissionTo([AdminPanelPermissionEnum::ALL->value, AdminPanelPermissionEnum::ADMIN_PANEL->value]);
+
+    $response = $this->actingAs($admin)->post(
+        route('nexus.module.action', ['module' => 'demo', 'action' => 'store']),
+        ['title' => str_repeat('a', 101)],
+    );
+
+    $response->assertSessionHasErrors('title');
 });

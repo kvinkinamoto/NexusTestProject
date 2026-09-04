@@ -34,16 +34,27 @@ class ExamplePlugin
 
     /**
      * nexus_filter('nexus.validation.rules', $rules, $moduleConfig, $action)
-     * — NexusRuleCollector::collect() calls this after building its own
-     * rules, for every module's validation, not just Demo's; scoped to Demo
+     * — fires for every module's validation, not just Demo's; scoped to Demo
      * here (via $moduleConfig->name) just to keep the example concrete and
-     * side-effect-free for every other module.
+     * side-effect-free for every other module. Two independent call sites
+     * both reach this: NexusRuleCollector::collect() (modules with no
+     * dedicated Request) and NexusServiceProvider::registerValidationRulesFilter()
+     * (every Validator built anywhere, including Demo's own hand-written
+     * AdminStoreRequest/AdminUpdateRequest — see that method's docblock for
+     * why it's the guaranteed call site regardless of how a dedicated
+     * Request builds its rules()).
      */
     #[Filter(hook: 'nexus.validation.rules', priority: 10)]
     public function extendValidationRules(array $rules, object $moduleConfig, string $action): array
     {
         if ($moduleConfig->name === 'demo' && isset($rules['title'])) {
-            $rules['title'][] = 'max:100';
+            // A field's rules can legally be either a pipe-delimited string
+            // (Demo's own hand-written AdminStoreRequest uses this form) or
+            // an array — this filter now reaches both kinds of Request, so
+            // normalize before appending rather than assuming array shape.
+            $titleRules = is_string($rules['title']) ? explode('|', $rules['title']) : $rules['title'];
+            $titleRules[] = 'max:100';
+            $rules['title'] = $titleRules;
         }
 
         return $rules;
