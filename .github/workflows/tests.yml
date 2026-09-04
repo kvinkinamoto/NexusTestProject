@@ -31,15 +31,22 @@ jobs:
         run: vendor/bin/pint --test
 
   tests:
-    name: Pest
+    name: Pest (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Range the package's own composer.json actually declares
+        # ("php": "^8.3", matching laravel/framework ^13's own floor) —
+        # not a wider claim than what's declared/verified.
+        php: ['8.3', '8.4', '8.5']
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: ${{ matrix.php }}
           extensions: sqlite3, pdo_sqlite
           coverage: none
 
@@ -47,7 +54,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
+          key: composer-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist

@@ -19,7 +19,10 @@ use Nodex\Nexus\Attributes\Requests;
 use Nodex\Nexus\Attributes\Section;
 use Nodex\Nexus\Attributes\TableAction;
 use Nodex\Nexus\Attributes\TableGroupAction;
+use Nodex\Nexus\Attributes\TableImport;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
+use Nodex\Nexus\Concerns\HasNexusMedia;
+use Spatie\MediaLibrary\HasMedia;
 use Spatie\Translatable\HasTranslations;
 
 /**
@@ -40,6 +43,7 @@ use Spatie\Translatable\HasTranslations;
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
+#[TableImport(name: 'import', label: 'Import')]
 #[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
 #[Section(name: 'text_inputs', column: 'basic_col', type: 'columns_2', icon: 'solar:text-bold', tab: 'basic')]
 #[Section(name: 'toggles_dates', column: 'basic_col2', type: 'base', icon: 'solar:calendar-bold', tab: 'basic')]
@@ -48,9 +52,9 @@ use Spatie\Translatable\HasTranslations;
 #[Section(name: 'relations', column: 'relations_col', type: 'base', icon: 'solar:link-bold', tab: 'relations')]
 #[Section(name: 'repeater_sect', column: 'repeater_col', type: 'base', icon: 'solar:layers-bold', tab: 'repeater')]
 #[Section(name: 'advanced', column: 'advanced_col', type: 'base', icon: 'solar:settings-bold', tab: 'advanced')]
-class Demo extends Model
+class Demo extends Model implements HasMedia
 {
-    use HasAttributeSchemaProperties, HasTranslations;
+    use HasAttributeSchemaProperties, HasNexusMedia, HasTranslations;
 
     // ---- Tab: basic ----
 
@@ -99,6 +103,15 @@ class Demo extends Model
 
     #[Field(type: 'videos', section: 'media', label: 'Gallery videos', required: false)]
     protected $videos;
+
+    // Real media-library-backed collection (dedup, thumbnails, reordering)
+    // via #[Field(type: 'gallery')] — contrast with 'images' above, which is
+    // just a JSON array of elFinder-picked paths. No DB column: media
+    // attaches to Demo rows in Spatie's own `media` table (see
+    // Concerns\HasNexusMedia below), same reason permissionsList (further
+    // down) has no column either.
+    #[Field(type: 'gallery', section: 'media', label: 'Gallery (media library)', required: false, showInInfolist: false)]
+    protected $mediaGallery;
 
     // ---- Tab: choices ----
 

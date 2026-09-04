@@ -56,6 +56,24 @@ return [
     | Services/Widgets/DashboardLayoutResolver.php.
     */
     'dashboard' => [
-        'default' => ['helloWorld'],
+        'default' => ['usersCount', 'demoRecordsCount'],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Media Library
+    |--------------------------------------------------------------------------
+    | #[Field(type: 'gallery')] is backed by Nodex\Nexus\Contracts\MediaLibrary\MediaLibraryInterface,
+    | bound by default to a spatie/laravel-medialibrary-backed implementation
+    | (Services/MediaLibrary/SpatieMediaLibraryService) — swap it for your own
+    | by rebinding the interface in your own service provider (standard
+    | Laravel container override, no Nexus-specific plumbing needed). Set
+    | 'enabled' to false to disable the 'gallery' field type entirely (it
+    | renders a plain notice instead) without touching any module — the
+    | existing elFinder-backed image/images/video/videos types are
+    | completely unaffected either way.
+    */
+    'media_library' => [
+        'enabled' => env('NEXUS_MEDIA_LIBRARY_ENABLED', true),
     ],
 ];
