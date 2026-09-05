@@ -105,8 +105,9 @@ class Demo extends Model implements HasMedia
     #[Field(type: 'videos', section: 'media', label: 'Gallery videos', required: false)]
     protected $videos;
 
-    // Real media-library-backed collection (dedup, thumbnails, reordering)
-    // via #[Field(type: 'gallery')] — contrast with 'images' above, which is
+    // Real media-library-backed collection (dedup, reordering, click-to-set
+    // focal point, auto sm/md/lg responsive variants) via
+    // #[Field(type: 'gallery')] — contrast with 'images' above, which is
     // just a JSON array of elFinder-picked paths. No DB column: media
     // attaches to Demo rows in Spatie's own `media` table (see
     // Concerns\HasNexusMedia below), same reason permissionsList (further

@@ -7,7 +7,7 @@
 
     <ul class="mb-4 list-disc space-y-1 pl-5 text-sm text-gray-600 dark:text-gray-300">
         <li><strong>basic</strong> — string, translated string, text (with <code>editor: true</code> — CKEditor), number, email, password (hidden from infolist), boolean, date, datetime.</li>
-        <li><strong>media</strong> — single image, single video (elFinder picker), plus multi-image and multi-video galleries (<code>images</code>/<code>videos</code> — a plain array-of-paths column, add/remove one at a time via the same elFinder popup).</li>
+        <li><strong>media</strong> — single image, single video (elFinder picker), plus multi-image and multi-video galleries (<code>images</code>/<code>videos</code> — a plain array-of-paths column, add/remove one at a time via the same elFinder popup); a separate <code>gallery</code> field (Media Library-backed, with dedup, reordering, and <strong>click a thumbnail to set its focal point</strong> — the crop center used for its <code>thumb</code> conversion — plus auto-generated <code>sm</code>/<code>md</code>/<code>lg</code> responsive variants).</li>
         <li><strong>choices</strong> — enum (backed PHP enum) and select (options populated by an <code>AdminFormBuilding</code> listener).</li>
         <li><strong>relations</strong> — 3 independent belongsToMany pickers against the real <code>permissions</code> table, demonstrating the 3 ajax/preload combinations (<code>ajax: false</code>, <code>ajax: true</code> search-only, <code>ajax: true, ajaxMode: 'load'</code>), plus a single belongsTo and a read-only relationManager list.</li>
         <li><strong>repeater</strong> — a hasMany child table (#[RepeaterField]).</li>
