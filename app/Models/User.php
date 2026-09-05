@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Nodex\Nexus\Attributes\Column;
 use Nodex\Nexus\Attributes\Field;
 use Nodex\Nexus\Attributes\Module;
@@ -96,7 +97,7 @@ class User extends Authenticatable implements MustVerifyEmail
     // either name would shadow that and silently break every permission check.
     // UserModelTrait aliases the trait's real implementations to
     // baseRoles()/basePermissions() so these just delegate to them.
-    #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Permission', required: false,)]
+    #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Permission', required: false, )]
     #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name')]
     public function permissions(): BelongsToMany
     {
@@ -104,7 +105,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     #[Field(type: 'relation', section: 'roles_and_permissions', label: 'Roles', required: false)]
-    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name',ajax: true, ajaxMode: 'load')]
+    #[Relation(type: RelationConfigParamsEnum::BELONGS_TO_MANY->value, show: 'display_name', showFallback: 'name', ajax: true, ajaxMode: 'load')]
     public function roles(): BelongsToMany
     {
         return $this->baseRoles();
@@ -125,7 +126,7 @@ class User extends Authenticatable implements MustVerifyEmail
     private $id;
 
     /** @use HasFactory<UserFactory> */
-    use HasAttributeSchemaProperties, HasFactory, Notifiable, UserModelTrait;
+    use HasApiTokens, HasAttributeSchemaProperties, HasFactory, Notifiable, UserModelTrait;
 
     /**
      * The attributes that are mass assignable.

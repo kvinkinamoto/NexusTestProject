@@ -34,19 +34,19 @@ class Page extends Model
 {
     use HasAttributeSchemaProperties;
 
-    #[Field(type: 'string', section: 'main', label: 'Title', required: true, rules: ['max:255'])]
+    #[Field(type: 'string', section: 'main', label: 'Title', required: true, rules: ['max:255'], apiExpose: true)]
     protected $title;
 
-    #[Field(type: 'slug', section: 'main', label: 'Slug', required: false, slugSource: 'title')]
+    #[Field(type: 'slug', section: 'main', label: 'Slug', required: false, slugSource: 'title', apiExpose: true)]
     protected $slug;
 
-    #[Field(type: 'string', section: 'seo_section', label: 'Meta title', required: false, rules: ['max:255'])]
+    #[Field(type: 'string', section: 'seo_section', label: 'Meta title', required: false, rules: ['max:255'], apiExpose: true)]
     protected $meta_title;
 
-    #[Field(type: 'text', section: 'seo_section', label: 'Meta description', required: false)]
+    #[Field(type: 'text', section: 'seo_section', label: 'Meta description', required: false, apiExpose: true)]
     protected $meta_description;
 
-    #[Field(type: 'boolean', section: 'main', label: 'Is active', required: false, default: true)]
+    #[Field(type: 'boolean', section: 'main', label: 'Is active', required: false, default: true, apiExpose: true)]
     protected $is_active;
 
     /**
