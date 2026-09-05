@@ -88,6 +88,11 @@ it('is swappable via a normal container rebind, per MediaLibraryInterface\'s doc
         }
 
         public function reorder($model, array $orderedMediaIds, string $collection = 'default'): void {}
+
+        public function setFocalPoint($model, string $mediaId, float $x, float $y, string $collection = 'default'): MediaItemDto
+        {
+            return new MediaItemDto(id: 'stub-1', name: 'stub.jpg', url: 'https://stub.test/stub.jpg', focalPoint: ['x' => $x, 'y' => $y]);
+        }
     };
 
     app()->instance(MediaLibraryInterface::class, $stub);
