@@ -19,6 +19,7 @@ use Nodex\Nexus\Attributes\Requests;
 use Nodex\Nexus\Attributes\Section;
 use Nodex\Nexus\Attributes\Setting;
 use Nodex\Nexus\Attributes\TableAction;
+use Nodex\Nexus\Attributes\TableFilter;
 use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Attributes\TableImport;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
@@ -45,6 +46,7 @@ use Spatie\Translatable\HasTranslations;
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
 #[TableImport(name: 'import', label: 'Import')]
+#[TableFilter(name: 'search', label: 'Search by title', type: 'search')]
 #[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 /**
  * Demonstrates the per-module #[Setting(...)] registry (see

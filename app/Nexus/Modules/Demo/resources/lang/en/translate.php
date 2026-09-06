@@ -67,6 +67,10 @@ return [
     'stars' => 'Stars',
     'website' => 'Website',
 
+    // #[TableFilter] placeholder (module-table.blade.php looks up
+    // Str::lower($filterCfg->label))
+    'search by title' => 'Search by title',
+
     // module-level #[Setting(...)] labels (module-settings-form.blade.php,
     // same lowercase-label convention as field labels above)
     'items per page' => 'Items per page',
