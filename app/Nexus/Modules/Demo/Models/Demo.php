@@ -45,6 +45,7 @@ use Spatie\Translatable\HasTranslations;
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
+#[TableGroupAction(name: 'duplicateGroup', fieldName: 'duplicate')]
 #[TableImport(name: 'import', label: 'Import')]
 #[TableFilter(name: 'search', label: 'Search by title', type: 'search')]
 #[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
