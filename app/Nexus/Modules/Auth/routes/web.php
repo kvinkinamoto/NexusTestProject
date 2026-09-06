@@ -1,18 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Nexus\Modules\Auth\Http\Controllers\AuthController;
 use App\Nexus\Modules\Auth\Http\Controllers\EmailVerificationController;
 use App\Nexus\Modules\Auth\Http\Controllers\PasswordResetController;
 use App\Nexus\Modules\Auth\Http\Controllers\SocialAuthController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/login', [AuthController::class, 'loginPage'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+
+    // throttle:5,1 — 5 attempts/minute, same limiter style already used
+    // below for verification-email resend. Neither login endpoint had any
+    // brute-force protection before this.
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.submit');
 
     // JSON login for the SPA — same AuthService::login() as the web form
     // above, only the response shape differs.
-    Route::post('/api/login', [AuthController::class, 'apiLogin']);
+    Route::post('/api/login', [AuthController::class, 'apiLogin'])->middleware('throttle:5,1');
 });
 
 Route::middleware(['web'])->group(function () {

@@ -12,7 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Applies Laravel's default 60-requests/minute throttle to every
+        // route using the 'api' middleware group — covers the REST wildcard
+        // route and /graphql (both include 'api' in their configured
+        // middleware, see config/nexus.php's api_middleware/graphql_middleware),
+        // neither of which had any rate limiting before this.
+        $middleware->throttleApi();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
