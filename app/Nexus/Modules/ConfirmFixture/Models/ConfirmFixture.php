@@ -33,7 +33,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableAction(name: 'archive', label: 'Archive', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
-#[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
+#[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[Section(name: 'main', column: 'right', type: 'base', icon: 'solar:box-bold')]
 class ConfirmFixture extends Model
 {

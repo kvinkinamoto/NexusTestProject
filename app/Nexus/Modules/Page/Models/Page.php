@@ -23,7 +23,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
     showInMenu: true,
     livewire: true,
 )]
-#[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
+#[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]

@@ -18,7 +18,7 @@ class MisconfigFixtureDanglingRelation extends Model
 }
 
 #[Module(name: 'misconfig-fixture-request')]
-#[Requests(store: 'App\\Nexus\\Modules\\DoesNotExist\\Requests\\AdminStoreRequest')]
+#[Requests(actions: ['store' => 'App\\Nexus\\Modules\\DoesNotExist\\Requests\\AdminStoreRequest'])]
 class MisconfigFixtureBadRequestClass extends Model
 {
     use HasAttributeSchemaProperties;

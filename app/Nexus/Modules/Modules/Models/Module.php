@@ -43,7 +43,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
     showInMenu: true,
     livewire: true,
 )]
-#[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
+#[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[TableFilter(name: 'search', label: 'Search by Name', type: 'search')]
 #[TableAction(name: 'edit', label: 'View', icon: 'edit', isConfirm: false)]
 #[Section(name: 'main', column: 'right', type: 'base', icon: 'solar:box-bold')]

@@ -36,7 +36,7 @@ php artisan nexus:module:install {Name}
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
 #[TableImport(name: 'import', label: 'Import')]
-#[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
+#[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[Section(name: 'main', column: 'right', type: 'base', icon: 'solar:box-bold')]
 class Demo extends Model
 {
@@ -56,7 +56,9 @@ class Demo extends Model
 
 ## The Request-class rule (easy to get wrong)
 
-**Once a module declares `#[Requests(store: ..., update: ...)]`, the field-level `rules`/`storeRules`/`updateRules` on `#[Field]` are never consulted for that module's store/update — the Request's `rules()` must cover every field itself, scalar and relation alike.**
+**Once a module declares `#[Requests(actions: ['store' => ..., 'update' => ...])]`, the field-level `rules`/`storeRules`/`updateRules` on `#[Field]` are never consulted for that module's store/update — the Request's `rules()` must cover every field itself, scalar and relation alike.**
+
+Any other action name works too — `actions` is a plain `action => FormRequest::class` map, resolved by `GetModuleRequestAction::getRequestByMethodName()` for every built-in and custom action (`restore`, `boolToggle`, `duplicate`, a custom `#[TableGroupAction]` name, etc.), not just `store`/`update`.
 
 Relation fields use dotted `relation.*` keys, e.g.:
 ```php

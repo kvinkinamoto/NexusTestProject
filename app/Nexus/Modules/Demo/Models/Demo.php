@@ -44,7 +44,7 @@ use Spatie\Translatable\HasTranslations;
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
 #[TableImport(name: 'import', label: 'Import')]
-#[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
+#[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[Section(name: 'text_inputs', column: 'basic_col', type: 'columns_2', icon: 'solar:text-bold', tab: 'basic')]
 #[Section(name: 'toggles_dates', column: 'basic_col2', type: 'base', icon: 'solar:calendar-bold', tab: 'basic')]
 #[Section(name: 'media', column: 'media_col', type: 'base', icon: 'solar:gallery-bold', tab: 'media')]

@@ -48,7 +48,7 @@ use Nodex\Nexus\Enums\RelationConfigParamsEnum;
     menuResolver: 'App\Nexus\Modules\User\Services\UserMenuResolver',
     livewire: true,
 )]
-#[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
+#[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableAction(name: 'restore', label: 'Restore', icon: 'restore', isConfirm: true)]

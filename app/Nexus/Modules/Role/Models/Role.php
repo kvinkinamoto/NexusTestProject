@@ -2,17 +2,16 @@
 
 namespace App\Nexus\Modules\Role\Models;
 
-use Nodex\Nexus\Attributes\Module;
-use Nodex\Nexus\Attributes\Requests;
-use Nodex\Nexus\Attributes\Section;
-use Nodex\Nexus\Attributes\TableFilter;
-use Nodex\Nexus\Attributes\TableAction;
-use Nodex\Nexus\Attributes\TableGroupAction;
-use Nodex\Nexus\Attributes\Composer;
-use Nodex\Nexus\Attributes\MethodResource;
+use App\Nexus\Modules\Role\Requests\AdminStoreRequest;
+use App\Nexus\Modules\Role\Requests\AdminUpdateRequest;
 use Nodex\Nexus\Attributes\Column;
 use Nodex\Nexus\Attributes\Field;
+use Nodex\Nexus\Attributes\Module;
 use Nodex\Nexus\Attributes\Relation;
+use Nodex\Nexus\Attributes\Requests;
+use Nodex\Nexus\Attributes\Section;
+use Nodex\Nexus\Attributes\TableAction;
+use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 use Spatie\Translatable\HasTranslations;
 
@@ -26,7 +25,7 @@ use Spatie\Translatable\HasTranslations;
     menuResolver: null,
     livewire: true
 )]
-#[Requests(store: \App\Nexus\Modules\Role\Requests\AdminStoreRequest::class, update: \App\Nexus\Modules\Role\Requests\AdminUpdateRequest::class)]
+#[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableAction(name: 'restore', label: 'Restore', icon: 'restore', isConfirm: true)]
@@ -54,8 +53,7 @@ class Role extends \Spatie\Permission\Models\Role
     #[Column(label: 'ID', sortable: true)]
     protected $id;
 
-
-    use HasTranslations, HasAttributeSchemaProperties;
+    use HasAttributeSchemaProperties, HasTranslations;
 
     public $translatable = ['display_name'];
 
@@ -64,5 +62,4 @@ class Role extends \Spatie\Permission\Models\Role
         'display_name',
         'guard_name',
     ];
-
 }

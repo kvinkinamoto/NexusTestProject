@@ -45,7 +45,7 @@ use Nodex\Nexus\Models\WidgetInstance;
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
-#[Requests(store: AdminStoreRequest::class, update: AdminUpdateRequest::class)]
+#[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[Section(name: 'main', column: 'right', type: 'base', icon: 'solar:widget-4-bold')]
 #[Section(name: 'placements', column: 'left', type: 'base', icon: 'solar:map-point-bold')]
 class WidgetPlacement extends WidgetInstance
