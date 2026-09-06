@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a3c84a50a127f0d4553b1470097343e3",
+    "content-hash": "4de212735e9aba29c90de3a4604d956b",
     "packages": [
         {
             "name": "barryvdh/elfinder-flysystem-driver",
@@ -3391,7 +3391,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/nodex/nexus",
-                "reference": "8d460eed7173a66fb6f5c804650b6463a24d311d"
+                "reference": "de7612683db83faeb55842e5996f895a2eeb68ba"
             },
             "require": {
                 "barryvdh/laravel-elfinder": "^0.6.0",
@@ -3404,8 +3404,7 @@
                 "php": "^8.3",
                 "spatie/laravel-medialibrary": "^11.23",
                 "spatie/laravel-permission": "^8.3.0",
-                "spatie/laravel-translatable": "^6.14.1",
-                "webonyx/graphql-php": "^15.0"
+                "spatie/laravel-translatable": "^6.14.1"
             },
             "require-dev": {
                 "pestphp/pest": "^5.1",
@@ -3430,7 +3429,7 @@
                 ]
             },
             "license": [
-                "proprietary"
+                "MIT"
             ],
             "authors": [
                 {

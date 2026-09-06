@@ -92,4 +92,17 @@ return [
             // App\Nexus\Plugins\Example\ExamplePlugin::class,
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | GraphQL (premium plugin: app/Nexus/Plugins/GraphQL)
+    |--------------------------------------------------------------------------
+    | Read by GraphQLPlugin::boot() when it registers the /graphql route —
+    | these keys used to live in the open-core package's own config, but
+    | GraphQL is now a premium app-level plugin, so they live here instead.
+    | Remove this section along with app/Nexus/Plugins/GraphQL to disable
+    | GraphQL entirely.
+    */
+    'graphql_prefix' => env('GRAPHQL_PREFIX', 'graphql'),
+    'graphql_middleware' => ['api', 'auth:sanctum'],
 ];
