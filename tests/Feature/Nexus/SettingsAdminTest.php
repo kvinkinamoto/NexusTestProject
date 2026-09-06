@@ -89,17 +89,32 @@ it('rejects clearing the required site name field through the real admin form', 
     expect(ModuleSetting::count())->toBe(0);
 });
 
-it('points the admin topbar Settings link at the settings edit page, not a dead link', function () {
+it('points the admin topbar Settings link at the all-settings overview, not a dead link', function () {
     $response = $this->get(route('nexus.admin'));
 
     $response->assertOk();
-    $response->assertSee(route('nexus.module.action', ['module' => 'settings', 'action' => 'settings']), false);
+    $response->assertSee(route('nexus.module.action', ['module' => 'settings', 'action' => 'index']), false);
 });
 
-it('redirects the settings module index to its edit screen instead of a CRUD list it has no model for', function () {
+it('lists every module with #[Setting]s on the overview page, including itself', function () {
+    $this->artisan('nexus:module:install', ['name' => 'Demo'])->run();
+
     $module = Module::findByName('Settings');
 
     $response = $this->get(route('nexus.module.action', ['module' => $module->name, 'action' => 'index']));
 
-    $response->assertRedirect(route('nexus.module.action', ['module' => $module->name, 'action' => 'settings']));
+    $response->assertOk();
+    $response->assertSee(route('nexus.module.action', ['module' => 'Settings', 'action' => 'settings']), false);
+    $response->assertSee(route('nexus.module.action', ['module' => 'Demo', 'action' => 'settings']), false);
+});
+
+it('leaves a module with no #[Setting]s off the overview page', function () {
+    $this->artisan('nexus:module:install', ['name' => 'Plugins'])->run();
+
+    $module = Module::findByName('Settings');
+
+    $response = $this->get(route('nexus.module.action', ['module' => $module->name, 'action' => 'index']));
+
+    $response->assertOk();
+    $response->assertDontSee(route('nexus.module.action', ['module' => 'Plugins', 'action' => 'settings']), false);
 });

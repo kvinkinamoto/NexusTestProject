@@ -14,6 +14,11 @@ return [
     'logo' => 'Logo',
     'favicon' => 'Favicon',
 
+    // "All Settings" overview page (Http/Controllers/AdminController::index())
+    'manage' => 'Manage',
+    'settings count suffix' => 'settings',
+    'no settings registered' => 'No module has any settings registered yet.',
+
     'docs' => [
         'title' => 'Site Settings',
         'subtitle' => 'Global site configuration (name, description, maintenance mode, logo, favicon), reached via the admin topbar and backed by the generic per-module settings registry — not its own table.',
