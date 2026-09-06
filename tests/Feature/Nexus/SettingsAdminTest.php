@@ -93,7 +93,7 @@ it('points the admin topbar Settings link at the settings edit page, not a dead 
     $response = $this->get(route('nexus.admin'));
 
     $response->assertOk();
-    $response->assertSee(route('nexus.module.action', ['module' => 'settings', 'action' => 'edit']), false);
+    $response->assertSee(route('nexus.module.action', ['module' => 'settings', 'action' => 'settings']), false);
 });
 
 it('redirects the settings module index to its edit screen instead of a CRUD list it has no model for', function () {
@@ -101,5 +101,5 @@ it('redirects the settings module index to its edit screen instead of a CRUD lis
 
     $response = $this->get(route('nexus.module.action', ['module' => $module->name, 'action' => 'index']));
 
-    $response->assertRedirect(route('nexus.module.action', ['module' => $module->name, 'action' => 'edit']));
+    $response->assertRedirect(route('nexus.module.action', ['module' => $module->name, 'action' => 'settings']));
 });

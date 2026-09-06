@@ -64,6 +64,9 @@ return [
     'stars' => 'Зірки',
     'website' => 'Сайт',
 
+    'items per page' => 'Елементів на сторінці',
+    'show archived by default' => 'Показувати заархівовані за замовчуванням',
+
     'draft' => 'Чернетка',
     'published' => 'Опубліковано',
     'archived' => 'Заархівовано',

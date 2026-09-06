@@ -17,6 +17,7 @@ use Nodex\Nexus\Attributes\Relation;
 use Nodex\Nexus\Attributes\RepeaterField;
 use Nodex\Nexus\Attributes\Requests;
 use Nodex\Nexus\Attributes\Section;
+use Nodex\Nexus\Attributes\Setting;
 use Nodex\Nexus\Attributes\TableAction;
 use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Attributes\TableImport;
@@ -45,6 +46,16 @@ use Spatie\Translatable\HasTranslations;
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
 #[TableImport(name: 'import', label: 'Import')]
 #[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
+/**
+ * Demonstrates the per-module #[Setting(...)] registry (see
+ * App\Nexus\Modules\Settings\ModuleConfiguration and
+ * project-nexus-settings-registry memory) working on a module that — unlike
+ * Settings itself — has a real bound model and CRUD table. Shows up as a
+ * "Settings" button on Demo's list page (module-table.blade.php), separate
+ * from editing any one Demo record.
+ */
+#[Setting(name: 'items_per_page', type: 'integer', label: 'Items per page', default: 10, required: true)]
+#[Setting(name: 'show_archived_by_default', type: 'boolean', label: 'Show archived by default', default: false)]
 #[Section(name: 'text_inputs', column: 'basic_col', type: 'columns_2', icon: 'solar:text-bold', tab: 'basic')]
 #[Section(name: 'toggles_dates', column: 'basic_col2', type: 'base', icon: 'solar:calendar-bold', tab: 'basic')]
 #[Section(name: 'media', column: 'media_col', type: 'base', icon: 'solar:gallery-bold', tab: 'media')]

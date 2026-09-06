@@ -67,6 +67,11 @@ return [
     'stars' => 'Stars',
     'website' => 'Website',
 
+    // module-level #[Setting(...)] labels (module-settings-form.blade.php,
+    // same lowercase-label convention as field labels above)
+    'items per page' => 'Items per page',
+    'show archived by default' => 'Show archived by default',
+
     // enum values (DemoStatus — enum.blade.php falls back to {module}::translate.{value})
     'draft' => 'Draft',
     'published' => 'Published',
