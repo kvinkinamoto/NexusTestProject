@@ -34,6 +34,8 @@ metadata:
 
 A broken plugin during either `register()` or `boot()` only crashes the app when `app.debug` is true; otherwise it's `report()`-ed and swallowed — check logs, don't assume a quiet boot means every plugin ran.
 
+**Relations/scopes/translations only get discovered from the enabled-module list frozen at step 6 above** — a module installed *after* boot (mid-request, e.g. via the admin "install" action, or a console command sharing the same booted process as something that runs right after it, like a Pest test) would otherwise leave its `#[AttachRelation]`/`#[AttachScope]` (see [nexus-modules](../nexus-modules/SKILL.md#attaching-a-relationscope-onto-another-module-without-owning-it--attachrelationattachscope)) and its own `'{module}::'` lang namespace invisible until the next fresh boot. `ModuleManager::instanceInstall()` closes this gap itself — `registerModuleWidgetsImmediately()`, `registerModuleRelationsImmediately()`, and `registerModuleTranslationsImmediately()` all run right after a module's DB row is created, so a module attaching onto another one works the same request it's installed in, no restart required. If you add a fourth per-module discovery mechanism to `NexusServiceProvider::boot()`, give it the same immediate-registration sibling or document why it can wait.
+
 ## Config: the double-published-file trap
 
 `mergeConfigFrom(__DIR__.'/config/nexus.php', 'nexus')` in `boot()` **only fills in keys absent from the app's own published `config/nexus.php`** — it never overrides a key the app-root file already defines. This repo has both:
@@ -83,7 +85,7 @@ This "unknown input renders nothing, never a 500" posture is deliberate and cons
 | Command | Signature | Purpose |
 | --- | --- | --- |
 | Install | `nexus:install` | Initialize the package |
-| Module install | `nexus:module:install {name?}` | Create `Module` row, run migrations, seed permissions, register widgets |
+| Module install | `nexus:module:install {name?}` | Create `Module` row, run migrations, seed permissions, register widgets **and this module's `#[AttachRelation]`/`#[AttachScope]`/translations immediately** (no restart needed — see below) |
 | Module cache | `nexus:module:cache` | Compile the manifest cache |
 | Module clear | `nexus:module:clear` | Delete the manifest cache |
 | Make module | `nexus:make:module {name}` | Scaffold a module — see [nexus-modules](../nexus-modules/SKILL.md) |
