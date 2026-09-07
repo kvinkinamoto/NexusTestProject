@@ -16,14 +16,16 @@ use Nodex\Nexus\Services\PluginManager;
 use Spatie\Permission\Models\Permission;
 
 /**
- * Proves #[AttachField]/#[AttachColumn] (packages/nodex/nexus/src/Attributes)
- * — declarative sugar over #[TargetModule]'s handle() for attaching an admin
- * field/column onto a module a plugin doesn't own, paired with the
- * pre-existing #[AttachRelation]/#[AttachScope] for the data layer. Fixture:
+ * Proves #[AttachField]/#[AttachColumn]/#[AttachFilter]
+ * (packages/nodex/nexus/src/Attributes) — declarative sugar over
+ * #[TargetModule]'s handle() for attaching an admin field/column/filter
+ * onto a module a plugin doesn't own, paired with the pre-existing
+ * #[AttachRelation]/#[AttachScope] for the data layer. Fixture:
  * ConfirmFixtureNote (the "specialized" module) attaches a `notes`
- * relation-manager field, a `notes_count` column, and the underlying
- * `notes`/`notes_count` Eloquent relation+scope onto ConfirmFixture (the
- * "base" module) — see both models' docblocks for the full story.
+ * relation-manager field, a `notes_count` column, a `notes_search` filter,
+ * and the underlying `notes`/`notes_count` Eloquent relation+scope onto
+ * ConfirmFixture (the "base" module) — see both models' docblocks for the
+ * full story.
  *
  * Also regression-covers the relationManager.blade.php fix this required:
  * method_exists($model, $field->name) can never see a relation attached via
@@ -32,12 +34,24 @@ use Spatie\Permission\Models\Permission;
  */
 beforeEach(function () {
     $this->artisan('nexus:permission:init')->run();
-    $this->artisan('nexus:module:install', ['name' => 'ConfirmFixture'])->run();
 
+    // Authenticate BEFORE installing: ModuleManager caches a module's
+    // resolved config per (singleton) instance — installing ConfirmFixture
+    // while unauthenticated (console-style, no viewer) would permanently
+    // poison that cache with every #[AttachField(permission:)]-gated entry
+    // evaluated as "denied", since PluginManager::apply() reads the *current*
+    // auth()->user() at resolve time. A real deployment never hits this — a
+    // fresh HTTP/console process gets its own ModuleManager instance — but a
+    // single Pest test reuses one container across "install" and "assert",
+    // so order here has to mirror "an already-logged-in admin installs the
+    // module", not "installed via an unauthenticated console command, then
+    // someone logs in".
     Permission::findOrCreate(AdminPanelPermissionEnum::ALL->value, 'web');
     $admin = User::factory()->create();
     $admin->givePermissionTo(AdminPanelPermissionEnum::ALL->value);
     $this->actingAs($admin);
+
+    $this->artisan('nexus:module:install', ['name' => 'ConfirmFixture'])->run();
 });
 
 it('attaches the field, relation and column onto ConfirmFixture\'s resolved config', function () {
@@ -54,6 +68,9 @@ it('attaches the field, relation and column onto ConfirmFixture\'s resolved conf
     expect($config->relations->is_available['notes']->type)->toBe(RelationConfigParamsEnum::HAS_MANY->value);
 
     expect($config->table->columns)->toHaveKey('notes_count');
+
+    expect($config->table->filters)->toHaveKey('notes_search');
+    expect($config->table->filters['notes_search']->type)->toBe('search');
 });
 
 it('actually resolves the dynamically attached relation and computed count', function () {
@@ -104,7 +121,53 @@ it('disappears from a freshly-built config with no error when the plugin is disa
 
     expect($config->form->fields)->not->toHaveKey('notes');
     expect($config->table->columns)->not->toHaveKey('notes_count');
+    expect($config->table->filters)->not->toHaveKey('notes_search');
     expect($config->relations->is_available)->not->toHaveKey('notes');
+});
+
+it('hides a permission-gated attachment from a viewer without that permission, while an ungated one stays visible', function () {
+    $this->artisan('nexus:module:install', ['name' => 'ConfirmFixtureNote'])->run();
+
+    // A real (non-super-admin) authenticated viewer — deliberately no
+    // 'confirmfixturenote_view' grant, proving #[AttachField(permission:)]/
+    // #[AttachColumn(permission:)] actually gate per-viewer rather than
+    // just per-plugin-enabled-or-not (see the "disabled" test above for
+    // that other axis). Goes through PluginManager::apply() directly on a
+    // bare DTO, the same technique the "disabled" test above uses — NOT
+    // ModuleManager::getModuleConfig(), which caches its resolved DTO on
+    // its own singleton and would otherwise still hand back whichever
+    // viewer's result got resolved (and cached) first this test, since a
+    // single Pest test — unlike a real request — can switch actingAs()
+    // more than once inside one already-booted container.
+    $viewer = User::factory()->create();
+    $this->actingAs($viewer);
+
+    $pluginManager = app(PluginManager::class);
+    $config = $pluginManager->apply('ConfirmFixture', new DefaultModuleConfigurationDto);
+
+    expect($config->form->fields)->not->toHaveKey('notes');
+    expect($config->table->columns)->not->toHaveKey('notes_count');
+    expect($config->relations->is_available)->not->toHaveKey('notes');
+
+    // notes_search carries no `permission` — the default, backward-compatible
+    // "always visible" behavior must be unaffected by the gated fields above.
+    expect($config->table->filters)->toHaveKey('notes_search');
+});
+
+it('shows a permission-gated attachment once the viewer is granted that permission', function () {
+    $this->artisan('nexus:module:install', ['name' => 'ConfirmFixtureNote'])->run();
+
+    Permission::findOrCreate('confirmfixturenote_view', 'web');
+    $viewer = User::factory()->create();
+    $viewer->givePermissionTo('confirmfixturenote_view');
+    $this->actingAs($viewer);
+
+    $pluginManager = app(PluginManager::class);
+    $config = $pluginManager->apply('ConfirmFixture', new DefaultModuleConfigurationDto);
+
+    expect($config->form->fields)->toHaveKey('notes');
+    expect($config->table->columns)->toHaveKey('notes_count');
+    expect($config->relations->is_available)->toHaveKey('notes');
 });
 
 it('keeps rendering ConfirmFixture without error when the module owning the relation was never installed but the field-attaching plugin still runs', function () {
