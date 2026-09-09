@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'id'=>'id',
+    'active'=>'active',
     'form' => 'form',
     'Form' => 'Form',
     'index_title' => 'Forms',
@@ -40,4 +42,9 @@ return [
         'endpoints' => 'Endpoints',
         'fields' => 'Fields',
     ],
+    'notify email' => 'Notify email',
+    'is active' => 'Is active',
+    'submissions' => 'submissions',
+    'success message' => 'success message',
+    'fields' => 'Fields',
 ];

@@ -14,6 +14,7 @@ use Nodex\Nexus\Attributes\Relation;
 use Nodex\Nexus\Attributes\RepeaterField;
 use Nodex\Nexus\Attributes\Requests;
 use Nodex\Nexus\Attributes\Section;
+use Nodex\Nexus\Attributes\SectionColumn;
 use Nodex\Nexus\Attributes\TableAction;
 use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
@@ -26,13 +27,14 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
     showInMenu: true,
     livewire: true,
 )]
+#[SectionColumn('foolWith', '12')]
 #[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
-#[Section(name: 'main', column: 'right', type: 'columns_2', icon: 'solar:clipboard-list-bold')]
-#[Section(name: 'fields_section', column: 'left', type: 'base', icon: 'solar:layers-bold')]
-#[Section(name: 'submissions_section', column: 'left', type: 'base', icon: 'solar:inbox-bold')]
+#[Section(name: 'main', column: 'foolWith', type: 'columns_2', icon: 'solar:clipboard-list-bold')]
+#[Section(name: 'fields_section', column: 'foolWith', type: 'base', icon: 'solar:layers-bold')]
+#[Section(name: 'submissions_section', column: 'foolWith', type: 'base', icon: 'solar:inbox-bold')]
 class Form extends Model
 {
     use HasAttributeSchemaProperties;
