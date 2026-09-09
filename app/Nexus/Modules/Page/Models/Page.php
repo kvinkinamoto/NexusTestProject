@@ -4,6 +4,8 @@ namespace App\Nexus\Modules\Page\Models;
 
 use App\Nexus\Modules\Page\Requests\AdminStoreRequest;
 use App\Nexus\Modules\Page\Requests\AdminUpdateRequest;
+use App\Nexus\Modules\Page\Services\PageMenuResolver;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nodex\Nexus\Attributes\Field;
@@ -22,6 +24,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
     group: 'Content',
     showInMenu: true,
     livewire: true,
+    menuResolver: PageMenuResolver::class,
 )]
 #[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
@@ -60,6 +63,17 @@ class Page extends Model
     public function blocks(): HasMany
     {
         return $this->hasMany(PageBlock::class)->orderBy('position');
+    }
+
+    /**
+     * Lets Nodex\Nexus\Services\RelatedEntityFieldService::getEntities()'s
+     * generic "is this content published?" auto-detection (which only
+     * checks for a scopeIsPublished() method or an is_published column)
+     * apply to Page too — Page's own publish flag is named is_active.
+     */
+    public function scopeIsPublished(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
     }
 
     protected $fillable = [

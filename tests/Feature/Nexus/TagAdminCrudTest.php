@@ -23,7 +23,7 @@ it('mounts the create form without error', function () {
     $this->get('/admin/Tag/action/create')->assertOk();
 });
 
-it('creates a tag through the generic admin CRUD and auto-derives the slug', function () {
+it('creates a tag through the generic admin CRUD', function () {
     Livewire::test(ModuleForm::class, ['moduleName' => 'Tag'])
         ->set('data.name', 'Laravel Tips')
         ->set('data.slug', 'laravel-tips')
@@ -32,6 +32,18 @@ it('creates a tag through the generic admin CRUD and auto-derives the slug', fun
 
     $tag = Tag::where('name', 'Laravel Tips')->firstOrFail();
     expect($tag->slug)->toBe('laravel-tips');
+});
+
+it('auto-generates the slug from the name when left blank, instead of crashing on a NOT NULL column', function () {
+    // Regression: same class of bug reported against Menu — see
+    // App\Nexus\Concerns\HasAutoSlug.
+    Livewire::test(ModuleForm::class, ['moduleName' => 'Tag'])
+        ->set('data.name', 'Weekly Roundup')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $tag = Tag::where('name', 'Weekly Roundup')->firstOrFail();
+    expect($tag->slug)->toBe('weekly-roundup');
 });
 
 it('rejects a duplicate slug', function () {

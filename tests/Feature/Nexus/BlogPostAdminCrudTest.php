@@ -46,6 +46,18 @@ it('creates a blog post with a category and tags through the generic admin CRUD'
     expect($post->tags()->pluck('tags.id')->all())->toBe([$tag->id]);
 });
 
+it('auto-generates the slug from the title when left blank, instead of crashing on a NOT NULL column', function () {
+    // Regression: same class of bug reported against Menu — see
+    // App\Nexus\Concerns\HasAutoSlug.
+    Livewire::test(ModuleForm::class, ['moduleName' => 'BlogPost'])
+        ->set('data.title', 'A Brand New Post')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $post = BlogPost::where('title', 'A Brand New Post')->firstOrFail();
+    expect($post->slug)->toBe('a-brand-new-post');
+});
+
 it('rejects a duplicate slug', function () {
     BlogPost::create(['title' => 'First', 'slug' => 'first', 'is_published' => true]);
 

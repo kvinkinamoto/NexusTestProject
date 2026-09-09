@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'promoCode' => 'promo code',
+    'PromoCode' => 'Promo Code',
+    'index_title' => 'Promo Codes',
+    'name' => 'code',
+    'Name' => 'Code',
+    'module_name' => 'Promo Code',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'shop_global' => 'All shops',
+    'applied' => 'Promo code applied.',
+    'removed' => 'Promo code removed.',
+    'discount_rule_must_be_cart_level' => 'The discount rule for a promo code must be a cart-level type (cart threshold, bundle or free shipping).',
+    'error_not_found' => 'This promo code does not exist.',
+    'error_inactive' => 'This promo code is not active.',
+    'error_not_started' => 'This promo code is not active yet.',
+    'error_expired' => 'This promo code has expired.',
+    'error_no_discount_rule' => 'This promo code has no discount rule configured.',
+    'error_usage_limit' => 'This promo code has reached its usage limit.',
+    'error_usage_limit_per_user' => 'You have already used this promo code the maximum number of times.',
+    'docs' => [
+        'title' => 'Promo Code module',
+        'subtitle' => 'A customer-entered code that activates a cart-level Discount Rule, with optional start/expiry dates and usage limits (total and per user).',
+    ],
+];

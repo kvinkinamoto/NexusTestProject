@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Nexus\Modules\Menu\Livewire\MenuItemsManager;
 use Illuminate\Support\ServiceProvider;
+use Livewire\Livewire;
 use Nodex\Nexus\Services\HookManager;
 
 class AppServiceProvider extends ServiceProvider
@@ -30,7 +32,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // App-level module Livewire components don't live under Livewire's
+        // configured `class_namespace` (App\Livewire), so tag auto-discovery
+        // never finds them — registered here rather than in the package's
+        // NexusServiceProvider, which must not depend on an app-level
+        // module's classes (same layering rule as the Slider/Menu public
+        // Blade partials not living under the package's `x-nexus::` namespace).
+        Livewire::component('nexus-menu-items-manager', MenuItemsManager::class);
     }
 
     /**

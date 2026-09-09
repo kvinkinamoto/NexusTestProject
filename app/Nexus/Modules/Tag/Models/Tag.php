@@ -2,6 +2,7 @@
 
 namespace App\Nexus\Modules\Tag\Models;
 
+use App\Nexus\Concerns\HasAutoSlug;
 use App\Nexus\Modules\Tag\Requests\AdminStoreRequest;
 use App\Nexus\Modules\Tag\Requests\AdminUpdateRequest;
 use Illuminate\Database\Eloquent\Model;
@@ -30,6 +31,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 class Tag extends Model
 {
     use HasAttributeSchemaProperties;
+    use HasAutoSlug;
 
     #[Column(label: 'Name', sortable: true, searchable: true)]
     #[Field(type: 'string', section: 'main', label: 'Name', required: true, apiExpose: true)]

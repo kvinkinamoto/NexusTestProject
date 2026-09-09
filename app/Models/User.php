@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Nexus\Modules\Auth\Notifications\ResetPasswordNotification;
 use App\Nexus\Modules\Auth\Notifications\VerifyEmailNotification;
+use App\Nexus\Modules\Cart\Models\Cart;
 use App\Nexus\Modules\User\Enums\Gender;
 use App\Nexus\Modules\User\Models\UserAddress;
 use App\Nexus\Modules\User\Requests\AdminStoreRequest;
@@ -14,6 +15,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -177,6 +179,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function addresses(): HasMany
     {
         return $this->hasMany(UserAddress::class);
+    }
+
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class);
     }
 
     public function sendPasswordResetNotification($token): void

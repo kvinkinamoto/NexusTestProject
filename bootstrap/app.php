@@ -1,5 +1,6 @@
 <?php
 
+use App\Nexus\Modules\Redirect\Http\Middleware\RedirectMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,6 +19,12 @@ return Application::configure(basePath: dirname(__DIR__))
         // middleware, see config/nexus.php's api_middleware/graphql_middleware),
         // neither of which had any rate limiting before this.
         $middleware->throttleApi();
+
+        // True global middleware (not ->web()) so it runs ahead of routing
+        // itself — see RedirectMiddleware's own docblock for why a group
+        // middleware wouldn't cover the common "old URL, no route matches
+        // at all" case.
+        $middleware->append(RedirectMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

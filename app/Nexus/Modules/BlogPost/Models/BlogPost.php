@@ -2,9 +2,11 @@
 
 namespace App\Nexus\Modules\BlogPost\Models;
 
+use App\Nexus\Concerns\HasAutoSlug;
 use App\Nexus\Modules\BlogCategory\Models\BlogCategory;
 use App\Nexus\Modules\BlogPost\Requests\AdminStoreRequest;
 use App\Nexus\Modules\BlogPost\Requests\AdminUpdateRequest;
+use App\Nexus\Modules\BlogPost\Services\BlogPostMenuResolver;
 use App\Nexus\Modules\Tag\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +29,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
     showInMenu: true,
     livewire: true,
     requires: ['BlogCategory', 'Tag'],
+    menuResolver: BlogPostMenuResolver::class,
 )]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
@@ -41,6 +44,12 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 class BlogPost extends Model
 {
     use HasAttributeSchemaProperties;
+    use HasAutoSlug;
+
+    protected function slugSourceColumn(): string
+    {
+        return 'title';
+    }
 
     #[Column(label: 'Title', sortable: true, searchable: true)]
     #[Field(type: 'string', section: 'main', label: 'Title', required: true, rules: ['max:255'], apiExpose: true)]

@@ -36,6 +36,18 @@ it('creates a blog category through the generic admin CRUD', function () {
     expect($category->description)->toBe('Product news and updates.');
 });
 
+it('auto-generates the slug from the name when left blank, instead of crashing on a NOT NULL column', function () {
+    // Regression: same class of bug reported against Menu — see
+    // App\Nexus\Concerns\HasAutoSlug.
+    Livewire::test(ModuleForm::class, ['moduleName' => 'BlogCategory'])
+        ->set('data.name', 'Company Updates')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $category = BlogCategory::where('name', 'Company Updates')->firstOrFail();
+    expect($category->slug)->toBe('company-updates');
+});
+
 it('rejects a duplicate slug', function () {
     BlogCategory::create(['name' => 'News', 'slug' => 'news']);
 

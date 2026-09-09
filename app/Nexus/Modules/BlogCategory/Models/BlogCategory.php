@@ -2,6 +2,7 @@
 
 namespace App\Nexus\Modules\BlogCategory\Models;
 
+use App\Nexus\Concerns\HasAutoSlug;
 use App\Nexus\Modules\BlogCategory\Requests\AdminStoreRequest;
 use App\Nexus\Modules\BlogCategory\Requests\AdminUpdateRequest;
 use App\Nexus\Modules\BlogPost\Models\BlogPost;
@@ -34,6 +35,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 class BlogCategory extends Model
 {
     use HasAttributeSchemaProperties;
+    use HasAutoSlug;
 
     #[Column(label: 'Name', sortable: true, searchable: true)]
     #[Field(type: 'string', section: 'main', label: 'Name', required: true, apiExpose: true)]
