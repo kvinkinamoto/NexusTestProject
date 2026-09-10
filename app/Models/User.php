@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Nexus\Modules\ActivityLog\Traits\LogsActivityWithTranslatable;
 use App\Nexus\Modules\Auth\Notifications\ResetPasswordNotification;
 use App\Nexus\Modules\Auth\Notifications\VerifyEmailNotification;
 use App\Nexus\Modules\Cart\Models\Cart;
@@ -31,6 +32,7 @@ use Nodex\Nexus\Attributes\TableAction;
 use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 use Nodex\Nexus\Enums\RelationConfigParamsEnum;
+use Spatie\Activitylog\Support\LogOptions;
 
 /**
  * Minimal baseline shipped by nodex/nexus (published together with the
@@ -130,7 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail
     private $id;
 
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasAttributeSchemaProperties, HasFactory, Notifiable, UserModelTrait;
+    use HasApiTokens, HasAttributeSchemaProperties, HasFactory, LogsActivityWithTranslatable, Notifiable, UserModelTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -196,6 +198,17 @@ class User extends Authenticatable implements MustVerifyEmail
     public function wishlistItems(): HasMany
     {
         return $this->hasMany(WishlistItem::class);
+    }
+
+    /**
+     * Excludes password/remember_token from the default "log everything"
+     * options — the base trait doesn't do this itself (nor did the old
+     * ZentaraStartProject trait), but there's no reason for a hashed
+     * password to be duplicated into an admin-readable audit log table.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return $this->getDefaultLogOptions()->logExcept(['password', 'remember_token']);
     }
 
     public function sendPasswordResetNotification($token): void

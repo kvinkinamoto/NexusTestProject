@@ -2,6 +2,7 @@
 
 namespace App\Nexus\Modules\Promotion\Models;
 
+use App\Nexus\Modules\ActivityLog\Traits\LogsActivityWithTranslatable;
 use App\Nexus\Modules\DiscountRule\Models\DiscountRule;
 use App\Nexus\Modules\Promotion\Requests\AdminStoreRequest;
 use App\Nexus\Modules\Promotion\Requests\AdminUpdateRequest;
@@ -23,8 +24,8 @@ use Spatie\Translatable\HasTranslations;
  * An always-on (no code needed) activation of a DiscountRule, scheduled by
  * starts_at/expires_at and gated by `publish`. Simplified from
  * ZentaraStartProject: dropped the `image` promotional banner (no gallery
- * concept needed yet), ActivityLog integration (Phase 11) and shop-or-global
- * scoping (single-shop-per-install).
+ * concept needed yet) and shop-or-global scoping (single-shop-per-install).
+ * `LogsActivityWithTranslatable` wired in (Phase 11).
  */
 #[Module(
     name: 'promotion',
@@ -43,7 +44,7 @@ use Spatie\Translatable\HasTranslations;
 #[Section(name: 'settings', column: 'right', type: 'base', icon: 'solar:settings-bold')]
 class Promotion extends Model
 {
-    use HasAttributeSchemaProperties, HasTranslations;
+    use HasAttributeSchemaProperties, HasTranslations, LogsActivityWithTranslatable;
 
     #[Column(label: 'Name', sortable: true, searchable: true)]
     #[Field(type: 'string', section: 'main', label: 'Name', required: true, translated: true)]

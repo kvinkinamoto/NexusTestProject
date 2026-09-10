@@ -3,6 +3,7 @@
 namespace App\Nexus\Modules\ShopProduct\Models;
 
 use App\Nexus\Concerns\HasAutoSlug;
+use App\Nexus\Modules\ActivityLog\Traits\LogsActivityWithTranslatable;
 use App\Nexus\Modules\Currency\Services\CurrencyService;
 use App\Nexus\Modules\ShopAttribute\Models\AttributeOption;
 use App\Nexus\Modules\ShopCategory\Models\ShopCategory;
@@ -38,6 +39,8 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
  * variation. `variation_group_id`/`variationGroup` deliberately not added
  * yet — see the ShopProductVariation module built right after this one,
  * which adds it via an additive migration once `variation_groups` exists.
+ * `LogsActivityWithTranslatable` wired in (Phase 11) — matches
+ * ZentaraStartProject, which logged this model's changes too.
  */
 #[Module(
     name: 'shopProduct',
@@ -58,7 +61,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Section(name: 'seo_section', column: 'right', type: 'base', icon: 'solar:magnifer-bold')]
 class ShopProduct extends Model
 {
-    use HasAttributeSchemaProperties, HasAutoSlug;
+    use HasAttributeSchemaProperties, HasAutoSlug, LogsActivityWithTranslatable;
 
     #[Column(label: 'Name', sortable: true, searchable: true)]
     #[Field(type: 'string', section: 'main', label: 'Name', required: true, rules: ['max:255'])]
