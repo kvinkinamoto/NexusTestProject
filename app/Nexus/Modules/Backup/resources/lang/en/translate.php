@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'backup' => 'backup',
+    'Backup' => 'Backup',
+    'index_title' => 'Backups',
+    'name' => 'Name',
+    'Name' => 'Name',
+    'module_name' => 'Backup',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'restore' => 'Restore',
+    'delete permanent' => 'Delete permanent',
+    'run now' => 'Run now',
+    'backup database' => 'Backup database',
+    'backup code' => 'Backup code',
+    'backup storage' => 'Backup storage',
+    'cron expression' => 'Cron expression',
+    'max backups' => 'Max backups',
+    'last status' => 'Last status',
+    'last run at' => 'Last run at',
+    'last error' => 'Last error',
+    'main' => 'Settings',
+    'status' => 'Status',
+    'storage_disk' => 'Storage disk',
+    'storage_path' => 'Storage path',
+    'backup_queued' => 'Backup queued — it will run in the background shortly.',
+    'docs' => [
+        'title' => 'Backup module',
+        'subtitle' => 'Configure and trigger database/code/storage backups.',
+    ],
+];

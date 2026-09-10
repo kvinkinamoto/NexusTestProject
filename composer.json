@@ -22,6 +22,7 @@
         "laravel/tinker": "^3.0",
         "liqpay/liqpay": "^1.4",
         "nodex/nexus": "@dev",
+        "spatie/db-dumper": "^4.1",
         "spatie/laravel-activitylog": "^5.1",
         "webonyx/graphql-php": "^15.0"
     },

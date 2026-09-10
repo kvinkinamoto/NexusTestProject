@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'restore' => 'Restore',
+    'Restore' => 'Restore',
+    'index_title' => 'Restores',
+    'name' => 'Name',
+    'Name' => 'Name',
+    'module_name' => 'Restore',
+    'edit' => 'Edit',
+    'delete' => 'Delete',
+    'delete permanent' => 'Delete permanent',
+    'restore row' => 'Restore row',
+    'create' => 'Create',
+    'scan backups' => 'Scan backups',
+    'run restore' => 'Run restore',
+    'search by filename' => 'Search by filename',
+    'filename' => 'Filename',
+    'type' => 'Type',
+    'size' => 'Size',
+    'last modified' => 'Last modified',
+    'status' => 'Status',
+    'last error' => 'Last error',
+    'main' => 'Details',
+    'scan_complete' => 'Scan complete — the list now matches what is on disk.',
+    'restore_queued' => 'Restore queued — it will run in the background shortly.',
+    'docs' => [
+        'title' => 'Restore module',
+        'subtitle' => 'Scans backup archives on disk and restores database/code/storage from them.',
+    ],
+];
