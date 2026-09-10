@@ -5,11 +5,13 @@ namespace App\Models;
 use App\Nexus\Modules\Auth\Notifications\ResetPasswordNotification;
 use App\Nexus\Modules\Auth\Notifications\VerifyEmailNotification;
 use App\Nexus\Modules\Cart\Models\Cart;
+use App\Nexus\Modules\Order\Models\Order;
 use App\Nexus\Modules\User\Enums\Gender;
 use App\Nexus\Modules\User\Models\UserAddress;
 use App\Nexus\Modules\User\Requests\AdminStoreRequest;
 use App\Nexus\Modules\User\Requests\AdminUpdateRequest;
 use App\Nexus\Modules\User\Traits\UserModelTrait;
+use App\Nexus\Modules\Wishlist\Models\WishlistItem;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -184,6 +186,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function cart(): HasOne
     {
         return $this->hasOne(Cart::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function wishlistItems(): HasMany
+    {
+        return $this->hasMany(WishlistItem::class);
     }
 
     public function sendPasswordResetNotification($token): void

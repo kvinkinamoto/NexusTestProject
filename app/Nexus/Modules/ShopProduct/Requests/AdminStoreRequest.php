@@ -17,6 +17,7 @@ class AdminStoreRequest extends NexusFormRequest
             'image' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
             'price_discount' => ['nullable', 'numeric', 'min:0', 'lt:price'],
+            'bonuses' => ['nullable', 'numeric', 'min:0'],
             'stock' => ['nullable', 'integer', 'min:0'],
             'publish' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],

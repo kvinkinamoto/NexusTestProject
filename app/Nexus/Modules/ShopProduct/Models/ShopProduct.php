@@ -29,9 +29,8 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
  * Simplified from ZentaraStartProject's ShopProduct: dropped SoftDeletes,
  * Taggable, video/gallery-images (no transcoding pipeline in Nexus), the
  * meta_h1/meta_robots SEO fields (kept meta_title/meta_description only,
- * matching Page/ShopCategory), `bonuses` (belongs to the not-yet-built Bonus
- * module — added there when it's wired up, not as a dead column now), and
- * the 3-table ProductAttribute/ProductAttributeOption EAV structure — this
+ * matching Page/ShopCategory), and the 3-table ProductAttribute/
+ * ProductAttributeOption EAV structure — this
  * collapses to a single `attributeOptions` belongsToMany straight onto
  * AttributeOption (a chosen option already identifies its own attribute via
  * AttributeOption::attribute_id), losing only the rare ability to offer
@@ -100,6 +99,9 @@ class ShopProduct extends Model
     #[Field(type: 'number', section: 'settings', label: 'Discount price', required: false, rules: ['nullable', 'numeric', 'min:0', 'lt:price'])]
     protected $price_discount;
 
+    #[Field(type: 'number', section: 'settings', label: 'Bonuses', required: false, rules: ['nullable', 'numeric', 'min:0'])]
+    protected $bonuses;
+
     #[Column(label: 'Stock')]
     #[Field(type: 'number', section: 'settings', label: 'Stock', required: false, rules: ['nullable', 'integer', 'min:0'])]
     protected $stock;
@@ -137,13 +139,14 @@ class ShopProduct extends Model
 
     protected $fillable = [
         'name', 'slug', 'short_description', 'description', 'image',
-        'category_id', 'type_id', 'variation_group_id', 'price', 'price_discount', 'stock', 'publish',
+        'category_id', 'type_id', 'variation_group_id', 'price', 'price_discount', 'bonuses', 'stock', 'publish',
         'meta_title', 'meta_description',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'price_discount' => 'decimal:2',
+        'bonuses' => 'decimal:2',
         'stock' => 'integer',
         'publish' => 'boolean',
     ];

@@ -20,6 +20,7 @@
         "laravel/sanctum": "^4.3",
         "laravel/socialite": "^5",
         "laravel/tinker": "^3.0",
+        "liqpay/liqpay": "^1.4",
         "nodex/nexus": "@dev",
         "webonyx/graphql-php": "^15.0"
     },
