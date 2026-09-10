@@ -1,11 +1,12 @@
 <?php
 
+use App\Nexus\Modules\Language\Http\Middleware\SetAdminLocale;
 use Nodex\Nexus\Http\Middleware\NexusAdminMiddleware;
 
 return [
     'template' => env('ZENTARA_TEMPLATE', 'tailadmin'), // tailadmin (nexus theme archived, see resources/views/nexus/ removed in Stage 2)
     'admin_prefix' => env('ADMIN_PREFIX', 'admin'),
-    'admin_middleware' => ['web', 'auth', NexusAdminMiddleware::class],
+    'admin_middleware' => ['web', 'auth', NexusAdminMiddleware::class, SetAdminLocale::class],
 
     'api_prefix' => env('API_PREFIX', 'api'),
     'api_middleware' => ['api'],

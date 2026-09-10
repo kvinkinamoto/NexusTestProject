@@ -5,6 +5,11 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter;
+use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes;
+use Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath;
+use Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect;
+use Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -25,6 +30,20 @@ return Application::configure(basePath: dirname(__DIR__))
         // middleware wouldn't cover the common "old URL, no route matches
         // at all" case.
         $middleware->append(RedirectMiddleware::class);
+
+        // mcamara/laravel-localization's own middleware, registered as
+        // aliases (not applied to any route group) — this app has no
+        // public storefront yet for locale-prefixed routes to belong to
+        // (see the Language module's docs.blade.php). A future storefront
+        // route group can opt in with these names directly, matching how
+        // the old ZentaraStartProject project registered them.
+        $middleware->alias([
+            'localize' => LaravelLocalizationRoutes::class,
+            'localizationRedirect' => LaravelLocalizationRedirectFilter::class,
+            'localeSessionRedirect' => LocaleSessionRedirect::class,
+            'localeCookieRedirect' => LocaleCookieRedirect::class,
+            'localeViewPath' => LaravelLocalizationViewPath::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
