@@ -21,7 +21,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
     label: 'Menus',
     icon: 'solar:hamburger-menu-bold',
     group: 'Site',
-    showInMenu: true,
+    showInMenu: false,
     livewire: true,
 )]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]

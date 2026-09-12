@@ -7,6 +7,6 @@ Route::prefix('api/questions')
     ->middleware(['web'])
     ->group(function () {
         Route::post('/', [ProductQuestionController::class, 'store']);
-        Route::delete('{id}', [ProductQuestionController::class, 'destroy'])->middleware('auth');
+        Route::delete('{id}', [ProductQuestionController::class, 'destroy'])->middleware('auth:sanctum');
         Route::post('reactions/toggle', [ProductQuestionController::class, 'toggleReaction'])->middleware('throttle:20,1');
     });

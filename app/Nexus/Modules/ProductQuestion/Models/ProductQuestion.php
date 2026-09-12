@@ -34,7 +34,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
     label: 'Product Questions',
     icon: 'solar:chat-round-dots-bold',
     group: 'Shop',
-    showInMenu: true,
+    showInMenu: false,
     livewire: true,
 )]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]

@@ -2,6 +2,7 @@
 
 return [
     'deliveryType' => 'Типи доставки',
+    'index_title' => 'Типи доставки',
     'title' => 'Назва',
     'key' => 'Ключ',
     'delivery' => 'Доставка',

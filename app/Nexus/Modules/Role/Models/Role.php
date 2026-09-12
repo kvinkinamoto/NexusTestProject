@@ -18,7 +18,7 @@ use Spatie\Translatable\HasTranslations;
 #[Module(
     name: 'role',
     label: 'Роль',
-    icon: 'users',
+    icon: 'solar:shield-user-bold',
     group: 'User',
     showInMenu: true,
     isTree: false,

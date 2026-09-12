@@ -18,7 +18,8 @@ class OrderController extends Controller
     public function store(CheckoutRequest $request)
     {
         try {
-            $order = $this->orderService->createOrder(auth()->user(), $request->validated());
+            $guestSessionId = auth()->check() ? null : $request->session()->getId();
+            $order = $this->orderService->createOrder(auth()->user(), $request->validated(), $guestSessionId);
 
             return response()->json([
                 'success' => true,

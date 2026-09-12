@@ -18,7 +18,7 @@ use Spatie\Translatable\HasTranslations;
 #[Module(
     name: 'permission',
     label: 'Дозвіл',
-    icon: 'user',
+    icon: 'solar:key-bold',
     group: 'User',
     showInMenu: true,
     isTree: false,

@@ -35,7 +35,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Module(
     name: 'backup',
     label: 'Backup',
-    icon: 'solar:box-bold',
+    icon: 'solar:database-bold',
     group: 'Site',
     showInMenu: true,
     livewire: true,

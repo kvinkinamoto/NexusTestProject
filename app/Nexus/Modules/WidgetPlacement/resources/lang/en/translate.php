@@ -13,6 +13,7 @@ return [
     'enabled' => 'Enabled',
     'config (json, optional)' => 'Config (JSON, optional)',
     'shown at' => 'Shown at',
+    'placements' => 'Shown at',
     'position' => 'Position',
     'template (blank = everywhere)' => 'Template (blank = everywhere)',
     'active' => 'Active',

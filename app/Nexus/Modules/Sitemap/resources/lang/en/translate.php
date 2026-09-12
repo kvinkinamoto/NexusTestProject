@@ -7,6 +7,7 @@ return [
     'url' => 'url',
     'priority' => 'priority',
     'change frequency' => 'Change frequency',
+    'frequency' => 'Change frequency',
     'last modified' => 'Last modified',
     'is active' => 'Is active',
     'note' => 'note',

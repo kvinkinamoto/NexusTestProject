@@ -73,6 +73,18 @@ class Delivery extends Model
         return $this->hasMany(DeliveryType::class);
     }
 
+    /**
+     * The carrier's own address classifier, cached by
+     * DeliveryAddressSyncService — deliberately not a #[Field]/#[Relation]
+     * admin relation (tens of thousands of rows per carrier, no consumer in
+     * the admin table UI), only used by the checkout's city/warehouse
+     * picker (see Http\Controllers\Public\DeliveryAddressController).
+     */
+    public function cities(): HasMany
+    {
+        return $this->hasMany(DeliveryCity::class);
+    }
+
     public $translatable = ['title', 'description'];
 
     protected $fillable = ['title', 'description', 'key', 'image', 'publish'];

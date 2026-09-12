@@ -151,7 +151,7 @@
                         <?php echo date("Y"); ?> Made by
                         <iconify-icon icon="iconamoon:heart-duotone"
                                       class="fs-18 align-middle text-danger"></iconify-icon>
-                        <a href="https://nodexsoft.com" class="fw-bold footer-text" target="_blank">Nodex</a>
+                        <a href="https://sitemaster.pp.ua/" class="fw-bold footer-text" target="_blank">Nodex</a>
                     </div>
                 </div>
             </div>

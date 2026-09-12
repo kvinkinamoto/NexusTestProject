@@ -9,11 +9,15 @@ return [
     'title' => 'Title',
     'slug' => 'Slug',
     'meta_title' => 'Meta title',
+    'meta title' => 'Meta title',
     'meta_description' => 'Meta description',
+    'meta description' => 'Meta description',
     'is_active' => 'Active',
+    'is active' => 'Active',
     'main' => 'Main',
     'seo_section' => 'SEO',
     'blocks_section' => 'Blocks',
+    'blocks' => 'Blocks',
 
     'docs' => [
         'title' => 'Page Builder',

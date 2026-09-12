@@ -2,6 +2,7 @@
 
 return [
     'activityLog' => 'Журнал дій',
+    'index_title' => 'Журнал дій',
     'id' => 'ID',
     'event' => 'Подія',
     'subject type' => 'Тип обʼєкта',

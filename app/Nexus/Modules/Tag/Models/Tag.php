@@ -18,9 +18,9 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Module(
     name: 'tag',
     label: 'Tag',
-    icon: 'solar:box-bold',
+    icon: 'solar:hashtag-bold',
     group: 'Site',
-    showInMenu: true,
+    showInMenu: false,
     livewire: true,
 )]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]

@@ -32,7 +32,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[ModuleAttr(
     name: 'plugins',
     label: 'Керування плагінами',
-    icon: 'solar:box-bold',
+    icon: 'solar:plug-circle-bold',
     group: 'Site',
     showInMenu: true,
     livewire: true,

@@ -33,7 +33,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Module(
     name: 'shopCategory',
     label: 'Categories',
-    icon: 'solar:folder-bold',
+    icon: 'solar:widget-2-bold',
     group: 'Shop',
     showInMenu: true,
     livewire: true,

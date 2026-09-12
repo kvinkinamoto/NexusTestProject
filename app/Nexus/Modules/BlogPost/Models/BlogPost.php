@@ -24,9 +24,9 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Module(
     name: 'blogpost',
     label: 'Blog Posts',
-    icon: 'solar:document-text-bold',
+    icon: 'solar:pen-new-square-bold',
     group: 'Site',
-    showInMenu: true,
+    showInMenu: false,
     livewire: true,
     requires: ['BlogCategory', 'Tag'],
     menuResolver: BlogPostMenuResolver::class,

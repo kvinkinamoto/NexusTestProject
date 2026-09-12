@@ -7,9 +7,13 @@ return [
     'module_name' => 'Заявка з форми',
 
     'Form' => 'Форма',
+    'form' => 'Форма',
     'Submitted data' => 'Дані заявки',
+    'submitted data' => 'Дані заявки',
     'IP address' => 'IP-адреса',
+    'ip address' => 'IP-адреса',
     'Submitted at' => 'Дата подачі',
+    'submitted at' => 'Дата подачі',
     'View' => 'Перегляд',
     'Delete' => 'Видалити',
 

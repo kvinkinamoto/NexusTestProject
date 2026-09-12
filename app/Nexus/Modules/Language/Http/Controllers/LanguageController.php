@@ -2,6 +2,7 @@
 
 namespace App\Nexus\Modules\Language\Http\Controllers;
 
+use App\Nexus\Modules\Language\Http\Resources\LanguageResource;
 use App\Nexus\Modules\Language\Models\Language;
 use Illuminate\Http\JsonResponse;
 
@@ -20,7 +21,7 @@ class LanguageController
         $languages = Language::query()->publish()->orderByDesc('is_default')->get(['id', 'language', 'code', 'is_default', 'is_rtl']);
 
         return response()->json([
-            'languages' => $languages,
+            'languages' => LanguageResource::collection($languages),
             'current_locale' => app()->getLocale(),
         ]);
     }

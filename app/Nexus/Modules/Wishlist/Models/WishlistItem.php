@@ -61,5 +61,5 @@ class WishlistItem extends Model
         return $this->belongsTo(ShopProduct::class);
     }
 
-    protected $fillable = ['user_id', 'product_id'];
+    protected $fillable = ['user_id', 'session_id', 'product_id'];
 }

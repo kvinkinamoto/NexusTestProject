@@ -74,5 +74,5 @@ class Cart extends Model
         return app(CartService::class)->getBreakdownForCart($this)['total_price'];
     }
 
-    protected $fillable = ['user_id', 'promo_code_id'];
+    protected $fillable = ['user_id', 'session_id', 'promo_code_id'];
 }

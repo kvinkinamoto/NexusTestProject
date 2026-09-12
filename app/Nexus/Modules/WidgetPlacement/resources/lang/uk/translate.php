@@ -13,6 +13,7 @@ return [
     'enabled' => 'Увімкнено',
     'config (json, optional)' => 'Конфіг (JSON, опціонально)',
     'shown at' => 'Показувати на',
+    'placements' => 'Показувати на',
     'position' => 'Позиція',
     'template (blank = everywhere)' => 'Шаблон (пусто = всюди)',
     'active' => 'Активно',

@@ -35,7 +35,7 @@ use Spatie\Translatable\HasTranslations;
     label: 'Social Networks',
     icon: 'solar:share-circle-bold',
     group: 'Site',
-    showInMenu: true,
+    showInMenu: false,
     livewire: true,
 )]
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]

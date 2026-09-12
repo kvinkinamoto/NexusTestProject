@@ -2,6 +2,7 @@
 
 return [
     'orderStatus' => 'Order Statuses',
+    'index_title' => 'Order Statuses',
     'name' => 'Name',
     'slug' => 'Slug',
     'is_default' => 'Is default',

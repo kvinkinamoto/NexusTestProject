@@ -31,7 +31,7 @@ use Spatie\Translatable\HasTranslations;
 #[Module(
     name: 'shopProductType',
     label: 'Product Types',
-    icon: 'solar:widget-4-bold',
+    icon: 'solar:bookmark-square-bold',
     group: 'Shop',
     showInMenu: true,
     livewire: true,

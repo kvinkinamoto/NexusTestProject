@@ -2,6 +2,7 @@
 
 return [
     'activityLog' => 'Activity Log',
+    'index_title' => 'Activity Log',
     'id' => 'ID',
     'event' => 'Event',
     'subject type' => 'Subject type',

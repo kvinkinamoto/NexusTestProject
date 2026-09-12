@@ -38,7 +38,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[ModuleAttr(
     name: 'modules',
     label: 'Керування модулями',
-    icon: 'solar:box-bold',
+    icon: 'solar:widget-5-bold',
     group: 'Site',
     showInMenu: true,
     livewire: true,

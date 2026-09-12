@@ -21,6 +21,8 @@ return [
     'last run at' => 'Last run at',
     'last error' => 'Last error',
     'main' => 'Settings',
+    'database' => 'Database',
+    'storage' => 'Storage',
     'status' => 'Status',
     'storage_disk' => 'Storage disk',
     'storage_path' => 'Storage path',

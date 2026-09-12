@@ -25,11 +25,11 @@ use Illuminate\Support\Facades\DB;
  */
 class CartService
 {
-    public function add(User $user, int $productId, int $quantity): void
+    public function add(?User $user, ?string $sessionId, int $productId, int $quantity): void
     {
-        DB::transaction(function () use ($user, $productId, $quantity) {
+        DB::transaction(function () use ($user, $sessionId, $productId, $quantity) {
             $product = $this->getProduct($productId);
-            $cart = $this->getCart($user);
+            $cart = $this->resolveCart($user, $sessionId);
             $existing = $cart->products()->where('product_id', $productId)->first();
             $targetQuantity = ($existing?->quantity ?? 0) + $quantity;
 
@@ -48,9 +48,9 @@ class CartService
         });
     }
 
-    public function updateQuantity(User $user, int $productId, int $quantity): void
+    public function updateQuantity(?User $user, ?string $sessionId, int $productId, int $quantity): void
     {
-        $cart = $user->cart()->first();
+        $cart = $this->findCart($user, $sessionId);
         if (! $cart) {
             throw new \DomainException(__('cart::translate.item_not_found'));
         }
@@ -72,9 +72,9 @@ class CartService
         $item->update(['quantity' => $quantity]);
     }
 
-    public function remove(User $user, int $productId): void
+    public function remove(?User $user, ?string $sessionId, int $productId): void
     {
-        $cart = $user->cart()->first();
+        $cart = $this->findCart($user, $sessionId);
         if (! $cart) {
             return;
         }
@@ -82,14 +82,14 @@ class CartService
         $cart->products()->where('product_id', $productId)->delete();
     }
 
-    public function sync(User $user, array $products): void
+    public function sync(?User $user, ?string $sessionId, array $products): void
     {
         if (empty($products)) {
             return;
         }
 
-        DB::transaction(function () use ($user, $products) {
-            $cart = $this->getCart($user);
+        DB::transaction(function () use ($user, $sessionId, $products) {
+            $cart = $this->resolveCart($user, $sessionId);
 
             $productIds = array_column($products, 'id');
             $loadedProducts = ShopProduct::query()->whereIn('id', $productIds)->get()->keyBy('id');
@@ -191,9 +191,23 @@ class CartService
         return $sum;
     }
 
-    public function getCart(User $user): Cart
+    /**
+     * Resolves the cart to act on: a user's own cart when logged in,
+     * otherwise the cart tied to their current (guest) session id —
+     * creating either if it doesn't exist yet.
+     */
+    public function resolveCart(?User $user, ?string $sessionId): Cart
     {
-        return $user->cart()->firstOrCreate([]);
+        return $user ? $user->cart()->firstOrCreate([]) : Cart::firstOrCreate(['session_id' => $sessionId]);
+    }
+
+    /**
+     * Same resolution as resolveCart(), but read-only — never creates a cart
+     * just to find out it's empty.
+     */
+    private function findCart(?User $user, ?string $sessionId): ?Cart
+    {
+        return $user ? $user->cart()->first() : Cart::where('session_id', $sessionId)->first();
     }
 
     /**
@@ -201,7 +215,7 @@ class CartService
      * Re-validated again at checkout (once Order/checkout exists — Phase 5)
      * — this is just the "apply while browsing" step.
      */
-    public function applyPromoCode(User $user, string $code): void
+    public function applyPromoCode(?User $user, ?string $sessionId, string $code): void
     {
         $promoCode = app(PromoCodeService::class)->findByCode($code);
         if (! $promoCode) {
@@ -210,12 +224,12 @@ class CartService
 
         app(PromoCodeService::class)->validate($promoCode, $user);
 
-        $this->getCart($user)->update(['promo_code_id' => $promoCode->id]);
+        $this->resolveCart($user, $sessionId)->update(['promo_code_id' => $promoCode->id]);
     }
 
-    public function removePromoCode(User $user): void
+    public function removePromoCode(?User $user, ?string $sessionId): void
     {
-        $cart = $user->cart()->first();
+        $cart = $this->findCart($user, $sessionId);
         if (! $cart) {
             return;
         }

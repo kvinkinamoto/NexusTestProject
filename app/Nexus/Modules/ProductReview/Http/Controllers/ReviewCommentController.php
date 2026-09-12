@@ -3,6 +3,7 @@
 namespace App\Nexus\Modules\ProductReview\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Nexus\Modules\ProductReview\Http\Resources\ReviewCommentResource;
 use App\Nexus\Modules\ProductReview\Models\ReviewComment;
 use App\Nexus\Modules\ProductReview\Requests\ReviewCommentStoreRequest;
 use App\Nexus\Modules\ProductReview\Services\ReviewService;
@@ -15,7 +16,7 @@ class ReviewCommentController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'comment' => $comment,
+            'comment' => new ReviewCommentResource($comment),
         ]);
     }
 

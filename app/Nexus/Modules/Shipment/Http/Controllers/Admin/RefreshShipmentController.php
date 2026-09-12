@@ -3,6 +3,7 @@
 namespace App\Nexus\Modules\Shipment\Http\Controllers\Admin;
 
 use App\Nexus\Modules\Order\Models\Order;
+use App\Nexus\Modules\Shipment\Http\Resources\OrderShipmentStatusResource;
 use App\Nexus\Modules\Shipment\Models\OrderShipment;
 use App\Nexus\Modules\Shipment\Services\Actions\RefreshShipmentStatusAction;
 use Illuminate\Http\JsonResponse;
@@ -29,11 +30,6 @@ class RefreshShipmentController extends Controller
             return response()->json(['message' => $e->getMessage()], 502);
         }
 
-        return response()->json([
-            'delivery_status' => $shipment->delivery_status->value,
-            'delivery_status_label' => $shipment->delivery_status->label(),
-            'raw_status' => $shipment->raw_status,
-            'last_checked_at' => $shipment->last_checked_at?->timezone(config('app.timezone'))->format('d.m.Y H:i'),
-        ]);
+        return response()->json(new OrderShipmentStatusResource($shipment));
     }
 }

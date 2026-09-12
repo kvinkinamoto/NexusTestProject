@@ -3,13 +3,14 @@
 namespace App\Nexus\Modules\Auth\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Nexus\Modules\Auth\Http\Resources\UserResource;
+use App\Nexus\Modules\Auth\Requests\LoginRequest;
+use App\Nexus\Modules\Auth\Requests\RegisterUserRequest;
+use App\Nexus\Modules\Auth\Services\AuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use App\Nexus\Modules\Auth\Requests\LoginRequest;
-use App\Nexus\Modules\Auth\Requests\RegisterUserRequest;
-use App\Nexus\Modules\Auth\Services\AuthService;
 
 class AuthController extends Controller
 {
@@ -20,6 +21,21 @@ class AuthController extends Controller
     public function loginPage(Request $request): View
     {
         return view('auth::login');
+    }
+
+    /**
+     * There is no GET /register route with a JSON-only counterpart anywhere
+     * else — this renders the form, which submits via fetch() from the
+     * view's own script (see auth::register).
+     */
+    public function registerPage(): View
+    {
+        return view('auth::register');
+    }
+
+    public function forgotPasswordPage(): View
+    {
+        return view('auth::forgot-password');
     }
 
     /**
@@ -47,11 +63,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
+            'user' => new UserResource($user),
         ]);
     }
 
@@ -64,11 +76,7 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
+            'user' => new UserResource($user),
         ]);
     }
 
@@ -104,11 +112,7 @@ class AuthController extends Controller
         $user = auth()->user();
 
         return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
+            'user' => new UserResource($user),
         ]);
     }
 }

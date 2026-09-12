@@ -9,11 +9,15 @@ return [
     'title' => 'Заголовок',
     'slug' => 'Slug',
     'meta_title' => 'Meta title',
+    'meta title' => 'Meta title',
     'meta_description' => 'Meta description',
+    'meta description' => 'Meta description',
     'is_active' => 'Активна',
+    'is active' => 'Активна',
     'main' => 'Основне',
     'seo_section' => 'SEO',
     'blocks_section' => 'Блоки',
+    'blocks' => 'Блоки',
 
     'docs' => [
         'title' => 'Білдер сторінок',

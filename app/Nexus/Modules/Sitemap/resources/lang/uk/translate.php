@@ -7,6 +7,7 @@ return [
     'url' => 'url',
     'priority' => 'пріоритет',
     'change frequency' => 'Частота оновлення',
+    'frequency' => 'Частота оновлення',
     'last modified' => 'Останнє оновлення',
     'is active' => 'Активний',
     'note' => 'примітка',

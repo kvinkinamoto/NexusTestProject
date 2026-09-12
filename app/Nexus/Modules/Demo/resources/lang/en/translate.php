@@ -35,6 +35,7 @@ return [
     'image' => 'Image',
     'video' => 'Video',
     'gallery images' => 'Gallery images',
+    'gallery (media library)' => 'Gallery (media library)',
     'gallery videos' => 'Gallery videos',
     'status' => 'Status',
     'priority' => 'Priority',

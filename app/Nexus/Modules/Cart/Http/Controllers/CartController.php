@@ -12,14 +12,25 @@ use App\Nexus\Modules\Cart\Requests\UpdateQuantityRequest;
 use App\Nexus\Modules\Cart\Services\CartService;
 use App\Nexus\Modules\Currency\Services\CurrencyService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
     public function __construct(protected CartService $cartService) {}
 
-    public function get(): JsonResponse
+    /**
+     * A guest is identified by their session id (no auth/token of their
+     * own) — the same session cookie the `web` middleware group already
+     * requires for CSRF, so no new client-side identity to manage.
+     */
+    private function sessionId(Request $request): ?string
     {
-        $cart = $this->cartService->getCart(auth()->user());
+        return auth()->check() ? null : $request->session()->getId();
+    }
+
+    public function get(Request $request): JsonResponse
+    {
+        $cart = $this->cartService->resolveCart(auth()->user(), $this->sessionId($request));
         $products = $cart->products()->with('product')->get();
         $breakdown = $this->cartService->getBreakdownForCart($cart);
 
@@ -34,7 +45,7 @@ class CartController extends Controller
     {
         try {
             $data = $request->validated();
-            $this->cartService->add(auth()->user(), $data['id'], $data['quantity']);
+            $this->cartService->add(auth()->user(), $this->sessionId($request), $data['id'], $data['quantity']);
 
             return response()->json(['success' => true]);
         } catch (\DomainException $e) {
@@ -46,7 +57,7 @@ class CartController extends Controller
     {
         try {
             $data = $request->validated();
-            $this->cartService->updateQuantity(auth()->user(), $data['id'], $data['quantity']);
+            $this->cartService->updateQuantity(auth()->user(), $this->sessionId($request), $data['id'], $data['quantity']);
 
             return response()->json(['success' => true]);
         } catch (\DomainException $e) {
@@ -56,14 +67,14 @@ class CartController extends Controller
 
     public function remove(RemoveCartRequest $request): JsonResponse
     {
-        $this->cartService->remove(auth()->user(), $request->validated('id'));
+        $this->cartService->remove(auth()->user(), $this->sessionId($request), $request->validated('id'));
 
         return response()->json(['success' => true]);
     }
 
     public function sync(SyncCartRequest $request): JsonResponse
     {
-        $this->cartService->sync(auth()->user(), $request->validated('products'));
+        $this->cartService->sync(auth()->user(), $this->sessionId($request), $request->validated('products'));
 
         return response()->json(['success' => true]);
     }
@@ -71,7 +82,7 @@ class CartController extends Controller
     public function applyPromoCode(ApplyPromoCodeRequest $request): JsonResponse
     {
         try {
-            $this->cartService->applyPromoCode(auth()->user(), $request->validated('code'));
+            $this->cartService->applyPromoCode(auth()->user(), $this->sessionId($request), $request->validated('code'));
 
             return response()->json(['success' => true, 'message' => __('promoCode::translate.applied')]);
         } catch (\DomainException $e) {
@@ -79,9 +90,9 @@ class CartController extends Controller
         }
     }
 
-    public function removePromoCode(): JsonResponse
+    public function removePromoCode(Request $request): JsonResponse
     {
-        $this->cartService->removePromoCode(auth()->user());
+        $this->cartService->removePromoCode(auth()->user(), $this->sessionId($request));
 
         return response()->json(['success' => true, 'message' => __('promoCode::translate.removed')]);
     }

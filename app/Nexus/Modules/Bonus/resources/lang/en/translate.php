@@ -2,10 +2,13 @@
 
 return [
     'bonus' => 'Bonus Rules',
+    'index_title' => 'Bonus Rules',
     'type' => 'Type',
     'amount' => 'Amount',
     'delay_days' => 'Delay days',
+    'delay days' => 'Delay days',
     'validity_days' => 'Validity days',
+    'validity days' => 'Validity days',
     'is_active' => 'Active',
     'edit' => 'Edit',
     'delete' => 'Delete',

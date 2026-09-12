@@ -22,7 +22,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Module(
     name: 'form',
     label: 'Форми',
-    icon: 'solar:clipboard-list-bold',
+    icon: 'solar:document-add-bold',
     group: 'Content',
     showInMenu: true,
     livewire: true,

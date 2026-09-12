@@ -3,6 +3,7 @@
 namespace App\Nexus\Modules\ProductQuestion\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Nexus\Modules\ProductQuestion\Http\Resources\ProductQuestionResource;
 use App\Nexus\Modules\ProductQuestion\Requests\QuestionStoreRequest;
 use App\Nexus\Modules\ProductQuestion\Requests\ToggleReactionRequest;
 use App\Nexus\Modules\ProductQuestion\Services\QuestionService;
@@ -19,7 +20,7 @@ class ProductQuestionController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'question' => $question,
+            'question' => new ProductQuestionResource($question),
         ]);
     }
 

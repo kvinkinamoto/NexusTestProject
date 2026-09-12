@@ -3,6 +3,7 @@
 namespace App\Nexus\Modules\ProductReview\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Nexus\Modules\ProductReview\Http\Resources\ReviewResource;
 use App\Nexus\Modules\ProductReview\Models\Review;
 use App\Nexus\Modules\ProductReview\Requests\ReviewStoreRequest;
 use App\Nexus\Modules\ProductReview\Requests\ToggleReactionRequest;
@@ -21,7 +22,7 @@ class ReviewController extends Controller
         $perPage = (int) ($request->input('perPage') ?: 10);
         $page = (int) ($request->input('page') ?: 1);
 
-        return $this->service->getReviewsById($productId, $perPage, $page, $request->input('sort'));
+        return ReviewResource::collection($this->service->getReviewsById($productId, $perPage, $page, $request->input('sort')));
     }
 
     public function store(ReviewStoreRequest $request)

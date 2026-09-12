@@ -2,6 +2,7 @@
 
 return [
     'deliveryType' => 'Delivery Types',
+    'index_title' => 'Delivery Types',
     'title' => 'Title',
     'key' => 'Key',
     'delivery' => 'Delivery',

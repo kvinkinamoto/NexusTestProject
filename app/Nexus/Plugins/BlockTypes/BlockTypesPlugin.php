@@ -2,10 +2,15 @@
 
 namespace App\Nexus\Plugins\BlockTypes;
 
+use App\Nexus\Plugins\BlockTypes\Types\AdvantagesBlockType;
+use App\Nexus\Plugins\BlockTypes\Types\ContactInfoBlockType;
 use App\Nexus\Plugins\BlockTypes\Types\CtaBlockType;
+use App\Nexus\Plugins\BlockTypes\Types\FormEmbedBlockType;
+use App\Nexus\Plugins\BlockTypes\Types\GalleryBlockType;
 use App\Nexus\Plugins\BlockTypes\Types\HeroBlockType;
 use App\Nexus\Plugins\BlockTypes\Types\ImageBlockType;
 use App\Nexus\Plugins\BlockTypes\Types\TextBlockType;
+use App\Nexus\Plugins\BlockTypes\Types\TextImageBlockType;
 use Illuminate\Support\Facades\View;
 use Nodex\Nexus\Attributes\TargetModule;
 use Nodex\Nexus\Services\Blocks\BlockTypeRegistry;
@@ -42,6 +47,16 @@ class BlockTypesPlugin
         $registry->register(new TextBlockType);
         $registry->register(new ImageBlockType);
         $registry->register(new CtaBlockType);
+
+        // Added for the storefront's "Про магазин"/"Контакти" CMS pages —
+        // the built-in 4 above don't cover a side-by-side text+image
+        // section, a fixed advantages grid, a photo gallery, a contact-info
+        // panel, or embedding an existing Form module record.
+        $registry->register(new TextImageBlockType);
+        $registry->register(new AdvantagesBlockType);
+        $registry->register(new GalleryBlockType);
+        $registry->register(new ContactInfoBlockType);
+        $registry->register(new FormEmbedBlockType);
 
         View::addNamespace('nexus', __DIR__.'/resources/views');
     }

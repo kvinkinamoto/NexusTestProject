@@ -15,7 +15,7 @@ use Nodex\Nexus\Attributes\Module;
  * Registered as a minimal, menu-hidden #[Module] purely so its routes/lang
  * auto-load, matching the Cart module's own precedent.
  */
-#[Module(name: 'orderShipment', label: 'Shipments', showInMenu: false)]
+#[Module(name: 'orderShipment', label: 'Shipments', icon: 'solar:box-minimalistic-bold', showInMenu: false)]
 class OrderShipment extends Model
 {
     protected $fillable = [

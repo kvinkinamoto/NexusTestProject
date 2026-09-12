@@ -7,9 +7,13 @@ return [
     'module_name' => 'Form submission',
 
     'Form' => 'Form',
+    'form' => 'Form',
     'Submitted data' => 'Submitted data',
+    'submitted data' => 'Submitted data',
     'IP address' => 'IP address',
+    'ip address' => 'IP address',
     'Submitted at' => 'Submitted at',
+    'submitted at' => 'Submitted at',
     'View' => 'View',
     'Delete' => 'Delete',
 

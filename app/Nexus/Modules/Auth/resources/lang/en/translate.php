@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'index_title' => 'Authentication',
     'name' => 'First Name',
     'email' => 'Email',
     'password' => 'Password',
@@ -136,10 +137,10 @@ return [
             <p><strong>Need additional help?</strong></p>
             <p>If you did not receive the link or encountered other issues, please contact our support team: <a href='mailto:support@oiltime.com'>support@oiltime.com</a>.</p>
             <p>Best regards,<br><strong>The OilTime Team</strong></p>
-        "
+        ",
     ],
     'profile' => [
-        'update' => 'Your information has been successfully updated'
+        'update' => 'Your information has been successfully updated',
     ],
     'pricelist' => [
         'send' => 'Your updated price list from OilTime',
@@ -151,7 +152,7 @@ return [
             <p><a href=':url' class='button'>Download the price list</a></p>
             <p>This price list has been created for your convenience so that you always have access to the most up-to-date information on our products.</p>
             <p>Best regards,<br><strong>The OilTime Team</strong></p>
-        "
+        ",
     ],
     'activate_wholesaler' => [
         'subject' => 'Your account on the OilTime platform has been activated',
@@ -161,7 +162,7 @@ return [
             <p>If you experience any difficulties, please contact our support team at: <a href='mailto:support@oiltime.com'>support@oiltime.com</a>.</p>
             <p>We are happy to have you among our Auths!</p>
             <p>Best regards,<br><strong>The OilTime Team</strong></p>
-        "
+        ",
     ],
     'delete_wholesaler' => [
         'subject' => 'Account Deletion on the OilTime Platform',
@@ -171,7 +172,7 @@ return [
             <p>Your account has been deleted, and access to the OilTime platform has been terminated. If this was done in error, please contact us using the following details.</p>
             <p>If you experience any difficulties, please reach out to our support team at: <a href='mailto:support@oiltime.com'>support@oiltime.com</a>.</p>
             <p>Best regards,<br><strong>The OilTime Team</strong></p>
-        "
+        ",
     ],
     'Auth_type' => 'Type',
     'admin' => 'Admin',

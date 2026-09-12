@@ -32,6 +32,7 @@ return [
     'image' => 'Зображення',
     'video' => 'Відео',
     'gallery images' => 'Галерея зображень',
+    'gallery (media library)' => 'Галерея (медіатека)',
     'gallery videos' => 'Галерея відео',
     'status' => 'Статус',
     'priority' => 'Пріоритет',

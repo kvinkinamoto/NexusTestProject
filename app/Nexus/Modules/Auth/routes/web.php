@@ -20,8 +20,10 @@ Route::middleware(['web'])->group(function () {
 });
 
 Route::middleware(['web'])->group(function () {
+    Route::get('/register', [AuthController::class, 'registerPage'])->name('shop.register');
     Route::post('/register', [AuthController::class, 'register']);
 
+    Route::get('/forgot-password', [AuthController::class, 'forgotPasswordPage'])->name('shop.forgot-password');
     Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
     Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
     Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
@@ -32,6 +34,12 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+// Everything below is JSON, not a page — auth:sanctum instead of the plain
+// session guard, same reasoning as EnsureFrontendRequestsAreStateful's
+// docblock in bootstrap/app.php.
+Route::middleware(['web', 'auth:sanctum'])->group(function () {
     Route::post('/api/logout', [AuthController::class, 'apiLogout']);
     Route::get('/me', [AuthController::class, 'me']);
 

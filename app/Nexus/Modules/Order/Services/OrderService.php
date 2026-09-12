@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Nexus\Modules\Bonus\Enums\BonusTypeEnum;
 use App\Nexus\Modules\Bonus\Services\BonusService;
 use App\Nexus\Modules\BonusTransaction\Models\BonusTransaction;
+use App\Nexus\Modules\Cart\Models\Cart;
 use App\Nexus\Modules\Order\Enums\PaymentStatus;
 use App\Nexus\Modules\Order\Models\Order;
 use App\Nexus\Modules\OrderStatus\Models\OrderStatus;
@@ -36,15 +37,15 @@ class OrderService
         private readonly BonusService $bonusService,
     ) {}
 
-    public function createOrder(?User $user, array $data): Order
+    public function createOrder(?User $user, array $data, ?string $guestSessionId = null): Order
     {
         $allowGuest = SettingsBuilder::get('order', 'allow_guest_checkout', true);
         if (! $user && ! $allowGuest) {
             throw new \DomainException(__('order::translate.auth_required'));
         }
 
-        return DB::transaction(function () use ($user, $data) {
-            $orderLines = $this->resolveOrderLines($user, $data);
+        return DB::transaction(function () use ($user, $data, $guestSessionId) {
+            $orderLines = $this->resolveOrderLines($user, $guestSessionId, $data);
 
             if ($orderLines->isEmpty()) {
                 throw new \DomainException(__('order::translate.cart_empty'));
@@ -54,7 +55,7 @@ class OrderService
             $orderProductsData = $built['rows'];
             $lineSubtotal = array_sum(array_column($orderProductsData, 'total_price'));
 
-            $promoCode = $this->resolvePromoCode($user, $data);
+            $promoCode = $this->resolvePromoCode($user, $guestSessionId, $data);
             if ($promoCode) {
                 $this->promoCodeService->validate($promoCode, $user);
             }
@@ -85,11 +86,9 @@ class OrderService
 
             $this->recordPromotionUsage($user, $order, $built['promotions'], $cartLevel['applied']);
 
-            if ($user) {
-                $cart = $user->cart()->first();
-                $cart?->products()->delete();
-                $cart?->update(['promo_code_id' => null]);
-            }
+            $cart = $user ? $user->cart()->first() : Cart::where('session_id', $guestSessionId)->first();
+            $cart?->products()->delete();
+            $cart?->update(['promo_code_id' => null]);
 
             return $order;
         });
@@ -137,18 +136,23 @@ class OrderService
     }
 
     /**
-     * Authed users read their persisted Cart; guests resolve straight from
-     * the posted `products` array (id/quantity pairs) — no Cart row exists
-     * for them. Both paths return a uniform collection of objects exposing
+     * Authed users and guests with a session-scoped Cart (see
+     * App\Nexus\Modules\Cart\Services\CartService) both read their persisted
+     * cart the same way; only a guest with *no* cart row at all falls back to
+     * resolving straight from a posted `products` array (id/quantity pairs) —
+     * e.g. the "buy now" style flow with nothing ever added to a cart. Every
+     * path returns a uniform collection of objects exposing
      * `->product`/`->quantity`, so buildOrderProductsData() doesn't need to
      * know which path produced them.
      */
-    private function resolveOrderLines(?User $user, array $data): Collection
+    private function resolveOrderLines(?User $user, ?string $guestSessionId, array $data): Collection
     {
-        if ($user) {
-            $cart = $user->cart()->first();
-
-            return $cart ? $cart->products()->with('product')->get() : collect();
+        $cart = $user ? $user->cart()->first() : Cart::where('session_id', $guestSessionId)->first();
+        if ($cart) {
+            $lines = $cart->products()->with('product')->get();
+            if ($lines->isNotEmpty()) {
+                return $lines;
+            }
         }
 
         $requested = collect($data['products'] ?? [])->keyBy('id');
@@ -170,13 +174,14 @@ class OrderService
 
     /**
      * $data['promo_code'] takes precedence (works for guests, and lets an authed request
-     * override) — otherwise falls back to the authed user's persisted cart selection. Locked
+     * override) — otherwise falls back to the persisted cart's own selection (authed user's
+     * or guest's session-scoped cart, same resolution as resolveOrderLines()). Locked
      * (lockForUpdate, inside the caller's transaction) so two concurrent orders can't both
      * slip past a usage_limit of 1. No ->publish() filter here — an unpublished/expired code
      * should still be found so PromoCodeService::validate() can raise its specific error,
      * rather than the generic "not found" one.
      */
-    private function resolvePromoCode(?User $user, array $data): ?PromoCode
+    private function resolvePromoCode(?User $user, ?string $guestSessionId, array $data): ?PromoCode
     {
         $code = $data['promo_code'] ?? null;
 
@@ -190,7 +195,8 @@ class OrderService
             return $promoCode;
         }
 
-        $cartPromoCodeId = $user?->cart()->first()?->promo_code_id;
+        $cart = $user ? $user->cart()->first() : Cart::where('session_id', $guestSessionId)->first();
+        $cartPromoCodeId = $cart?->promo_code_id;
 
         return $cartPromoCodeId ? PromoCode::query()->lockForUpdate()->find($cartPromoCodeId) : null;
     }

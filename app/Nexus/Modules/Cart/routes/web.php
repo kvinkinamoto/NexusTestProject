@@ -1,10 +1,15 @@
 <?php
 
 use App\Nexus\Modules\Cart\Http\Controllers\CartController;
+use App\Nexus\Modules\Cart\Http\Controllers\Public\CartPageController;
 use Illuminate\Support\Facades\Route;
 
+Route::middleware(['web'])->group(function () {
+    Route::get('/cart', [CartPageController::class, 'index'])->name('shop.cart');
+});
+
 Route::prefix('api/cart')
-    ->middleware(['web', 'auth'])
+    ->middleware(['web'])
     ->group(function () {
         Route::get('/', [CartController::class, 'get'])->name('nexus.cart.get');
         Route::post('/add', [CartController::class, 'add'])->name('nexus.cart.add');
