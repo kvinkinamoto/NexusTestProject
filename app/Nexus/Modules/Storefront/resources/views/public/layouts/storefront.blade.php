@@ -5,6 +5,7 @@
     $cartCount = auth()->check()
         ? (auth()->user()->cart?->products()->count() ?? 0)
         : (\App\Nexus\Modules\Cart\Models\Cart::where('session_id', session()->getId())->first()?->products()->count() ?? 0);
+    $navCategories = \App\Nexus\Modules\ShopCategory\Models\ShopCategory::query()->publish()->whereIsRoot()->orderBy('name')->get();
 @endphp
 <!doctype html>
 <html lang="uk">
