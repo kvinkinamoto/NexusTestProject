@@ -382,3 +382,141 @@
 .choices.is-disabled .choices__input {
     @apply cursor-not-allowed opacity-50;
 }
+
+/*
+  Storefront (public shop) additions — this app.css entry is shared with the
+  admin panel (only two Vite entries exist app-wide, see vite.config.js), so
+  these are scoped by class/attribute rather than living in a separate file.
+*/
+[x-cloak] {
+    display: none !important;
+}
+
+/* Generic photo placeholder for products/categories/pages without an uploaded image yet */
+.ph {
+    background-image: linear-gradient(135deg, #f0ebe3, #ddcfba);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ad9877;
+}
+.ph svg {
+    width: 26%;
+    height: 26%;
+    opacity: 0.55;
+}
+
+input[type='range'].price-range {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 9999px;
+    background: #e7e0d5;
+}
+input[type='range'].price-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    background: #171412;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #171412;
+}
+input[type='range'].price-range::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    background: #171412;
+    cursor: pointer;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px #171412;
+}
+
+/*
+  Nexus Form module's public partial (form::public.form) ships deliberately
+  unstyled BEM classes so it can drop into any host site's front-end (see
+  its own docblock) — themed here rather than by editing that shared
+  partial, matching its intended extension point.
+*/
+.nexus-form__field {
+    margin-bottom: 1rem;
+}
+.nexus-form__label {
+    @apply block text-sm font-medium mb-1.5;
+}
+.nexus-form__required {
+    @apply text-red-500;
+}
+.nexus-form__input {
+    @apply w-full rounded-xl border border-neutral-300 bg-white px-4 text-sm h-12 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-400;
+}
+textarea.nexus-form__input {
+    height: auto;
+    @apply py-3;
+    min-height: 7rem;
+}
+.nexus-form__choice {
+    @apply flex items-center gap-2 text-sm text-neutral-600 mb-1.5;
+}
+.nexus-form__error {
+    @apply text-xs text-red-500 mt-1.5;
+}
+.nexus-form__success {
+    @apply mb-5 rounded-xl bg-emerald-50 text-emerald-700 text-sm px-4 py-3;
+}
+.nexus-form__submit {
+    @apply w-full h-12 rounded-full bg-neutral-900 text-white text-sm font-semibold hover:bg-neutral-800;
+}
+
+/*
+  Slider module's public partial (slider::public.slider) is likewise
+  deliberately unstyled (see its own docblock) — themed here for the
+  storefront's homepage hero use. nexusSlider() (resources/js/storefront.js)
+  drives an actual carousel (auto-rotate, arrows, dots) for 2+ slides via a
+  flex track + translateX; a single slide skips Alpine entirely and this
+  same CSS just renders it full-width with no transform applied.
+*/
+.nexus-slider {
+    @apply relative rounded-3xl overflow-hidden aspect-[16/9] sm:aspect-[21/9];
+}
+.nexus-slider__track {
+    @apply flex h-full transition-transform duration-500 ease-out;
+}
+.nexus-slider__slide {
+    @apply relative w-full h-full shrink-0 bg-gradient-to-br from-[#f0ebe3] to-[#ddcfba];
+}
+.nexus-slider__image {
+    @apply absolute inset-0 size-full object-cover;
+}
+.nexus-slider__caption {
+    @apply absolute inset-0 flex flex-col items-center justify-center text-center px-6 bg-black/30;
+}
+.nexus-slider__title {
+    @apply font-outfit text-white text-3xl sm:text-5xl font-bold;
+}
+.nexus-slider__subtitle {
+    @apply text-white/85 mt-3 max-w-lg mx-auto text-sm sm:text-base;
+}
+.nexus-slider__link {
+    @apply mt-6 inline-flex h-12 px-8 items-center justify-center rounded-full bg-white text-neutral-900 text-sm font-semibold hover:bg-neutral-100;
+}
+.nexus-slider__nav {
+    @apply absolute top-1/2 -translate-y-1/2 flex items-center justify-center size-10 rounded-full bg-white/80 text-neutral-900 text-xl leading-none shadow-md hover:bg-white transition z-10;
+}
+.nexus-slider__nav--prev {
+    @apply left-4;
+}
+.nexus-slider__nav--next {
+    @apply right-4;
+}
+.nexus-slider__dots {
+    @apply absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-10;
+}
+.nexus-slider__dot {
+    @apply size-2.5 rounded-full bg-white/50 hover:bg-white/80 transition-all;
+}
+.nexus-slider__dot--active {
+    @apply w-6 bg-white;
+}
