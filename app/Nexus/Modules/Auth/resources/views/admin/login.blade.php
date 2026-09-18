@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{asset('nexus/css/icons.min.css')}}">
     <link rel="stylesheet" href="{{asset('nexus/css/app.min.css')}}">
     <link rel="stylesheet" href="{{asset('nexus/css/nexus-theme.css')}}">
-    <link rel="stylesheet" href="{{asset('adminlte/plugins/jquery-colorbox/example1/colorbox.css')}}">
+    <link rel="stylesheet" href="{{asset('packages/jquery-colorbox/example1/colorbox.css')}}">
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
     <style>
