@@ -67,10 +67,14 @@ abstract class AbstractSitemapGenerator implements SitemapGeneratorInterface
 
     /**
      * Optional hook — override to provide image sitemap entries for a record.
+     * $baseUrl is the same resolved base (settings override or config('app.url'))
+     * the record's own <loc> is built from — build any absolute image URL
+     * from it too, not from the global url() helper, so both stay consistent
+     * when `sitemap.base_url` differs from APP_URL (e.g. a CDN override).
      *
      * @return array<int, array{url: string, title?: string, caption?: string}>
      */
-    protected function buildImages(mixed $record): array
+    protected function buildImages(mixed $record, string $baseUrl): array
     {
         return [];
     }
@@ -101,7 +105,7 @@ abstract class AbstractSitemapGenerator implements SitemapGeneratorInterface
                 lastmod: $this->resolveLastmod($record),
                 changefreq: $this->config['changefreq'],
                 priority: (float) $this->config['priority'],
-                images: $this->buildImages($record),
+                images: $this->buildImages($record, $baseUrl),
             );
         }
     }

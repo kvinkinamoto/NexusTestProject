@@ -15,6 +15,7 @@ class AdminStoreRequest extends NexusFormRequest
             'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'image' => ['nullable', 'string'],
+            'nav_group' => ['nullable', 'string', 'max:255'],
             'publish' => ['boolean'],
             'meta_title' => ['nullable', 'string', 'max:255'],
             'meta_description' => ['nullable', 'string'],

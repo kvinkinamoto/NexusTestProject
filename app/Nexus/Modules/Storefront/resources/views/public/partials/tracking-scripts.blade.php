@@ -1,8 +1,11 @@
 {{--
     Reads the Analytics/Advertising modules' own #[Setting]s (see
-    App\Nexus\Modules\{Analytics,Advertising}\Models\*.php — each is a
-    settings-only module, no admin-manageable records of its own) and
-    prints whichever official tracking snippets those settings enable.
+    App\Nexus\Modules\{Analytics,Advertising}\Models\*.php) and prints
+    whichever official tracking/loader snippets those settings enable.
+    Advertising also has real admin-manageable rows (one per ad campaign) —
+    see App\Nexus\Widgets\AdvertisingSlot for where those actually render,
+    this partial only covers the site-wide AdSense loader script + the
+    unrelated conversion-tracking pixels.
     Both modules default 'enabled' to true but every ID defaults to blank,
     so with nothing configured this partial renders nothing at all.
 
@@ -20,6 +23,7 @@
     $adsEnabled = \Nodex\Nexus\Services\SettingsBuilder::get('advertising', 'enabled', true);
     $fbPixelId = $adsEnabled ? trim((string) \Nodex\Nexus\Services\SettingsBuilder::get('advertising', 'facebook_pixel_id')) : '';
     $googleAdsId = $adsEnabled ? trim((string) \Nodex\Nexus\Services\SettingsBuilder::get('advertising', 'google_ads_conversion_id')) : '';
+    $adsenseClientId = $adsEnabled ? trim((string) \Nodex\Nexus\Services\SettingsBuilder::get('advertising', 'adsense_client_id')) : '';
 
     // GA4 and Google Ads both run on the same gtag.js loader — one script
     // tag configured for every id present, per Google's own multi-tag
@@ -43,6 +47,13 @@
                 gtag('config', '{{ $gtagId }}');
             @endforeach
         </script>
+    @endif
+
+    @if($adsenseClientId)
+        {{-- Google AdSense loader — individual ad units (Advertising rows,
+             type: html) only need their own <ins class="adsbygoogle"> block,
+             this script tag is what actually activates AdSense site-wide. --}}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ $adsenseClientId }}" crossorigin="anonymous"></script>
     @endif
 
     @if($fbPixelId)

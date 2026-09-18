@@ -47,7 +47,11 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
  * status timeline (`history`) are checkout-engine-owned, not exposed as
  * admin-editable Fields — no equivalent of the old bespoke
  * custom_products/custom_history table widgets exists in the current field
- * system, and nothing needs to hand-edit them in the admin.
+ * system, and nothing needs to hand-edit them in the admin. `is_gift`/
+ * `gift_recipient_email`/`gift_message`/`gift_code`/`recipient_user_id` are
+ * additive (see GiftCodeService) — a gift order still goes through the
+ * normal delivery/payment flow, `recipient_user_id` just also grants
+ * whoever redeems the code ownership of the order for their own account.
  */
 #[Module(
     name: 'order',
@@ -67,6 +71,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Section(name: 'customer', column: 'left', type: 'columns_2', icon: 'solar:user-bold')]
 #[Section(name: 'recipient', column: 'left', type: 'columns_2', icon: 'solar:user-bold')]
 #[Section(name: 'delivery', column: 'left', type: 'base', icon: 'solar:delivery-bold')]
+#[Section(name: 'gift', column: 'left', type: 'columns_2', icon: 'solar:gift-bold')]
 #[Section(name: 'summary', column: 'right', type: 'base', icon: 'solar:bill-list-bold')]
 #[Section(name: 'payment', column: 'right', type: 'base', icon: 'solar:card-bold')]
 #[ObservedBy([OrderObserver::class])]
@@ -117,11 +122,31 @@ class Order extends Model
     #[Field(type: 'string', section: 'delivery', label: 'Address', required: false, rules: ['max:255'])]
     protected $delivery_address;
 
+    #[Field(type: 'boolean', section: 'gift', label: 'Is a gift', required: false, default: false)]
+    protected $is_gift;
+
+    #[Field(type: 'email', section: 'gift', label: 'Gift recipient email', required: false)]
+    protected $gift_recipient_email;
+
+    #[Field(type: 'text', section: 'gift', label: 'Gift message', required: false)]
+    protected $gift_message;
+
+    #[Column(label: 'Gift code')]
+    #[Field(type: 'string', section: 'gift', label: 'Gift code', required: false, disabled: true)]
+    protected $gift_code;
+
     #[Field(type: 'relation', section: 'summary', label: 'User', required: false)]
     #[Relation(type: 'belongsTo', show: 'email', ajax: true)]
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    #[Field(type: 'relation', section: 'gift', label: 'Resolved gift recipient', required: false)]
+    #[Relation(type: 'belongsTo', show: 'email', ajax: true)]
+    public function recipientUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'recipient_user_id');
     }
 
     #[Column(label: 'Status')]
@@ -165,6 +190,7 @@ class Order extends Model
         'user_name', 'user_last_name', 'user_phone', 'user_email', 'user_comment', 'needs_phone_call',
         'is_another_recipient', 'recipient_name', 'recipient_last_name', 'recipient_phone',
         'delivery_method', 'delivery_type', 'delivery_city', 'delivery_address',
+        'is_gift', 'gift_recipient_email', 'gift_message', 'gift_code', 'recipient_user_id',
         'payment_method', 'payment_status', 'bank_order_id',
         'products_price', 'delivery_price', 'total_price', 'language_code',
         'admin_comment', 'ip', 'forwarded_ip', 'confirmed_at', 'completed_at',
@@ -173,6 +199,7 @@ class Order extends Model
     protected $casts = [
         'needs_phone_call' => 'boolean',
         'is_another_recipient' => 'boolean',
+        'is_gift' => 'boolean',
         'payment_status' => PaymentStatus::class,
         'products_price' => 'decimal:2',
         'delivery_price' => 'decimal:2',

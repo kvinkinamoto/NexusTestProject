@@ -27,7 +27,9 @@ use Nodex\Nexus\Services\SettingsBuilder;
  * (promotion/promo-code resolution, stock reservation, usage logging,
  * purchase-bonus awarding). The only real cut is the CartRepository
  * indirection, inlined here as resolveOrderLines() since there's now only
- * one caller.
+ * one caller. transformOrderData() also generates a gift_code via
+ * GiftCodeService whenever $data['is_gift'] is truthy — see
+ * GiftCodeService::redeem() for how a recipient later claims the order.
  */
 class OrderService
 {
@@ -35,6 +37,7 @@ class OrderService
         private readonly PromotionEngine $promotionEngine,
         private readonly PromoCodeService $promoCodeService,
         private readonly BonusService $bonusService,
+        private readonly GiftCodeService $giftCodeService,
     ) {}
 
     public function createOrder(?User $user, array $data, ?string $guestSessionId = null): Order
@@ -339,6 +342,12 @@ class OrderService
             'delivery_type' => $data['delivery_type'] ?? null,
             'delivery_city' => $data['delivery_city'] ?? null,
             'delivery_address' => $data['delivery_address'] ?? null,
+
+            'is_gift' => $data['is_gift'] ?? false,
+            'gift_recipient_email' => $data['gift_recipient_email'] ?? null,
+            'gift_message' => $data['gift_message'] ?? null,
+            'gift_code' => ! empty($data['is_gift']) ? $this->giftCodeService->generate() : null,
+            'recipient_user_id' => null,
 
             'payment_method' => $data['payment_method'] ?? null,
             'payment_status' => PaymentStatus::PENDING,

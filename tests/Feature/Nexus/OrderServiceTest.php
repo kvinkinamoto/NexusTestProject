@@ -37,7 +37,7 @@ beforeEach(function () {
 
 it('creates an order from an authed user\'s cart and clears it', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
-    $this->cartService->add($this->user, $product->id, 2);
+    $this->cartService->add($this->user, null, $product->id, 2);
 
     $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
 
@@ -50,7 +50,7 @@ it('creates an order from an authed user\'s cart and clears it', function () {
     expect($order->products()->first()->quantity)->toBe(2);
     expect($order->history()->count())->toBe(1);
 
-    $cart = $this->cartService->getCart($this->user);
+    $cart = $this->cartService->resolveCart($this->user, null);
     expect($cart->products()->count())->toBe(0);
 });
 
@@ -80,7 +80,7 @@ it('rejects a guest checkout when allow_guest_checkout is disabled', function ()
 
 it('throws when the requested quantity exceeds available stock', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 50, 'stock' => 1]);
-    $this->cartService->add($this->user, $product->id, 1);
+    $this->cartService->add($this->user, null, $product->id, 1);
     $product->update(['stock' => 0]);
 
     $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
@@ -90,7 +90,7 @@ it('applies a cart-level promo code and records its usage', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
     $rule = DiscountRule::create(['name' => '10% off cart', 'type' => DiscountRuleType::CART_THRESHOLD->value, 'value_type' => ValueType::PERCENT->value, 'amount' => 10]);
     $code = PromoCode::create(['code' => 'SAVE10', 'discount_rule_id' => $rule->id, 'publish' => true]);
-    $this->cartService->add($this->user, $product->id, 1);
+    $this->cartService->add($this->user, null, $product->id, 1);
 
     $order = $this->service->createOrder($this->user, [
         'user_name' => 'Bob',
@@ -107,7 +107,7 @@ it('applies a cart-level promo code and records its usage', function () {
 
 it('rejects an unknown promo code', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
-    $this->cartService->add($this->user, $product->id, 1);
+    $this->cartService->add($this->user, null, $product->id, 1);
 
     $this->service->createOrder($this->user, [
         'user_name' => 'Bob',
@@ -120,7 +120,7 @@ it('records automatic promotion usage on the order', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
     $rule = DiscountRule::create(['name' => '20% off', 'type' => DiscountRuleType::PRODUCT_DISCOUNT->value, 'value_type' => ValueType::PERCENT->value, 'amount' => 20]);
     $promotion = Promotion::create(['name' => 'Promo', 'discount_rule_id' => $rule->id, 'publish' => true]);
-    $this->cartService->add($this->user, $product->id, 1);
+    $this->cartService->add($this->user, null, $product->id, 1);
 
     $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
 
@@ -147,7 +147,7 @@ it('creates a quick order for a single product without a cart', function () {
 
 it('reduces stock once the order is confirmed', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
-    $this->cartService->add($this->user, $product->id, 2);
+    $this->cartService->add($this->user, null, $product->id, 2);
     $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
 
     $confirmed = OrderStatus::where('slug', 'confirmed')->firstOrFail();
@@ -160,7 +160,7 @@ it('reduces stock once the order is confirmed', function () {
 
 it('restores stock when a confirmed order is cancelled', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
-    $this->cartService->add($this->user, $product->id, 2);
+    $this->cartService->add($this->user, null, $product->id, 2);
     $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
 
     $confirmed = OrderStatus::where('slug', 'confirmed')->firstOrFail();
@@ -175,7 +175,7 @@ it('restores stock when a confirmed order is cancelled', function () {
 
 it('cancels a new order via cancelOrder()', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
-    $this->cartService->add($this->user, $product->id, 1);
+    $this->cartService->add($this->user, null, $product->id, 1);
     $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
 
     $this->service->cancelOrder($order);
@@ -185,7 +185,7 @@ it('cancels a new order via cancelOrder()', function () {
 
 it('refuses to cancel an order that is no longer new', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
-    $this->cartService->add($this->user, $product->id, 1);
+    $this->cartService->add($this->user, null, $product->id, 1);
     $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
 
     $confirmed = OrderStatus::where('slug', 'confirmed')->firstOrFail();

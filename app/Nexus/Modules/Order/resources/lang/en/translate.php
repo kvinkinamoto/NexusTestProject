@@ -54,8 +54,19 @@ return [
     'customer' => 'Customer',
     'recipient' => 'Recipient',
     'delivery' => 'Delivery',
+    'gift' => 'Gift',
     'summary' => 'Summary',
     'payment' => 'Payment',
+
+    'is_gift' => 'Is a gift',
+    'is gift' => 'Is a gift',
+    'gift_recipient_email' => 'Gift recipient email',
+    'gift recipient email' => 'Gift recipient email',
+    'gift_message' => 'Gift message',
+    'gift message' => 'Gift message',
+    'gift_code' => 'Gift code',
+    'gift code' => 'Gift code',
+    'resolved gift recipient' => 'Redeemed by',
 
     'user' => 'User',
     'status' => 'Status',
@@ -81,4 +92,10 @@ return [
     'cannot_cancel' => 'This order can no longer be cancelled.',
     'product_not_found' => 'Product not found.',
     'something_went_wrong' => 'Something went wrong. Please try again.',
+
+    'gift_code_invalid' => 'That gift code does not exist.',
+    'gift_code_not_paid' => 'This gift has not been paid for yet.',
+    'gift_code_already_redeemed' => 'This code has already been redeemed.',
+    'gift_code_redeemed_success' => 'Gift redeemed! It now shows up in your orders.',
+    'gift_recipient_is_self' => 'You cannot gift this to yourself — enter someone else\'s email.',
 ];

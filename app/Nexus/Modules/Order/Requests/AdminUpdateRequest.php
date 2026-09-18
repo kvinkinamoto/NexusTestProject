@@ -28,6 +28,11 @@ class AdminUpdateRequest extends NexusFormRequest
             'delivery_city' => ['sometimes', 'nullable', 'string', 'max:255'],
             'delivery_address' => ['sometimes', 'nullable', 'string', 'max:255'],
 
+            'is_gift' => ['sometimes', 'nullable', 'boolean'],
+            'gift_recipient_email' => ['sometimes', 'nullable', 'email', 'max:255'],
+            'gift_message' => ['sometimes', 'nullable', 'string', 'max:500'],
+            'gift_code' => ['sometimes', 'nullable', 'string', 'max:16'],
+
             'payment_method' => ['sometimes', 'nullable', 'string', Rule::exists('payment_methods', 'code')],
             'payment_status' => ['sometimes', 'nullable', Rule::enum(PaymentStatus::class)],
 
@@ -36,6 +41,7 @@ class AdminUpdateRequest extends NexusFormRequest
 
             'relation' => ['sometimes', 'array'],
             'relation.user' => ['sometimes', 'nullable', 'integer', 'exists:users,id'],
+            'relation.recipientUser' => ['sometimes', 'nullable', 'integer', 'exists:users,id'],
             'relation.status' => ['sometimes', 'nullable', 'integer', 'exists:order_statuses,id'],
             'relation.promoCode' => ['sometimes', 'nullable', 'integer', 'exists:promo_codes,id'],
         ];

@@ -76,6 +76,18 @@ class ShopCategory extends Model
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    /**
+     * Free-form label grouping ROOT categories in a storefront header
+     * mega-menu (e.g. "Electronics", "Home & Garden") — ignored for
+     * non-root categories and independent of the real parent/child tree
+     * (NodeTrait) that already drives catalog pages/breadcrumbs. Kept as a
+     * plain string rather than an enum so any install can define its own
+     * grouping labels without editing PHP.
+     */
+    #[Column(label: 'Nav group', sortable: true)]
+    #[Field(type: 'string', section: 'settings', label: 'Nav group', required: false, rules: ['max:255'])]
+    protected $nav_group;
+
     #[Column(label: 'Publish', action: 'boolToggle', fieldName: 'publish')]
     #[Field(type: 'boolean', section: 'settings', label: 'Publish', required: false, default: true)]
     protected $publish;
@@ -94,7 +106,7 @@ class ShopCategory extends Model
     protected $meta_description;
 
     protected $fillable = [
-        'name', 'slug', 'short_description', 'description', 'image', 'parent_id',
+        'name', 'slug', 'short_description', 'description', 'image', 'parent_id', 'nav_group',
         'publish', 'meta_title', 'meta_description',
     ];
 

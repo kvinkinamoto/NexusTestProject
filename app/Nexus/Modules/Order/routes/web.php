@@ -3,6 +3,7 @@
 use App\Nexus\Modules\Order\Http\Controllers\OrderController;
 use App\Nexus\Modules\Order\Http\Controllers\Public\AccountOrdersController;
 use App\Nexus\Modules\Order\Http\Controllers\Public\CheckoutController;
+use App\Nexus\Modules\Order\Http\Controllers\Public\GiftRedemptionController;
 use App\Nexus\Modules\Shipment\Http\Controllers\Admin\RefreshShipmentController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,8 @@ Route::middleware(['web'])->group(function () {
 
 Route::middleware(['web', 'auth'])->prefix('account')->name('account.')->group(function () {
     Route::get('/orders', [AccountOrdersController::class, 'index'])->name('orders');
+    Route::get('/redeem-gift', [GiftRedemptionController::class, 'show'])->name('redeem-gift.show');
+    Route::post('/redeem-gift', [GiftRedemptionController::class, 'store'])->name('redeem-gift.store');
 });
 
 Route::prefix('api/orders')

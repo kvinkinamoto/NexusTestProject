@@ -54,8 +54,19 @@ return [
     'customer' => 'Клієнт',
     'recipient' => 'Отримувач',
     'delivery' => 'Доставка',
+    'gift' => 'Подарунок',
     'summary' => 'Підсумок',
     'payment' => 'Оплата',
+
+    'is_gift' => 'Це подарунок',
+    'is gift' => 'Це подарунок',
+    'gift_recipient_email' => 'Email отримувача подарунка',
+    'gift recipient email' => 'Email отримувача подарунка',
+    'gift_message' => 'Повідомлення до подарунка',
+    'gift message' => 'Повідомлення до подарунка',
+    'gift_code' => 'Код подарунка',
+    'gift code' => 'Код подарунка',
+    'resolved gift recipient' => 'Отримувач, що активував код',
 
     'user' => 'Користувач',
     'status' => 'Статус',
@@ -81,4 +92,10 @@ return [
     'cannot_cancel' => 'Це замовлення вже не можна скасувати.',
     'product_not_found' => 'Товар не знайдено.',
     'something_went_wrong' => 'Щось пішло не так. Спробуйте ще раз.',
+
+    'gift_code_invalid' => 'Такого подарункового коду не існує.',
+    'gift_code_not_paid' => 'Цей подарунок ще не оплачено.',
+    'gift_code_already_redeemed' => 'Цей код уже активовано.',
+    'gift_code_redeemed_success' => 'Подарунок активовано! Він зʼявився у ваших замовленнях.',
+    'gift_recipient_is_self' => 'Не можна подарувати самому собі — вкажіть email іншої людини.',
 ];

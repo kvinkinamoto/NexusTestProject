@@ -10,6 +10,7 @@ return [
     'edit' => 'Edit',
     'delete' => 'Delete',
     'parent category' => 'Parent category',
+    'nav group' => 'Nav group',
     'seo_section' => 'SEO',
     'products_section' => 'Products',
     'docs' => [

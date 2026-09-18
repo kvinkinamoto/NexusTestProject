@@ -28,6 +28,11 @@ class AdminStoreRequest extends NexusFormRequest
             'delivery_city' => ['nullable', 'string', 'max:255'],
             'delivery_address' => ['nullable', 'string', 'max:255'],
 
+            'is_gift' => ['nullable', 'boolean'],
+            'gift_recipient_email' => ['nullable', 'email', 'max:255'],
+            'gift_message' => ['nullable', 'string', 'max:500'],
+            'gift_code' => ['nullable', 'string', 'max:16'],
+
             'payment_method' => ['nullable', 'string', Rule::exists('payment_methods', 'code')],
             'payment_status' => ['nullable', Rule::enum(PaymentStatus::class)],
 
@@ -36,6 +41,7 @@ class AdminStoreRequest extends NexusFormRequest
 
             'relation' => ['nullable', 'array'],
             'relation.user' => ['nullable', 'integer', 'exists:users,id'],
+            'relation.recipientUser' => ['nullable', 'integer', 'exists:users,id'],
             'relation.status' => ['nullable', 'integer', 'exists:order_statuses,id'],
             'relation.promoCode' => ['nullable', 'integer', 'exists:promo_codes,id'],
         ];

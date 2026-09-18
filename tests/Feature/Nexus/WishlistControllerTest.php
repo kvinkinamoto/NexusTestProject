@@ -13,8 +13,20 @@ beforeEach(function () {
     $this->product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'publish' => true]);
 });
 
-it('rejects unauthenticated wishlist access', function () {
-    $this->getJson('/api/wishlist')->assertUnauthorized();
+it('returns an empty session-scoped wishlist for a guest instead of rejecting the request', function () {
+    $this->getJson('/api/wishlist')
+        ->assertOk()
+        ->assertJsonCount(0, 'data');
+});
+
+it('lets a guest add a product to their session wishlist without authenticating', function () {
+    $this->postJson('/api/wishlist/add', ['product_id' => $this->product->id])
+        ->assertOk()
+        ->assertJson(['success' => true]);
+});
+
+it('rejects an unauthenticated request for the auth-only details endpoint', function () {
+    $this->getJson('/api/wishlist/details')->assertUnauthorized();
 });
 
 it('adds and lists a product for the authenticated user', function () {

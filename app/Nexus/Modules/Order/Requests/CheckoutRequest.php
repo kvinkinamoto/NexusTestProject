@@ -4,6 +4,7 @@ namespace App\Nexus\Modules\Order\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 /**
  * The public checkout endpoint's request. delivery_method/delivery_type/
@@ -37,6 +38,10 @@ class CheckoutRequest extends FormRequest
             'delivery_city' => ['nullable', 'string', 'max:100'],
             'delivery_address' => ['nullable', 'string', 'max:255'],
 
+            'is_gift' => ['nullable', 'boolean'],
+            'gift_recipient_email' => ['nullable', 'email', 'max:255'],
+            'gift_message' => ['nullable', 'string', 'max:500'],
+
             'payment_method' => ['nullable', 'string', Rule::exists('payment_methods', 'code')->where('publish', 1)],
 
             'products' => ['nullable', 'array'],
@@ -45,5 +50,18 @@ class CheckoutRequest extends FormRequest
 
             'promo_code' => ['nullable', 'string', 'max:50'],
         ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            if (
+                $this->boolean('is_gift')
+                && auth()->check()
+                && $this->input('gift_recipient_email') === auth()->user()->email
+            ) {
+                $validator->errors()->add('gift_recipient_email', __('order::translate.gift_recipient_is_self'));
+            }
+        });
     }
 }

@@ -10,6 +10,7 @@ return [
     'edit' => 'Редагувати',
     'delete' => 'Видалити',
     'parent category' => 'Батьківська категорія',
+    'nav group' => 'Група навігації',
     'seo_section' => 'SEO',
     'products_section' => 'Товари',
     'docs' => [

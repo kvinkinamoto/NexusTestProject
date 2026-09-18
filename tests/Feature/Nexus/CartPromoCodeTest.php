@@ -22,34 +22,34 @@ beforeEach(function () {
 });
 
 it('applies a valid promo code to the cart', function () {
-    $this->service->applyPromoCode($this->user, 'save10');
+    $this->service->applyPromoCode($this->user, null, 'save10');
 
-    expect($this->service->getCart($this->user)->promo_code_id)->toBe($this->code->id);
+    expect($this->service->resolveCart($this->user, null)->promo_code_id)->toBe($this->code->id);
 });
 
 it('rejects applying an unknown promo code', function () {
-    $this->service->applyPromoCode($this->user, 'NOPE');
+    $this->service->applyPromoCode($this->user, null, 'NOPE');
 })->throws(DomainException::class);
 
 it('rejects applying an inactive promo code', function () {
     $this->code->update(['publish' => false]);
 
-    $this->service->applyPromoCode($this->user, 'SAVE10');
+    $this->service->applyPromoCode($this->user, null, 'SAVE10');
 })->throws(DomainException::class);
 
 it('removes the promo code from the cart', function () {
-    $this->service->applyPromoCode($this->user, 'SAVE10');
-    $this->service->removePromoCode($this->user);
+    $this->service->applyPromoCode($this->user, null, 'SAVE10');
+    $this->service->removePromoCode($this->user, null);
 
-    expect($this->service->getCart($this->user)->promo_code_id)->toBeNull();
+    expect($this->service->resolveCart($this->user, null)->promo_code_id)->toBeNull();
 });
 
 it('reflects the applied promo code discount in the cart breakdown', function () {
     $product = ShopProduct::create(['name' => 'Item', 'slug' => 'item', 'price' => 100]);
-    $this->service->add($this->user, $product->id, 1);
-    $this->service->applyPromoCode($this->user, 'SAVE10');
+    $this->service->add($this->user, null, $product->id, 1);
+    $this->service->applyPromoCode($this->user, null, 'SAVE10');
 
-    $cart = $this->service->getCart($this->user);
+    $cart = $this->service->resolveCart($this->user, null);
     $breakdown = $this->service->getBreakdownForCart($cart);
 
     expect($breakdown['subtotal'])->toBe(100.0);
@@ -60,10 +60,10 @@ it('reflects the applied promo code discount in the cart breakdown', function ()
 
 it('leaves the total unaffected once the promo code is removed', function () {
     $product = ShopProduct::create(['name' => 'Item', 'slug' => 'item', 'price' => 100]);
-    $this->service->add($this->user, $product->id, 1);
-    $this->service->applyPromoCode($this->user, 'SAVE10');
-    $this->service->removePromoCode($this->user);
+    $this->service->add($this->user, null, $product->id, 1);
+    $this->service->applyPromoCode($this->user, null, 'SAVE10');
+    $this->service->removePromoCode($this->user, null);
 
-    $cart = $this->service->getCart($this->user);
+    $cart = $this->service->resolveCart($this->user, null);
     expect($this->service->getBreakdownForCart($cart)['total_price'])->toBe(100.0);
 });

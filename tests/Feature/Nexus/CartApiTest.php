@@ -11,8 +11,18 @@ beforeEach(function () {
     $this->user = User::factory()->create();
 });
 
-it('rejects an unauthenticated request', function () {
-    $this->getJson('/api/cart')->assertUnauthorized();
+it('returns an empty session-scoped cart for a guest instead of rejecting the request', function () {
+    $this->getJson('/api/cart')
+        ->assertOk()
+        ->assertJsonCount(0, 'products');
+});
+
+it('lets a guest add a product to their session cart without authenticating', function () {
+    $product = ShopProduct::create(['name' => 'iPhone', 'slug' => 'iphone', 'price' => 999, 'stock' => 10]);
+
+    $this->postJson('/api/cart/add', ['id' => $product->id, 'quantity' => 1])
+        ->assertOk()
+        ->assertJson(['success' => true]);
 });
 
 it('adds a product via the API and returns it in the cart', function () {

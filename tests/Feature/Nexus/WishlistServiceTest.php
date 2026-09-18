@@ -18,35 +18,42 @@ beforeEach(function () {
 });
 
 it('adds a product to the wishlist idempotently', function () {
-    $this->service->add($this->user, $this->product->id);
-    $this->service->add($this->user, $this->product->id);
+    $this->service->add($this->user, null, $this->product->id);
+    $this->service->add($this->user, null, $this->product->id);
 
     expect(WishlistItem::query()->where('user_id', $this->user->id)->count())->toBe(1);
 });
 
 it('removes a product from the wishlist', function () {
-    $this->service->add($this->user, $this->product->id);
+    $this->service->add($this->user, null, $this->product->id);
 
-    $this->service->remove($this->user, $this->product->id);
+    $this->service->remove($this->user, null, $this->product->id);
 
     expect(WishlistItem::query()->where('user_id', $this->user->id)->exists())->toBeFalse();
 });
 
 it('syncs a batch of product ids, ignoring duplicates', function () {
     $second = ShopProduct::create(['name' => 'Hat', 'slug' => 'hat', 'price' => 50, 'publish' => true]);
-    $this->service->add($this->user, $this->product->id);
+    $this->service->add($this->user, null, $this->product->id);
 
-    $this->service->sync($this->user, [$this->product->id, $second->id]);
+    $this->service->sync($this->user, null, [$this->product->id, $second->id]);
 
     expect(WishlistItem::query()->where('user_id', $this->user->id)->count())->toBe(2);
 });
 
 it('lists only published products in the detail view', function () {
     $unpublished = ShopProduct::create(['name' => 'Hidden', 'slug' => 'hidden', 'price' => 10, 'publish' => false]);
-    $this->service->add($this->user, $this->product->id);
-    $this->service->add($this->user, $unpublished->id);
+    $this->service->add($this->user, null, $this->product->id);
+    $this->service->add($this->user, null, $unpublished->id);
 
     $details = $this->repository->getDetailsForUser($this->user);
 
     expect($details->pluck('id')->all())->toBe([$this->product->id]);
+});
+
+it('adds a product to a guest wishlist scoped by session id, separate from any user wishlist', function () {
+    $this->service->add(null, 'guest-session-xyz', $this->product->id);
+
+    expect(WishlistItem::where('session_id', 'guest-session-xyz')->where('product_id', $this->product->id)->exists())->toBeTrue();
+    expect(WishlistItem::query()->where('user_id', $this->user->id)->exists())->toBeFalse();
 });
