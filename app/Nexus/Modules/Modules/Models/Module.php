@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Nodex\Nexus\Attributes\Column;
 use Nodex\Nexus\Attributes\Field;
 use Nodex\Nexus\Attributes\Module as ModuleAttr;
+use Nodex\Nexus\Attributes\Permission;
 use Nodex\Nexus\Attributes\Requests;
 use Nodex\Nexus\Attributes\Section;
 use Nodex\Nexus\Attributes\TableAction;
@@ -27,13 +28,19 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
  * scan to find it (see ModuleRegistry::scanDirectory()).
  *
  * No #[TableAction] for create/delete is declared below — this screen isn't
- * where you'd install or remove a module (that's nexus:module:install,
- * which touches migrations/permissions/etc.; a raw delete() here also skips
- * ModuleManager::uninstall()'s permission cleanup). AttributeSchemaReader
+ * where you'd hand-create or remove a module row (a raw delete() here also
+ * skips ModuleManager::uninstall()'s permission cleanup). AttributeSchemaReader
  * still defaults every module to a full create/edit/delete/restore action
  * set regardless of what's declared, so both remain reachable — the create
  * form only accepts `name`, and is_system (see booted() below) blocks
  * deleting the one row that would actually break something.
+ *
+ * `installFromArchive` (see Http\Controllers\AdminController and
+ * Services\ArchiveInstallService) is the one real "install" entry point on
+ * this screen — it extracts an uploaded .zip onto disk under
+ * app/Nexus/{Modules,Plugins,Widgets} and, for a module, runs
+ * nexus:module:install against it, same as running that command by hand
+ * after manually copying a folder there.
  */
 #[ModuleAttr(
     name: 'modules',
@@ -46,6 +53,8 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[TableFilter(name: 'search', label: 'Search by Name', type: 'search')]
 #[TableAction(name: 'edit', label: 'View', icon: 'edit', isConfirm: false)]
+#[TableAction(name: 'installFromArchive', label: 'Install from archive', icon: 'archive', isConfirm: false, isMain: true)]
+#[Permission(action: 'installFromArchive', label: 'Install from archive')]
 #[Section(name: 'main', column: 'right', type: 'base', icon: 'solar:box-bold')]
 class Module extends Model
 {
