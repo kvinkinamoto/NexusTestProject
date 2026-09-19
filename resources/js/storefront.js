@@ -297,7 +297,7 @@ Alpine.data('cartPage', () => ({
  */
 const DELIVERY_KEYS_WITH_ADDRESS_PICKER = ['nova-poshta', 'ukr-poshta'];
 
-Alpine.data('checkoutForm', (defaultDelivery) => ({
+Alpine.data('checkoutForm', (defaultDelivery = null) => ({
     busy: false,
     selectedDelivery: defaultDelivery,
     another: false,

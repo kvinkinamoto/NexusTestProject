@@ -1,6 +1,6 @@
 @extends('storefront::public.layouts.storefront')
 
-@section('title', 'Мій кабінет — Активувати подарунок — STYLE')
+@section('title', 'Мій кабінет — Активувати подарунок — Nexus Store')
 
 @section('content')
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-8">

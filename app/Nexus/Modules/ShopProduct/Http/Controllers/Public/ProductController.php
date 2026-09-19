@@ -39,6 +39,8 @@ class ProductController extends Controller
                 ->get();
         }
 
+        $releases = $product->releases()->published()->get();
+
         return view('shopProduct::public.product', [
             'product' => $product,
             'price' => $pricing['price'],
@@ -47,6 +49,7 @@ class ProductController extends Controller
             'reviews' => $reviews,
             'averageRating' => $averageRating,
             'relatedProducts' => $relatedProducts,
+            'releases' => $releases,
         ]);
     }
 }

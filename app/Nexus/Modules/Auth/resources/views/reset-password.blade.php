@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Новий пароль — STYLE</title>
+    <title>Новий пароль — Nexus Store</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/storefront.js'])
@@ -12,8 +12,8 @@
 
 <div class="min-h-screen flex flex-col items-center justify-center px-6 py-12" x-data="resetPasswordForm()">
     <a href="{{ route('shop.home') }}" class="flex flex-col leading-none items-center mb-10">
-        <span class="font-outfit text-2xl font-bold tracking-tight">STYLE</span>
-        <span class="text-[10px] tracking-[0.25em] text-neutral-400 font-medium">CLOTHING STORE</span>
+        <span class="font-outfit text-2xl font-bold tracking-tight">Nexus Store</span>
+        <span class="text-[10px] tracking-[0.25em] text-neutral-400 font-medium">PLATFORM MODULES</span>
     </a>
 
     <div class="max-w-sm w-full">

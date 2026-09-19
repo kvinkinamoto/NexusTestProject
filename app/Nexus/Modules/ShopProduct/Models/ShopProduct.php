@@ -5,8 +5,10 @@ namespace App\Nexus\Modules\ShopProduct\Models;
 use App\Nexus\Concerns\HasAutoSlug;
 use App\Nexus\Modules\ActivityLog\Traits\LogsActivityWithTranslatable;
 use App\Nexus\Modules\Currency\Services\CurrencyService;
+use App\Nexus\Modules\ProductRelease\Models\ProductRelease;
 use App\Nexus\Modules\ShopAttribute\Models\AttributeOption;
 use App\Nexus\Modules\ShopCategory\Models\ShopCategory;
+use App\Nexus\Modules\ShopProduct\Enums\PackageType;
 use App\Nexus\Modules\ShopProduct\Requests\AdminStoreRequest;
 use App\Nexus\Modules\ShopProduct\Requests\AdminUpdateRequest;
 use App\Nexus\Modules\ShopProduct\Services\Actions\ResolveProductPriceAction;
@@ -15,6 +17,7 @@ use App\Nexus\Modules\ShopProductVariation\Models\VariationGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Nodex\Nexus\Attributes\Column;
 use Nodex\Nexus\Attributes\Field;
 use Nodex\Nexus\Attributes\Module;
@@ -57,6 +60,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[Section(name: 'main', column: 'left', type: 'columns_2', icon: 'solar:box-bold')]
 #[Section(name: 'settings', column: 'right', type: 'base', icon: 'solar:settings-bold')]
+#[Section(name: 'github_section', column: 'right', type: 'base', icon: 'solar:code-square-bold', tab: 'advanced')]
 #[Section(name: 'relations_section', column: 'left', type: 'base', icon: 'solar:link-bold')]
 #[Section(name: 'seo_section', column: 'right', type: 'base', icon: 'solar:magnifer-bold')]
 class ShopProduct extends Model
@@ -94,6 +98,19 @@ class ShopProduct extends Model
     {
         return $this->belongsTo(ShopProductType::class, 'type_id');
     }
+
+    #[Column(label: 'Package type')]
+    #[Field(type: 'enum', section: 'github_section', label: 'Package type', required: false, enum: PackageType::class, default: 'module')]
+    protected $package_type;
+
+    #[Field(type: 'string', section: 'github_section', label: 'GitHub owner', required: false, rules: ['max:255'])]
+    protected $github_owner;
+
+    #[Field(type: 'string', section: 'github_section', label: 'GitHub repo', required: false, rules: ['max:255'])]
+    protected $github_repo;
+
+    #[Field(type: 'string', section: 'github_section', label: 'Min core version', required: false, rules: ['max:20'])]
+    protected $min_core_version;
 
     #[Column(label: 'Price', sortable: true)]
     #[Field(type: 'number', section: 'settings', label: 'Price', required: true, rules: ['numeric', 'min:0'])]
@@ -134,6 +151,13 @@ class ShopProduct extends Model
         return $this->belongsToMany(self::class, 'products_related', 'product_id', 'related_id')->withTimestamps();
     }
 
+    #[Field(type: 'relationManager', section: 'relations_section', label: 'Releases', required: false)]
+    #[Relation(type: 'hasMany')]
+    public function releases(): HasMany
+    {
+        return $this->hasMany(ProductRelease::class, 'product_id')->orderByDesc('published_at');
+    }
+
     #[Field(type: 'string', section: 'seo_section', label: 'Meta title', required: false, rules: ['max:255'])]
     protected $meta_title;
 
@@ -142,11 +166,14 @@ class ShopProduct extends Model
 
     protected $fillable = [
         'name', 'slug', 'short_description', 'description', 'image',
-        'category_id', 'type_id', 'variation_group_id', 'price', 'price_discount', 'bonuses', 'stock', 'publish',
+        'category_id', 'type_id', 'variation_group_id',
+        'package_type', 'github_owner', 'github_repo', 'min_core_version',
+        'price', 'price_discount', 'bonuses', 'stock', 'publish',
         'meta_title', 'meta_description',
     ];
 
     protected $casts = [
+        'package_type' => PackageType::class,
         'price' => 'decimal:2',
         'price_discount' => 'decimal:2',
         'bonuses' => 'decimal:2',

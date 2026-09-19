@@ -1,6 +1,6 @@
 @extends('storefront::public.layouts.storefront')
 
-@section('title', 'Кошик — STYLE')
+@section('title', 'Кошик — Nexus Store')
 
 @section('content')
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
@@ -66,7 +66,7 @@
 
                             <div class="space-y-3 text-sm">
                                 <div class="flex justify-between text-neutral-600">
-                                    <span>Товари</span>
+                                    <span>Модулі</span>
                                     <span class="text-neutral-900 font-medium" x-text="formatPrice(cart.subtotal)"></span>
                                 </div>
                                 <div class="flex justify-between text-neutral-600" x-show="cart.cart_discount_total > 0">
@@ -76,10 +76,6 @@
                                 <div class="flex justify-between text-neutral-600" x-show="cart.promo_code_discount > 0">
                                     <span>Промокод</span>
                                     <span class="text-red-500 font-medium" x-text="'−' + formatPrice(cart.promo_code_discount)"></span>
-                                </div>
-                                <div class="flex justify-between text-neutral-600" x-show="cart.free_shipping">
-                                    <span>Доставка</span>
-                                    <span class="text-emerald-600 font-medium">Безкоштовно</span>
                                 </div>
                             </div>
 

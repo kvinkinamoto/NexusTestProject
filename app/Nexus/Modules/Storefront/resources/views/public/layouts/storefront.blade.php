@@ -14,8 +14,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     @php
-        $ogTitle = trim($__env->yieldContent('title', 'STYLE — Інтернет-магазин одягу'));
-        $ogDescription = trim($__env->yieldContent('meta_description', 'Сучасний одяг для чоловіків та жінок: новинки, популярні товари, швидка доставка по Україні.'));
+        $ogTitle = trim($__env->yieldContent('title', 'Nexus Store — Модулі для платформи Nexus'));
+        $ogDescription = trim($__env->yieldContent('meta_description', 'Готові платні модулі, плагіни та віджети для Nexus: миттєве завантаження, довічні оновлення, приватний доступ до вихідного коду.'));
         $ogImage = trim($__env->yieldContent('og_image', ''));
         $canonicalUrl = trim($__env->yieldContent('canonical_url', url()->current()));
     @endphp
@@ -26,7 +26,7 @@
 
     {{-- Open Graph --}}
     <meta property="og:type" content="@yield('og_type', 'website')" />
-    <meta property="og:site_name" content="STYLE" />
+    <meta property="og:site_name" content="Nexus Store" />
     <meta property="og:locale" content="uk_UA" />
     <meta property="og:url" content="{{ $canonicalUrl }}" />
     <meta property="og:title" content="{{ $ogTitle }}" />
@@ -55,12 +55,12 @@
     <div class="hidden lg:block border-b border-neutral-100 bg-neutral-50/60">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9 text-xs text-neutral-500">
             <div class="flex items-center gap-5">
-                <a href="{{ url('/delivery') }}" class="hover:text-neutral-900">Доставка та повернення</a>
-                <a href="{{ url('/about') }}" class="hover:text-neutral-900">Про магазин</a>
+                <a href="{{ url('/delivery') }}" class="hover:text-neutral-900">Ліцензування</a>
+                <a href="{{ url('/about') }}" class="hover:text-neutral-900">Про нас</a>
                 <a href="{{ url('/contacts') }}" class="hover:text-neutral-900">Контакти</a>
             </div>
             <div class="flex items-center gap-5">
-                <a href="tel:+380991234567" class="hover:text-neutral-900">+38 (099) 123 45 67</a>
+                <a href="mailto:support@nexus-store.dev" class="hover:text-neutral-900">support@nexus-store.dev</a>
             </div>
         </div>
     </div>
@@ -72,15 +72,15 @@
             </button>
 
             <a href="{{ route('shop.home') }}" class="flex flex-col leading-none mr-2 lg:mr-8 shrink-0">
-                <span class="font-outfit text-2xl font-bold tracking-tight text-neutral-900">STYLE</span>
-                <span class="hidden sm:block text-[10px] tracking-[0.25em] text-neutral-400 font-medium">CLOTHING STORE</span>
+                <span class="font-outfit text-2xl font-bold tracking-tight text-neutral-900">Nexus Store</span>
+                <span class="hidden sm:block text-[10px] tracking-[0.25em] text-neutral-400 font-medium">PLATFORM MODULES</span>
             </a>
 
             <nav class="hidden lg:flex items-center gap-7 text-sm font-medium text-neutral-700">
                 @foreach($navCategories ?? [] as $navCategory)
                     <a href="{{ route('shop.catalog.category', $navCategory->slug) }}" class="hover:text-neutral-900">{{ $navCategory->name }}</a>
                 @endforeach
-                <a href="{{ route('shop.catalog') }}" class="hover:text-neutral-900">Каталог</a>
+                <a href="{{ route('shop.catalog') }}" class="hover:text-neutral-900">Каталог модулів</a>
             </nav>
 
             <div class="flex-1"></div>
@@ -88,7 +88,7 @@
             <div class="hidden md:block relative w-56 lg:w-72" x-data="searchAutocomplete()" @click.outside="open = false" @keydown.escape="open = false">
                 <form action="{{ route('shop.catalog') }}" method="GET" class="flex items-center relative">
                     <svg class="size-4 absolute left-3.5 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
-                    <input type="search" name="q" value="{{ request('q') }}" x-model="query" @input="onInput" @focus="if (results.length) open = true" autocomplete="off" placeholder="Знайти товар..." class="w-full h-10 rounded-full border border-neutral-200 bg-neutral-50 pl-10 pr-4 text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-300" />
+                    <input type="search" name="q" value="{{ request('q') }}" x-model="query" @input="onInput" @focus="if (results.length) open = true" autocomplete="off" placeholder="Знайти модуль..." class="w-full h-10 rounded-full border border-neutral-200 bg-neutral-50 pl-10 pr-4 text-sm placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-300" />
                 </form>
                 <div x-show="open && results.length" x-cloak class="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden z-50">
                     <template x-for="p in results" :key="p.slug">
@@ -127,7 +127,7 @@
         <div x-show="searchOpen" x-cloak class="md:hidden pb-3 relative" x-data="searchAutocomplete()" @keydown.escape="open = false">
             <form action="{{ route('shop.catalog') }}" method="GET" class="relative">
                 <svg class="size-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
-                <input type="search" name="q" value="{{ request('q') }}" x-model="query" @input="onInput" autocomplete="off" placeholder="Знайти товар..." class="w-full h-10 rounded-full border border-neutral-200 bg-neutral-50 pl-10 pr-4 text-sm placeholder:text-neutral-400 focus:outline-none" />
+                <input type="search" name="q" value="{{ request('q') }}" x-model="query" @input="onInput" autocomplete="off" placeholder="Знайти модуль..." class="w-full h-10 rounded-full border border-neutral-200 bg-neutral-50 pl-10 pr-4 text-sm placeholder:text-neutral-400 focus:outline-none" />
             </form>
             <div x-show="open && results.length" x-cloak class="absolute left-0 right-0 mt-2 bg-white rounded-2xl shadow-lg border border-neutral-200 overflow-hidden z-50">
                 <template x-for="p in results" :key="p.slug">
@@ -153,7 +153,7 @@
              x-show="mobileOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
              x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full">
             <div class="flex items-center justify-between h-16 px-5 border-b border-neutral-200">
-                <span class="font-outfit text-xl font-bold">STYLE</span>
+                <span class="font-outfit text-xl font-bold">Nexus Store</span>
                 <button class="p-2 -mr-2" @click="mobileOpen = false" aria-label="Закрити">
                     <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                 </button>
@@ -162,8 +162,8 @@
                 @foreach($navCategories ?? [] as $navCategory)
                     <a href="{{ route('shop.catalog.category', $navCategory->slug) }}" class="block py-2.5 border-b border-neutral-100">{{ $navCategory->name }}</a>
                 @endforeach
-                <a href="{{ route('shop.catalog') }}" class="block py-2.5 border-b border-neutral-100">Каталог</a>
-                <a href="{{ url('/about') }}" class="block py-2.5 border-b border-neutral-100 text-neutral-500">Про магазин</a>
+                <a href="{{ route('shop.catalog') }}" class="block py-2.5 border-b border-neutral-100">Каталог модулів</a>
+                <a href="{{ url('/about') }}" class="block py-2.5 border-b border-neutral-100 text-neutral-500">Про нас</a>
                 <a href="{{ url('/contacts') }}" class="block py-2.5 border-b border-neutral-100 text-neutral-500">Контакти</a>
             </nav>
             <div class="px-5 py-5 border-t border-neutral-200 space-y-3">
@@ -172,7 +172,7 @@
                 @else
                     <a href="{{ route('login') }}" class="flex items-center gap-2 text-sm font-medium">Увійти</a>
                 @endauth
-                <a href="tel:+380991234567" class="flex items-center gap-2 text-sm text-neutral-500">+38 (099) 123 45 67</a>
+                <a href="mailto:support@nexus-store.dev" class="flex items-center gap-2 text-sm text-neutral-500">support@nexus-store.dev</a>
             </div>
         </div>
     </div>
@@ -185,23 +185,23 @@
 <footer class="bg-neutral-950 text-neutral-300 mt-8">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14 grid grid-cols-2 lg:grid-cols-4 gap-10">
         <div class="col-span-2 lg:col-span-1">
-            <span class="font-outfit text-2xl font-bold text-white">STYLE</span>
-            <p class="mt-3 text-sm text-neutral-400 max-w-xs">Сучасний одяг для тих, хто цінує стиль, комфорт та якість щодня.</p>
+            <span class="font-outfit text-2xl font-bold text-white">Nexus Store</span>
+            <p class="mt-3 text-sm text-neutral-400 max-w-xs">Готові платні модулі, плагіни та віджети для платформи Nexus — з довічними оновленнями та підтримкою розробника.</p>
         </div>
         <div>
             <h4 class="text-white font-semibold text-sm mb-4">Навігація</h4>
             <ul class="space-y-2.5 text-sm">
                 <li><a href="{{ route('shop.home') }}" class="hover:text-white">Головна</a></li>
-                <li><a href="{{ route('shop.catalog') }}" class="hover:text-white">Каталог</a></li>
-                <li><a href="{{ url('/about') }}" class="hover:text-white">Про магазин</a></li>
+                <li><a href="{{ route('shop.catalog') }}" class="hover:text-white">Каталог модулів</a></li>
+                <li><a href="{{ url('/about') }}" class="hover:text-white">Про нас</a></li>
                 <li><a href="{{ url('/contacts') }}" class="hover:text-white">Контакти</a></li>
             </ul>
         </div>
         <div>
             <h4 class="text-white font-semibold text-sm mb-4">Допомога</h4>
             <ul class="space-y-2.5 text-sm">
-                <li><a href="{{ url('/delivery') }}" class="hover:text-white">Доставка та оплата</a></li>
-                <li><a href="{{ url('/delivery') }}" class="hover:text-white">Повернення товару</a></li>
+                <li><a href="{{ url('/delivery') }}" class="hover:text-white">Ліцензування</a></li>
+                <li><a href="{{ url('/delivery') }}" class="hover:text-white">Оновлення та підтримка</a></li>
                 @auth
                     <li><a href="{{ route('account.orders') }}" class="hover:text-white">Мої замовлення</a></li>
                 @endauth
@@ -210,15 +210,13 @@
         <div>
             <h4 class="text-white font-semibold text-sm mb-4">Контакти</h4>
             <ul class="space-y-2.5 text-sm text-neutral-400">
-                <li>м. Київ, вул. Хрещатик, 1</li>
-                <li><a href="tel:+380991234567" class="hover:text-white">+38 (099) 123 45 67</a></li>
-                <li><a href="mailto:info@style.ua" class="hover:text-white">info@style.ua</a></li>
+                <li><a href="mailto:support@nexus-store.dev" class="hover:text-white">support@nexus-store.dev</a></li>
             </ul>
         </div>
     </div>
     <div class="border-t border-white/10">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-neutral-500">
-            <p>© {{ date('Y') }} STYLE. Усі права захищені.</p>
+            <p>© {{ date('Y') }} Nexus Store. Усі права захищені.</p>
             <div class="flex items-center gap-4">
                 @guest
                     <a href="{{ route('login') }}" class="hover:text-neutral-300">Увійти</a>

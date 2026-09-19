@@ -1,6 +1,6 @@
 @extends('storefront::public.layouts.storefront')
 
-@section('title', ($page->meta_title ?: $page->title).' — STYLE')
+@section('title', ($page->meta_title ?: $page->title).' — Nexus Store')
 @section('meta_description', $page->meta_description ?: '')
 
 @section('content')

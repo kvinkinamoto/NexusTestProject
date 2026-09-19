@@ -1,6 +1,6 @@
 @extends('storefront::public.layouts.storefront')
 
-@section('title', 'Дякуємо за замовлення — STYLE')
+@section('title', 'Дякуємо за замовлення — Nexus Store')
 
 @section('content')
     <div class="mx-auto max-w-lg px-4 sm:px-6 py-16 sm:py-24 text-center">
@@ -9,7 +9,7 @@
         </div>
 
         <h1 class="font-outfit text-2xl sm:text-3xl font-bold mt-6">Дякуємо за замовлення!</h1>
-        <p class="text-neutral-500 mt-3 text-sm sm:text-base">Ваше замовлення успішно оформлено. Найближчим часом наш менеджер зв'яжеться з вами для підтвердження.</p>
+        <p class="text-neutral-500 mt-3 text-sm sm:text-base">Ваше замовлення успішно оформлено. Посилання для завантаження та ліцензійний ключ надіслано на вашу email-адресу.</p>
 
         <div class="mt-8 bg-neutral-50 rounded-2xl p-6 text-left space-y-3 text-sm">
             <div class="flex justify-between"><span class="text-neutral-500">Номер замовлення</span><span class="font-semibold">#{{ $order->id }}</span></div>
@@ -17,9 +17,6 @@
             <div class="flex justify-between"><span class="text-neutral-500">Сума</span><span class="font-semibold">{{ number_format((float) $order->total_price, 0, '.', ' ') }} грн</span></div>
             @if($order->paymentMethod)
                 <div class="flex justify-between"><span class="text-neutral-500">Спосіб оплати</span><span class="font-semibold">{{ $order->paymentMethod->title }}</span></div>
-            @endif
-            @if($order->deliveryMethod)
-                <div class="flex justify-between"><span class="text-neutral-500">Доставка</span><span class="font-semibold">{{ $order->deliveryMethod->title }}</span></div>
             @endif
             <div class="flex justify-between items-center"><span class="text-neutral-500">Статус</span><span class="inline-flex items-center gap-1.5 text-amber-600 font-semibold"><span class="size-1.5 rounded-full bg-amber-500"></span>{{ $order->status?->name ?? 'Нове' }}</span></div>
         </div>

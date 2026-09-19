@@ -61,4 +61,9 @@ return [
         'channel_id' => env('TELEGRAM_CHANNEL_ID'),
     ],
 
+    'github' => [
+        'token' => env('GITHUB_TOKEN'),
+        'webhook_secret' => env('GITHUB_WEBHOOK_SECRET'),
+    ],
+
 ];

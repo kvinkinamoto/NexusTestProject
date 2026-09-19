@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Вхід — STYLE</title>
+    <title>Вхід — Nexus Store</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/storefront.js'])
@@ -13,8 +13,8 @@
 <div class="min-h-screen grid lg:grid-cols-2">
     <div class="flex flex-col justify-center px-6 sm:px-12 lg:px-20 py-12">
         <a href="{{ route('shop.home') }}" class="flex flex-col leading-none mb-10">
-            <span class="font-outfit text-2xl font-bold tracking-tight">STYLE</span>
-            <span class="text-[10px] tracking-[0.25em] text-neutral-400 font-medium">CLOTHING STORE</span>
+            <span class="font-outfit text-2xl font-bold tracking-tight">Nexus Store</span>
+            <span class="text-[10px] tracking-[0.25em] text-neutral-400 font-medium">PLATFORM MODULES</span>
         </a>
 
         <div class="max-w-sm w-full mx-auto lg:mx-0">
@@ -59,8 +59,8 @@
         <svg class="absolute inset-0 m-auto size-32 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-8.25V15M4.5 4.5h15A1.5 1.5 0 0 1 21 6v13.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5V6a1.5 1.5 0 0 1 1.5-1.5Z" /></svg>
         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
         <div class="absolute bottom-12 left-12 right-12 text-white">
-            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-white/80 mb-2">Нова колекція</p>
-            <h2 class="font-outfit text-3xl font-bold">Весна / Літо 2024</h2>
+            <p class="text-xs font-semibold tracking-[0.2em] uppercase text-white/80 mb-2">Нові надходження</p>
+            <h2 class="font-outfit text-3xl font-bold">Свіжі модулі щотижня</h2>
         </div>
     </div>
 </div>

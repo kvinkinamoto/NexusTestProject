@@ -2,6 +2,7 @@
 
 namespace App\Nexus\Modules\ShopProduct\Requests;
 
+use App\Nexus\Modules\ShopProduct\Enums\PackageType;
 use Illuminate\Validation\Rule;
 use Nodex\Nexus\Http\Requests\NexusFormRequest;
 
@@ -15,6 +16,10 @@ class AdminUpdateRequest extends NexusFormRequest
             'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],
             'image' => ['nullable', 'string'],
+            'package_type' => ['nullable', Rule::enum(PackageType::class)],
+            'github_owner' => ['nullable', 'string', 'max:255'],
+            'github_repo' => ['nullable', 'string', 'max:255'],
+            'min_core_version' => ['nullable', 'string', 'max:20'],
             'price' => ['required', 'numeric', 'min:0'],
             'price_discount' => ['nullable', 'numeric', 'min:0', 'lt:price'],
             'bonuses' => ['nullable', 'numeric', 'min:0'],

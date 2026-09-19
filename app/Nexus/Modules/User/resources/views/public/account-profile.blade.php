@@ -1,6 +1,6 @@
 @extends('storefront::public.layouts.storefront')
 
-@section('title', 'Мій кабінет — Профіль — STYLE')
+@section('title', 'Мій кабінет — Профіль — Nexus Store')
 
 @section('content')
     @php($user = auth()->user())

@@ -1,6 +1,6 @@
 @extends('storefront::public.layouts.storefront')
 
-@section('title', $product->meta_title ?: $product->name.' — STYLE')
+@section('title', $product->meta_title ?: $product->name.' — Nexus Store')
 @section('meta_description', $product->meta_description ?: Str::limit(strip_tags($product->short_description), 160))
 @section('og_type', 'product')
 @if($product->image)
@@ -41,7 +41,12 @@
 
             <!-- ============ INFO ============ -->
             <div>
-                <p class="text-sm text-neutral-400">Артикул: {{ $product->id }}</p>
+                <div class="flex items-center gap-2 flex-wrap">
+                    <p class="text-sm text-neutral-400">Артикул: {{ $product->id }}</p>
+                    @if($product->package_type)
+                        <span class="inline-flex items-center h-5 px-2 rounded-full bg-neutral-100 text-neutral-600 text-xs font-medium">{{ __('shopProduct::translate.'.$product->package_type->value) }}</span>
+                    @endif
+                </div>
                 <h1 class="font-outfit text-2xl sm:text-3xl font-bold mt-1">{{ $product->name }}</h1>
 
                 <div class="flex items-center gap-3 mt-3 flex-wrap">
@@ -51,12 +56,6 @@
                         @endfor
                     </div>
                     <a href="#reviews" class="text-sm text-neutral-500 hover:text-neutral-900">{{ $averageRating }} · {{ $reviews->total() }} відгуків</a>
-                    <span class="text-neutral-300">|</span>
-                    @if(is_null($product->stock) || $product->stock > 0)
-                        <span class="inline-flex items-center gap-1.5 text-sm text-emerald-600 font-medium"><span class="size-1.5 rounded-full bg-emerald-500"></span> В наявності</span>
-                    @else
-                        <span class="inline-flex items-center gap-1.5 text-sm text-red-500 font-medium"><span class="size-1.5 rounded-full bg-red-500"></span> Немає в наявності</span>
-                    @endif
                 </div>
 
                 <div class="flex items-baseline gap-3 mt-5">
@@ -94,7 +93,7 @@
                         <button type="button" @click="qty++" class="size-9 flex items-center justify-center text-lg" aria-label="Збільшити">+</button>
                     </div>
                     <button type="button" @click="add(qty)" :disabled="busy" class="flex-1 h-12 rounded-full bg-neutral-900 text-white text-sm font-semibold hover:bg-neutral-800 inline-flex items-center justify-center gap-2">
-                        <span x-show="!added">Додати в кошик</span>
+                        <span x-show="!added">Купити ліцензію</span>
                         <span x-show="added" x-cloak>Додано в кошик ✓</span>
                     </button>
                 </div>
@@ -102,11 +101,11 @@
                 <div class="mt-8 space-y-3 border-t border-neutral-200 pt-6 text-sm">
                     <div class="flex items-center gap-3 text-neutral-600">
                         <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5V14.25m0 0V9m0 5.25h13.5m-13.5 0V9m17.25 5.25V9a1.5 1.5 0 0 0-1.5-1.5h-1.5m3 6.75V9m-3 0H4.5" /></svg>
-                        Доставка 1-2 дні по Україні
+                        Довічні оновлення ядра та функціоналу
                     </div>
                     <div class="flex items-center gap-3 text-neutral-600">
                         <svg class="size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
-                        Повернення протягом 14 днів
+                        Ліцензія на 1 проєкт (додаткові проєкти — окрема покупка)
                     </div>
                 </div>
             </div>
@@ -116,11 +115,32 @@
         <div class="mt-14 max-w-3xl">
             <div class="flex gap-6 border-b border-neutral-200">
                 <button @click="tab = 'description'" class="pb-3 text-sm font-semibold border-b-2 -mb-px" :class="tab === 'description' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-400'">Опис</button>
+                <button @click="tab = 'versions'" class="pb-3 text-sm font-semibold border-b-2 -mb-px" :class="tab === 'versions' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-400'">Версії</button>
                 <button @click="tab = 'reviews'" class="pb-3 text-sm font-semibold border-b-2 -mb-px" :class="tab === 'reviews' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-400'">Відгуки ({{ $reviews->total() }})</button>
             </div>
 
             <div x-show="tab === 'description'" class="py-6 text-sm text-neutral-600 leading-relaxed">
                 {!! nl2br(e($product->description ?: $product->short_description ?: 'Опис товару буде додано найближчим часом.')) !!}
+            </div>
+
+            <div x-show="tab === 'versions'" x-cloak class="py-6 space-y-5">
+                @forelse($releases as $release)
+                    <div class="flex items-start gap-4 pb-5 border-b border-neutral-100 last:border-0 last:pb-0">
+                        <span class="shrink-0 mt-0.5 inline-flex items-center h-6 px-2.5 rounded-full {{ $loop->first ? 'bg-neutral-900 text-white' : 'bg-neutral-100 text-neutral-600' }} text-xs font-semibold">{{ $loop->first ? 'Поточна' : $release->published_at?->format('d.m.Y') }}</span>
+                        <div class="min-w-0">
+                            <p class="text-sm font-semibold">Версія {{ $release->version }}</p>
+                            @if($release->min_core_version)
+                                <p class="text-xs text-neutral-400 mt-0.5">Потребує Nexus {{ $release->min_core_version }}+</p>
+                            @endif
+                            @if($release->changelog)
+                                <div class="text-sm text-neutral-600 mt-2 leading-relaxed">{!! nl2br(e($release->changelog)) !!}</div>
+                            @endif
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-sm text-neutral-500">Історія версій та changelog з'являться тут найближчим часом.</p>
+                @endforelse
+                <p class="text-sm text-neutral-500">Після покупки всі майбутні оновлення цього модуля доступні безкоштовно у вашому кабінеті.</p>
             </div>
 
             <div x-show="tab === 'reviews'" x-cloak id="reviews" class="py-6 space-y-6">
@@ -181,7 +201,7 @@
         <!-- ============ RELATED ============ -->
         @if($relatedProducts->isNotEmpty())
             <section class="mt-16">
-                <h2 class="font-outfit text-xl sm:text-2xl font-bold mb-5">Схожі товари</h2>
+                <h2 class="font-outfit text-xl sm:text-2xl font-bold mb-5">Схожі модулі</h2>
                 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
                     @foreach($relatedProducts as $related)
                         @include('storefront::public.partials.product-card', ['product' => $related])

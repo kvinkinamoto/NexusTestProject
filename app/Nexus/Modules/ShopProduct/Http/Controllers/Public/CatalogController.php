@@ -5,6 +5,7 @@ namespace App\Nexus\Modules\ShopProduct\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Nexus\Modules\ShopAttribute\Models\AttributeOption;
 use App\Nexus\Modules\ShopCategory\Models\ShopCategory;
+use App\Nexus\Modules\ShopProduct\Enums\PackageType;
 use App\Nexus\Modules\ShopProduct\Models\ShopProduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -45,12 +46,13 @@ class CatalogController extends Controller
             $query->where('price', '<=', (float) $request->query('price_max'));
         }
 
-        if ($request->boolean('in_stock')) {
-            $query->where(fn ($q) => $q->whereNull('stock')->orWhere('stock', '>', 0));
-        }
-
         if ($request->filled('q')) {
             $query->where('name', 'like', '%'.$request->query('q').'%');
+        }
+
+        $packageType = PackageType::tryFrom((string) $request->query('package_type'));
+        if ($packageType) {
+            $query->where('package_type', $packageType->value);
         }
 
         match ($request->query('sort')) {
@@ -90,6 +92,8 @@ class CatalogController extends Controller
             'categories' => ShopCategory::query()->publish()->orderBy('name')->get(),
             'filterOptions' => $filterOptions,
             'selectedAttrIds' => $selectedAttrIds,
+            'packageTypes' => PackageType::cases(),
+            'selectedPackageType' => $packageType,
         ]);
     }
 }

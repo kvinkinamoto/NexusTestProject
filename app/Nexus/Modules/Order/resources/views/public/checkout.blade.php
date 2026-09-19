@@ -1,6 +1,6 @@
 @extends('storefront::public.layouts.storefront')
 
-@section('title', 'Оформлення замовлення — STYLE')
+@section('title', 'Оформлення замовлення — Nexus Store')
 
 @section('content')
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
@@ -13,7 +13,7 @@
 
         @php($user = auth()->user())
         <div class="grid lg:grid-cols-3 gap-10">
-                <form x-data="checkoutForm('{{ $deliveries->first()?->key }}')" @submit.prevent="submit($el)" class="lg:col-span-2 space-y-8">
+                <form x-data="checkoutForm()" @submit.prevent="submit($el)" class="lg:col-span-2 space-y-8">
                     @guest
                         <p class="text-sm text-neutral-500 -mt-2">Вже маєте акаунт? <a href="{{ route('login') }}" class="font-medium text-neutral-900 hover:underline">Увійдіть</a>, щоб не вводити дані щоразу.</p>
                     @endguest
@@ -43,76 +43,6 @@
                         </label>
                     </section>
 
-                    @if($deliveries->isNotEmpty())
-                        <section class="pt-6 border-t border-neutral-100">
-                            <h2 class="font-semibold text-lg mb-4">Доставка</h2>
-                            <div class="space-y-3 mb-5">
-                                @foreach($deliveries as $delivery)
-                                    <label class="flex items-center gap-3 border rounded-xl p-4 cursor-pointer" :class="selectedDelivery === '{{ $delivery->key }}' ? 'border-neutral-900 ring-1 ring-neutral-900' : 'border-neutral-200'">
-                                        <input type="radio" name="delivery_method" value="{{ $delivery->key }}" x-model="selectedDelivery" @if($loop->first) checked @endif class="size-4">
-                                        <div class="flex-1">
-                                            <p class="text-sm font-semibold">{{ $delivery->title }}</p>
-                                            @if($delivery->description)
-                                                <p class="text-xs text-neutral-500">{{ $delivery->description }}</p>
-                                            @endif
-                                        </div>
-                                    </label>
-                                    @if($delivery->types->isNotEmpty())
-                                        <div x-show="selectedDelivery === '{{ $delivery->key }}'" class="pl-4 flex flex-wrap gap-2 -mt-2 mb-2">
-                                            @foreach($delivery->types as $type)
-                                                <label class="inline-flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border border-neutral-300 cursor-pointer">
-                                                    <input type="radio" name="delivery_type" value="{{ $type->key }}" @if($loop->parent->first && $loop->first) checked @endif class="size-3.5">
-                                                    {{ $type->title }}
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                @endforeach
-                            </div>
-
-                            <div class="grid sm:grid-cols-2 gap-4">
-                                <div class="relative" @click.outside="cityOpen = false">
-                                    <label class="block text-sm font-medium mb-1.5">Місто</label>
-                                    <input name="delivery_city" type="text" x-model="cityText" @input="onCityInput()" @focus="cityOpen = cityResults.length > 0"
-                                        autocomplete="off" placeholder="Київ"
-                                        class="w-full h-12 rounded-xl border border-neutral-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-400" />
-                                    <div x-show="cityOpen" x-cloak class="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded-xl border border-neutral-200 bg-white shadow-lg">
-                                        <template x-for="city in cityResults" :key="city.id">
-                                            <button type="button" @click="selectCity(city)" class="block w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-50">
-                                                <span x-text="city.name"></span>
-                                                <span class="text-neutral-400" x-text="city.region ? ' — ' + city.region + ' обл.' : ''"></span>
-                                            </button>
-                                        </template>
-                                    </div>
-                                </div>
-                                <div class="relative" @click.outside="addressOpen = false">
-                                    <label class="block text-sm font-medium mb-1.5" x-text="usesAddressPicker ? 'Відділення / поштомат' : 'Адреса'"></label>
-                                    <input name="delivery_address" type="text" x-model="addressText" @input="onAddressInput()" @focus="addressOpen = addressResults.length > 0"
-                                        :disabled="usesAddressPicker && !selectedCityId" autocomplete="off"
-                                        :placeholder="usesAddressPicker ? 'Номер або адреса відділення' : ''"
-                                        class="w-full h-12 rounded-xl border border-neutral-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-400 disabled:bg-neutral-50 disabled:text-neutral-400" />
-                                    <div x-show="addressOpen" x-cloak class="absolute z-20 mt-1 w-full max-h-64 overflow-y-auto rounded-xl border border-neutral-200 bg-white shadow-lg">
-                                        <template x-for="wh in addressResults" :key="wh.id">
-                                            <button type="button" @click="selectWarehouse(wh)" class="block w-full px-4 py-2.5 text-left text-sm hover:bg-neutral-50">
-                                                <span x-text="wh.name"></span>
-                                            </button>
-                                        </template>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <label class="flex items-center gap-2.5 mt-4 text-sm text-neutral-600">
-                                <input type="checkbox" x-model="another" class="size-4 rounded border-neutral-300">
-                                Отримувач — інша людина
-                            </label>
-                            <div x-show="another" x-cloak class="grid sm:grid-cols-3 gap-4 mt-4">
-                                <input type="text" name="recipient_name" placeholder="Ім'я отримувача" class="h-12 rounded-xl border border-neutral-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10" />
-                                <input type="text" name="recipient_last_name" placeholder="Прізвище отримувача" class="h-12 rounded-xl border border-neutral-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10" />
-                                <input type="tel" name="recipient_phone" placeholder="Телефон отримувача" class="h-12 rounded-xl border border-neutral-300 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10" />
-                            </div>
-                        </section>
-                    @endif
-
                     @if($paymentMethods->isNotEmpty())
                         <section class="pt-6 border-t border-neutral-100">
                             <h2 class="font-semibold text-lg mb-4">Оплата</h2>
@@ -134,7 +64,7 @@
 
                     <section class="pt-6 border-t border-neutral-100">
                         <label class="block text-sm font-medium mb-1.5">Коментар до замовлення</label>
-                        <textarea name="user_comment" rows="3" placeholder="Побажання щодо доставки чи упаковки..." class="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-400"></textarea>
+                        <textarea name="user_comment" rows="3" placeholder="Побажання чи запитання щодо замовлення..." class="w-full rounded-xl border border-neutral-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-neutral-900/10 focus:border-neutral-400"></textarea>
                     </section>
 
                     <button type="submit" :disabled="busy" class="w-full h-12 rounded-full bg-neutral-900 text-white text-sm font-semibold hover:bg-neutral-800">
@@ -167,14 +97,14 @@
                                 </div>
 
                                 <div class="space-y-3 text-sm pt-5 mt-5 border-t border-neutral-200">
-                                    <div class="flex justify-between text-neutral-600"><span>Товари</span><span class="text-neutral-900 font-medium" x-text="formatPrice(cart.subtotal)"></span></div>
+                                    <div class="flex justify-between text-neutral-600"><span>Модулі</span><span class="text-neutral-900 font-medium" x-text="formatPrice(cart.subtotal)"></span></div>
                                     <div class="flex justify-between text-neutral-600" x-show="cart.cart_discount_total > 0"><span>Знижка</span><span class="text-red-500 font-medium" x-text="'−' + formatPrice(cart.cart_discount_total)"></span></div>
                                 </div>
                                 <div class="flex justify-between items-baseline mt-5 pt-5 border-t border-neutral-200">
                                     <span class="font-semibold">Всього</span>
                                     <span class="text-2xl font-bold" x-text="formatPrice(cart.total_price)"></span>
                                 </div>
-                                <p class="text-xs text-neutral-400 mt-3">Остаточна сума з урахуванням доставки буде підтверджена менеджером.</p>
+                                <p class="text-xs text-neutral-400 mt-3">Посилання на завантаження та ліцензійний ключ будуть надіслані на email після оплати.</p>
                             </div>
                         </template>
                     </div>

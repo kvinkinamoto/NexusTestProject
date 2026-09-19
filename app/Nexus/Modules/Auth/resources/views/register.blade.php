@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Реєстрація — STYLE</title>
+    <title>Реєстрація — Nexus Store</title>
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/storefront.js'])
@@ -16,14 +16,14 @@
         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
         <div class="absolute bottom-12 left-12 right-12 text-white">
             <p class="text-xs font-semibold tracking-[0.2em] uppercase text-white/80 mb-2">Приєднуйтесь</p>
-            <h2 class="font-outfit text-3xl font-bold">Знижка 10% на перше замовлення</h2>
+            <h2 class="font-outfit text-3xl font-bold">Довічні оновлення на всі модулі</h2>
         </div>
     </div>
 
     <div class="flex flex-col justify-center px-6 sm:px-12 lg:px-20 py-12 order-1 lg:order-2">
         <a href="{{ route('shop.home') }}" class="flex flex-col leading-none mb-8">
-            <span class="font-outfit text-2xl font-bold tracking-tight">STYLE</span>
-            <span class="text-[10px] tracking-[0.25em] text-neutral-400 font-medium">CLOTHING STORE</span>
+            <span class="font-outfit text-2xl font-bold tracking-tight">Nexus Store</span>
+            <span class="text-[10px] tracking-[0.25em] text-neutral-400 font-medium">PLATFORM MODULES</span>
         </a>
 
         <div class="max-w-sm w-full mx-auto lg:mx-0" x-data="registerForm()">
