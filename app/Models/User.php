@@ -6,6 +6,7 @@ use App\Nexus\Modules\ActivityLog\Traits\LogsActivityWithTranslatable;
 use App\Nexus\Modules\Auth\Notifications\ResetPasswordNotification;
 use App\Nexus\Modules\Auth\Notifications\VerifyEmailNotification;
 use App\Nexus\Modules\Cart\Models\Cart;
+use App\Nexus\Modules\License\Models\License;
 use App\Nexus\Modules\Order\Models\Order;
 use App\Nexus\Modules\User\Enums\Gender;
 use App\Nexus\Modules\User\Models\UserAddress;
@@ -198,6 +199,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function wishlistItems(): HasMany
     {
         return $this->hasMany(WishlistItem::class);
+    }
+
+    public function licenses(): HasMany
+    {
+        return $this->hasMany(License::class);
     }
 
     /**

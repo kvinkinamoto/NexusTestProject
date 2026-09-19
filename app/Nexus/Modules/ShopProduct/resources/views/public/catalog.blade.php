@@ -1,6 +1,10 @@
 @extends('storefront::public.layouts.storefront')
 
-@section('title', ($category->name ?? 'Каталог модулів').' — Nexus Store')
+@section('title', ($category?->meta_title ?: $category?->name ?? 'Каталог модулів').' — Nexus Store')
+
+@if($category?->meta_description)
+    @section('meta_description', $category->meta_description)
+@endif
 
 @section('content')
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6" x-data="catalogFilters()">

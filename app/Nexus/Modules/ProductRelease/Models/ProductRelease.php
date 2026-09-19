@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Nodex\Nexus\Attributes\Column;
 use Nodex\Nexus\Attributes\Field;
 use Nodex\Nexus\Attributes\Module;
+use Nodex\Nexus\Attributes\Permission;
 use Nodex\Nexus\Attributes\Relation;
 use Nodex\Nexus\Attributes\Requests;
 use Nodex\Nexus\Attributes\Section;
@@ -20,8 +21,12 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 
 /**
  * `zip_disk_path`/`zip_size`/`synced_at` are plain DB columns with no
- * #[Field] — filled exclusively by GithubReleaseSyncService, never editable
- * from the admin form (see MODULE-SALES-SITE-PLAN.md section 2.2).
+ * #[Field] — filled only by GithubReleaseSyncService (from a GitHub tag) or
+ * the `uploadRelease` admin action (from a manually uploaded .zip,
+ * `Http\Controllers\AdminController::uploadRelease`, for sellers who'd
+ * rather not set up a GitHub token/webhook per repo at all), never directly
+ * editable from the standard admin form (see MODULE-SALES-SITE-PLAN.md
+ * section 2.2).
  */
 #[Module(
     name: 'productRelease',
@@ -35,8 +40,10 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[TableAction(name: 'edit', label: 'Edit', icon: 'edit', isConfirm: false)]
 #[TableAction(name: 'delete', label: 'Delete', icon: 'delete', isConfirm: true)]
 #[TableAction(name: 'syncFromGithub', label: 'Синхронізувати з GitHub', icon: 'refresh', isConfirm: false)]
+#[TableAction(name: 'uploadRelease', label: 'Завантажити реліз', icon: 'upload', isConfirm: false, isMain: true)]
 #[TableGroupAction(name: 'deleteGroup', fieldName: 'delete')]
 #[TableFilter(name: 'search', label: 'Пошук за версією', type: 'search')]
+#[Permission(action: 'uploadRelease', label: 'Upload release archive')]
 #[Requests(actions: ['store' => AdminStoreRequest::class, 'update' => AdminUpdateRequest::class])]
 #[Section(name: 'main', column: 'right', type: 'base', icon: 'solar:tag-bold')]
 class ProductRelease extends Model

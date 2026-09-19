@@ -32,9 +32,13 @@
         <p class="text-xs text-neutral-400">{{ $product->category?->name }}</p>
         <a href="{{ route('shop.product', $product->slug) }}" class="text-sm font-medium mt-0.5 block truncate hover:underline">{{ $product->name }}</a>
         <div class="flex items-center gap-2 mt-1">
-            <span class="text-sm font-semibold">{{ number_format($cardPricing['price'], 0, '.', ' ') }} грн</span>
-            @if($cardPricing['original_price'])
-                <span class="text-xs text-neutral-400 line-through">{{ number_format($cardPricing['original_price'], 0, '.', ' ') }} грн</span>
+            @if((float) $cardPricing['price'] <= 0)
+                <span class="text-sm font-semibold text-emerald-600">Безкоштовно</span>
+            @else
+                <span class="text-sm font-semibold">{{ number_format($cardPricing['price'], 0, '.', ' ') }} грн</span>
+                @if($cardPricing['original_price'])
+                    <span class="text-xs text-neutral-400 line-through">{{ number_format($cardPricing['original_price'], 0, '.', ' ') }} грн</span>
+                @endif
             @endif
         </div>
     </div>

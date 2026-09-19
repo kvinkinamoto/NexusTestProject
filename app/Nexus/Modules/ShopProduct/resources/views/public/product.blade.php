@@ -59,9 +59,13 @@
                 </div>
 
                 <div class="flex items-baseline gap-3 mt-5">
-                    <span class="text-2xl sm:text-3xl font-bold">{{ number_format($price, 0, '.', ' ') }} грн</span>
-                    @if($originalPrice)
-                        <span class="text-lg text-neutral-400 line-through">{{ number_format($originalPrice, 0, '.', ' ') }} грн</span>
+                    @if((float) $price <= 0)
+                        <span class="text-2xl sm:text-3xl font-bold text-emerald-600">Безкоштовно</span>
+                    @else
+                        <span class="text-2xl sm:text-3xl font-bold">{{ number_format($price, 0, '.', ' ') }} грн</span>
+                        @if($originalPrice)
+                            <span class="text-lg text-neutral-400 line-through">{{ number_format($originalPrice, 0, '.', ' ') }} грн</span>
+                        @endif
                     @endif
                 </div>
 

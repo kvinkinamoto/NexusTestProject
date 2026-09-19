@@ -2,6 +2,8 @@
 
 namespace App\Nexus\Modules\Order\Observers;
 
+use App\Nexus\Modules\Order\Enums\PaymentStatus;
+use App\Nexus\Modules\Order\Events\OrderPaid;
 use App\Nexus\Modules\Order\Models\Order;
 use App\Nexus\Modules\Order\Services\OrderService;
 use App\Nexus\Modules\ShopProduct\Services\Actions\ReduceProductStockAction;
@@ -56,6 +58,10 @@ class OrderObserver
 
         if ($order->wasChanged('completed_at') && $order->completed_at !== null) {
             $this->orderService->addOrderBonuses($order);
+        }
+
+        if ($order->wasChanged('payment_status') && $order->payment_status === PaymentStatus::PAID) {
+            OrderPaid::dispatch($order);
         }
     }
 

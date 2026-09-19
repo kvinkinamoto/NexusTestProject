@@ -3,17 +3,24 @@
 namespace App\Nexus\Modules\ProductRelease\Services;
 
 use App\Nexus\Modules\ProductRelease\Models\ProductRelease;
+use App\Nexus\Modules\ProductRelease\Services\Actions\RepackageReleaseZipAction;
 use App\Nexus\Modules\ShopProduct\Models\ShopProduct;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use RuntimeException;
 
 /**
  * Downloads one GitHub-tagged release of a product's private repo as a zip
  * and records/updates the matching ProductRelease row. Shared by the manual
- * `nexus:store:sync-release` command (this phase) and the GitHub webhook
- * (a later phase) — same sync, two triggers. The resulting zip is stored
- * under storage/app/releases/, matching ArchiveInstallService's own
+ * `nexus:store:sync-release` command, the GitHub webhook
+ * (`GithubWebhookController`/`SyncGithubReleaseJob`), and the admin's
+ * "Синхронізувати з GitHub" table action — three triggers, one sync. The
+ * downloaded zip is immediately repackaged by RepackageReleaseZipAction so
+ * what ends up on disk (and later gets sold via /account/licenses) already
+ * passes ArchiveInstallService's "one top-level folder named after the
+ * module" check, rather than GitHub's own `owner-repo-<sha>/` wrapper.
+ * Stored under storage/app/releases/, matching ArchiveInstallService's own
  * storage_path('app/...') convention (see that service's docblock) rather
  * than the 'local' filesystem disk, since neither needs disk portability.
  */
@@ -47,6 +54,8 @@ class GithubReleaseSyncService
 
             throw new RuntimeException("GitHub release download failed for {$product->github_owner}/{$product->github_repo}@{$tag}: HTTP {$response->status()}");
         }
+
+        RepackageReleaseZipAction::handle($destinationPath, Str::studly($product->github_repo));
 
         return ProductRelease::query()->updateOrCreate(
             ['product_id' => $product->id, 'github_tag' => $tag],

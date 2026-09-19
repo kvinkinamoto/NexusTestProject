@@ -281,10 +281,10 @@ Alpine.data('cartPage', () => ({
 }));
 
 /**
- * Checkout form — POST /api/orders is guest-friendly on the backend, but
- * since adding to a cart requires login (no guest cart exists anywhere),
- * only logged-in users ever reach this page with anything to check out. For
- * a logged-in user OrderService reads their persisted Cart server-side and
+ * Checkout form — OrderService/CartService can build a guest order from a
+ * session-id cart, but /checkout and POST /api/orders are now behind `auth`
+ * (a License needs a user_id to be issued to), so only logged-in users ever
+ * reach this page. OrderService reads their persisted Cart server-side and
  * ignores any posted `products` array, so this only needs to send the
  * contact/delivery/payment fields.
  */

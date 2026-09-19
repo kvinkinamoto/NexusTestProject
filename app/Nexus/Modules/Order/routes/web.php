@@ -8,8 +8,18 @@ use App\Nexus\Modules\Shipment\Http\Controllers\Admin\RefreshShipmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web'])->group(function () {
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('shop.checkout');
     Route::get('/checkout/thank-you', [CheckoutController::class, 'thankYou'])->name('shop.checkout.thankyou');
+});
+
+/**
+ * License purchases require an account (a License row needs a user_id to
+ * be issued to and to appear under /account/licenses) — checkout itself,
+ * not just order history, is gated behind auth so a guest is bounced to
+ * /login (and redirect()->intended() back here after) before they can pay
+ * at all, instead of paying and never receiving a license.
+ */
+Route::middleware(['web', 'auth'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('shop.checkout');
 });
 
 Route::middleware(['web', 'auth'])->prefix('account')->name('account.')->group(function () {
@@ -19,7 +29,7 @@ Route::middleware(['web', 'auth'])->prefix('account')->name('account.')->group(f
 });
 
 Route::prefix('api/orders')
-    ->middleware(['web'])
+    ->middleware(['web', 'auth', 'throttle:10,1'])
     ->group(function () {
         Route::post('/', [OrderController::class, 'store']);
         Route::post('/quick', [OrderController::class, 'quick']);

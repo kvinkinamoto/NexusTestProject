@@ -14,9 +14,6 @@
         @php($user = auth()->user())
         <div class="grid lg:grid-cols-3 gap-10">
                 <form x-data="checkoutForm()" @submit.prevent="submit($el)" class="lg:col-span-2 space-y-8">
-                    @guest
-                        <p class="text-sm text-neutral-500 -mt-2">Вже маєте акаунт? <a href="{{ route('login') }}" class="font-medium text-neutral-900 hover:underline">Увійдіть</a>, щоб не вводити дані щоразу.</p>
-                    @endguest
                     <section>
                         <h2 class="font-semibold text-lg mb-4">Контактні дані</h2>
                         <div class="grid sm:grid-cols-2 gap-4">
