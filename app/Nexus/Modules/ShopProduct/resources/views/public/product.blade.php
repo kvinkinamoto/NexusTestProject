@@ -9,7 +9,7 @@
 
 @section('content')
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6"
-         x-data="{ qty: 1, tab: 'description' }">
+         x-data="{ qty: 1, tab: 'versions' }">
 
         <nav class="flex items-center gap-1.5 text-xs text-neutral-500 mb-5 flex-wrap">
             <a href="{{ route('shop.home') }}" class="hover:text-neutral-900">Головна</a><span>/</span>
@@ -112,19 +112,18 @@
                         Ліцензія на 1 проєкт (додаткові проєкти — окрема покупка)
                     </div>
                 </div>
+
+                <div class="mt-6 text-sm text-neutral-600 leading-relaxed">
+                    {!! nl2br(e($product->description ?: $product->short_description ?: 'Опис товару буде додано найближчим часом.')) !!}
+                </div>
             </div>
         </div>
 
         <!-- ============ TABS ============ -->
         <div class="mt-14 max-w-3xl">
             <div class="flex gap-6 border-b border-neutral-200">
-                <button @click="tab = 'description'" class="pb-3 text-sm font-semibold border-b-2 -mb-px" :class="tab === 'description' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-400'">Опис</button>
                 <button @click="tab = 'versions'" class="pb-3 text-sm font-semibold border-b-2 -mb-px" :class="tab === 'versions' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-400'">Версії</button>
                 <button @click="tab = 'reviews'" class="pb-3 text-sm font-semibold border-b-2 -mb-px" :class="tab === 'reviews' ? 'border-neutral-900 text-neutral-900' : 'border-transparent text-neutral-400'">Відгуки ({{ $reviews->total() }})</button>
-            </div>
-
-            <div x-show="tab === 'description'" class="py-6 text-sm text-neutral-600 leading-relaxed">
-                {!! nl2br(e($product->description ?: $product->short_description ?: 'Опис товару буде додано найближчим часом.')) !!}
             </div>
 
             <div x-show="tab === 'versions'" x-cloak class="py-6 space-y-5">
