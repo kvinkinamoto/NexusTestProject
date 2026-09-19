@@ -255,9 +255,11 @@ class OrderService
 
     private function buildProductData(ShopProduct $product, array $priceData): array
     {
+        $nameTranslations = $product->getTranslations('name_i18n');
+
         return [
             'id' => $product->id,
-            'name' => $product->name,
+            'name' => $nameTranslations !== [] ? $nameTranslations : $product->name,
             'slug' => $product->slug,
             'image' => $product->image,
             'price' => $priceData['price'],

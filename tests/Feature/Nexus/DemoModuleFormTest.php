@@ -133,6 +133,14 @@ it('translates wizard tab labels instead of showing the raw translation key', fu
     // Str::lcfirst($module['name']) (e.g. "demo") — the mismatched casing
     // meant Laravel's translator found no match and echoed the raw key
     // straight into the wizard's tab bar instead of "Basic".
+    //
+    // Locale is asserted explicitly because Livewire::test() mounts the
+    // component in isolation, bypassing the real request lifecycle (and
+    // therefore SetAdminLocale middleware) that normally establishes the
+    // admin panel's English ambient default over the storefront's own
+    // Ukrainian one (see AppServiceProvider/.env — app.locale is 'uk').
+    app()->setLocale('en');
+
     Livewire::test(ModuleForm::class, ['moduleName' => 'Demo'])
         ->assertSee('Basic')
         ->assertDontSee('Demo::translate.basic', false);

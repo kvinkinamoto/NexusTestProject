@@ -2,12 +2,17 @@
 
 use App\Nexus\Modules\License\Http\Controllers\Public\AccountLicensesController;
 use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-Route::middleware(['web', 'auth'])->prefix('account')->name('account.')->group(function () {
-    Route::get('/licenses', [AccountLicensesController::class, 'index'])->name('licenses');
-    Route::post('/licenses/{license}/activate', [AccountLicensesController::class, 'activate'])->name('licenses.activate');
-    Route::delete('/licenses/{license}/activations/{activation}', [AccountLicensesController::class, 'deactivate'])->name('licenses.deactivate');
-});
+Route::middleware(['web', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'])
+    ->prefix(LaravelLocalization::setLocale())
+    ->group(function () {
+        Route::middleware(['auth'])->prefix('account')->name('account.')->group(function () {
+            Route::get('/licenses', [AccountLicensesController::class, 'index'])->name('licenses');
+            Route::post('/licenses/{license}/activate', [AccountLicensesController::class, 'activate'])->name('licenses.activate');
+            Route::delete('/licenses/{license}/activations/{activation}', [AccountLicensesController::class, 'deactivate'])->name('licenses.deactivate');
+        });
+    });
 
 // `signed` on top of the usual web/auth stack — see AccountLicensesController::signedDownloadUrl().
 // throttle caps repeated large-file downloads even from a legitimately signed link.

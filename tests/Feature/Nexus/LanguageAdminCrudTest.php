@@ -75,11 +75,10 @@ it('applies the session admin_locale via SetAdminLocale middleware', function ()
     expect(App::getLocale())->toBe('uk');
 });
 
-it('leaves the locale untouched when the session code is not a published language', function () {
+it('falls back to the admin default locale when the session code is not a published language', function () {
     session(['admin_locale' => 'does-not-exist']);
-    $originalLocale = App::getLocale();
 
     (new SetAdminLocale)->handle(request(), fn ($req) => response('ok'));
 
-    expect(App::getLocale())->toBe($originalLocale);
+    expect(App::getLocale())->toBe('en');
 });

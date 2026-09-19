@@ -33,13 +33,35 @@ window.storefrontFetch = async function storefrontFetch(url, options = {}) {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-        const error = new Error(data.message || 'Помилка запиту');
+        const isEn = document.documentElement.lang === 'en';
+        const error = new Error(data.message || (isEn ? 'Request error' : 'Помилка запиту'));
         error.data = data;
         error.status = response.status;
         throw error;
     }
 
     return data;
+};
+
+/**
+ * Formats a price already expressed in the base currency (UAH — every
+ * ShopProduct/cart/order amount the JSON endpoints return) into the
+ * currently-resolved storefront currency, using the same
+ * currency-code/-symbol/-position/-rate <meta> tags storefront.blade.php's
+ * layout renders from CurrencyService::getSelectedCurrency() server-side —
+ * kept in sync with that PHP resolution rather than guessing a rate here.
+ */
+window.formatStorefrontPrice = function formatStorefrontPrice(value) {
+    const meta = (name) => document.querySelector(`meta[name="currency-${name}"]`)?.content;
+    const code = meta('code') || 'UAH';
+    const symbol = meta('symbol') || 'грн';
+    const position = meta('position') || 'after';
+    const rate = parseFloat(meta('rate')) || 1;
+
+    const converted = Math.round((value || 0) * rate);
+    const formatted = new Intl.NumberFormat(code === 'USD' ? 'en-US' : 'uk-UA').format(converted);
+
+    return position === 'before' ? symbol + formatted : formatted + ' ' + symbol;
 };
 
 /**
@@ -219,7 +241,7 @@ Alpine.data('searchAutocomplete', () => ({
         }
     },
     formatPrice(value) {
-        return new Intl.NumberFormat('uk-UA').format(Math.round(value || 0)) + ' грн';
+        return window.formatStorefrontPrice(value);
     },
 }));
 
@@ -276,7 +298,7 @@ Alpine.data('cartPage', () => ({
         await this.refresh();
     },
     formatPrice(value) {
-        return new Intl.NumberFormat('uk-UA').format(Math.round(value || 0)) + ' грн';
+        return window.formatStorefrontPrice(value);
     },
 }));
 

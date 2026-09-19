@@ -3,6 +3,7 @@
 namespace App\Nexus\Modules\ShopProduct\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Nexus\Modules\Currency\Services\CurrencyService;
 use App\Nexus\Modules\ShopAttribute\Models\AttributeOption;
 use App\Nexus\Modules\ShopCategory\Models\ShopCategory;
 use App\Nexus\Modules\ShopProduct\Enums\PackageType;
@@ -40,10 +41,10 @@ class CatalogController extends Controller
         }
 
         if ($request->filled('price_min')) {
-            $query->where('price', '>=', (float) $request->query('price_min'));
+            $query->where('price', '>=', CurrencyService::convertFromSessionCurrency($request->query('price_min')));
         }
         if ($request->filled('price_max')) {
-            $query->where('price', '<=', (float) $request->query('price_max'));
+            $query->where('price', '<=', CurrencyService::convertFromSessionCurrency($request->query('price_max')));
         }
 
         if ($request->filled('q')) {

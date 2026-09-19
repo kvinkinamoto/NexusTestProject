@@ -13,10 +13,10 @@ class ProductSuggestionResource extends JsonResource
         $pricing = ResolveProductPriceAction::handle($this->resource, 1);
 
         return [
-            'name' => $this->name,
+            'name' => $this->displayName(),
             'slug' => $this->slug,
             'image' => $this->image ? '/'.ltrim($this->image, '/') : null,
-            'category' => $this->category?->name,
+            'category' => $this->category?->displayName(),
             'price' => $pricing['price'],
             'original_price' => $pricing['original_price'],
             'url' => route('shop.product', $this->slug),

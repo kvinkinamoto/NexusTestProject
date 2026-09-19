@@ -21,8 +21,14 @@ class PaymentMethodSeeder extends Seeder
             [
                 'provider' => 'liqpay',
                 'type' => 'gateway',
-                'title' => 'Оплата карткою (LiqPay)',
-                'description' => 'Visa/Mastercard через LiqPay. Посилання на завантаження та ліцензійний ключ надійдуть на email одразу після оплати.',
+                'title' => [
+                    'uk' => 'Оплата карткою (LiqPay)',
+                    'en' => 'Card payment (LiqPay)',
+                ],
+                'description' => [
+                    'uk' => 'Visa/Mastercard через LiqPay. Посилання на завантаження та ліцензійний ключ надійдуть на email одразу після оплати.',
+                    'en' => 'Visa/Mastercard via LiqPay. The download link and license key will be sent to your email right after payment.',
+                ],
                 'publish' => true,
             ],
         );

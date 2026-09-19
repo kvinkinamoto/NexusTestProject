@@ -20,6 +20,7 @@ use Nodex\Nexus\Attributes\TableAction;
 use Nodex\Nexus\Attributes\TableFilter;
 use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
+use Spatie\Translatable\HasTranslations;
 
 /**
  * Simplified from ZentaraStartProject's ShopCategory: dropped the horizontal
@@ -49,11 +50,20 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Section(name: 'products_section', column: 'left', type: 'base', icon: 'solar:box-bold')]
 class ShopCategory extends Model
 {
-    use HasAttributeSchemaProperties, HasAutoSlug, NodeTrait;
+    use HasAttributeSchemaProperties, HasAutoSlug, HasTranslations, NodeTrait;
 
     #[Column(label: 'Name', sortable: true, searchable: true)]
     #[Field(type: 'string', section: 'main', label: 'Name', required: true, rules: ['max:255'])]
     protected $name;
+
+    /**
+     * Overrides $name for the current locale on the storefront, falling back
+     * to it — same separate-column convention as ShopProduct's name_i18n
+     * (kept apart from $name so admin search/sort/slug-source stay on the
+     * plain field).
+     */
+    #[Field(type: 'string', section: 'main', label: 'Name (translations)', required: false, translated: true)]
+    protected $name_i18n;
 
     #[Column(label: 'Slug', sortable: true, searchable: true)]
     #[Field(type: 'slug', section: 'main', label: 'Slug', required: false, slugSource: 'name')]
@@ -105,8 +115,10 @@ class ShopCategory extends Model
     #[Field(type: 'text', section: 'seo_section', label: 'Meta description', required: false)]
     protected $meta_description;
 
+    public $translatable = ['name_i18n'];
+
     protected $fillable = [
-        'name', 'slug', 'short_description', 'description', 'image', 'parent_id', 'nav_group',
+        'name', 'name_i18n', 'slug', 'short_description', 'description', 'image', 'parent_id', 'nav_group',
         'publish', 'meta_title', 'meta_description',
     ];
 
@@ -117,5 +129,10 @@ class ShopCategory extends Model
     public function scopePublish($query)
     {
         return $query->where('publish', true);
+    }
+
+    public function displayName(): string
+    {
+        return $this->getTranslation('name_i18n', app()->getLocale(), false) ?: $this->name;
     }
 }

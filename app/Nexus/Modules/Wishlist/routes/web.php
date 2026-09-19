@@ -3,10 +3,13 @@
 use App\Nexus\Modules\Wishlist\Http\Controllers\Public\WishlistPageController;
 use App\Nexus\Modules\Wishlist\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-Route::middleware(['web'])->group(function () {
-    Route::get('/wishlist', [WishlistPageController::class, 'index'])->name('shop.wishlist');
-});
+Route::middleware(['web', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'])
+    ->prefix(LaravelLocalization::setLocale())
+    ->group(function () {
+        Route::get('/wishlist', [WishlistPageController::class, 'index'])->name('shop.wishlist');
+    });
 
 Route::prefix('api/wishlist')
     ->middleware(['web'])

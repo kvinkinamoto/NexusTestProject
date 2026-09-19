@@ -28,6 +28,7 @@ use Nodex\Nexus\Attributes\TableAction;
 use Nodex\Nexus\Attributes\TableFilter;
 use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
+use Spatie\Translatable\HasTranslations;
 
 /**
  * Simplified from ZentaraStartProject's ShopProduct: dropped SoftDeletes,
@@ -65,11 +66,21 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Section(name: 'seo_section', column: 'right', type: 'base', icon: 'solar:magnifer-bold')]
 class ShopProduct extends Model
 {
-    use HasAttributeSchemaProperties, HasAutoSlug, LogsActivityWithTranslatable;
+    use HasAttributeSchemaProperties, HasAutoSlug, HasTranslations, LogsActivityWithTranslatable;
 
     #[Column(label: 'Name', sortable: true, searchable: true)]
     #[Field(type: 'string', section: 'main', label: 'Name', required: true, rules: ['max:255'])]
     protected $name;
+
+    /**
+     * Per-locale override of `name`, shown on the storefront when present
+     * for the current locale (falls back to the plain `name` above) — added
+     * for the EN storefront pass. `name` itself stays untranslated so the
+     * admin list/search/sort and any existing snapshot (e.g. order line
+     * `product_data`) keep working unchanged.
+     */
+    #[Field(type: 'string', section: 'main', label: 'Translated name', required: false, translated: true)]
+    protected $name_i18n;
 
     #[Column(label: 'Slug', sortable: true, searchable: true)]
     #[Field(type: 'slug', section: 'main', label: 'Slug', required: false, slugSource: 'name')]
@@ -78,8 +89,14 @@ class ShopProduct extends Model
     #[Field(type: 'text', section: 'main', label: 'Short description', required: false)]
     protected $short_description;
 
+    #[Field(type: 'text', section: 'main', label: 'Translated short description', required: false, translated: true)]
+    protected $short_description_i18n;
+
     #[Field(type: 'text', section: 'main', label: 'Description', required: false)]
     protected $description;
+
+    #[Field(type: 'text', section: 'main', label: 'Translated description', required: false, translated: true)]
+    protected $description_i18n;
 
     #[Column(label: 'Image', customField: 'showImage')]
     #[Field(type: 'image', section: 'main', label: 'Image', required: false)]
@@ -165,7 +182,8 @@ class ShopProduct extends Model
     protected $meta_description;
 
     protected $fillable = [
-        'name', 'slug', 'short_description', 'description', 'image',
+        'name', 'name_i18n', 'slug', 'short_description', 'short_description_i18n',
+        'description', 'description_i18n', 'image',
         'category_id', 'type_id', 'variation_group_id',
         'package_type', 'github_owner', 'github_repo', 'min_core_version',
         'price', 'price_discount', 'bonuses', 'stock', 'publish',
@@ -181,9 +199,31 @@ class ShopProduct extends Model
         'publish' => 'boolean',
     ];
 
+    public $translatable = ['name_i18n', 'short_description_i18n', 'description_i18n'];
+
     public function scopePublish($query)
     {
         return $query->where('publish', true);
+    }
+
+    /**
+     * Localized display name — the translated override when the current
+     * locale has one, otherwise the plain `name`. Storefront views read
+     * this instead of `name` directly.
+     */
+    public function displayName(): string
+    {
+        return $this->getTranslation('name_i18n', app()->getLocale(), false) ?: $this->name;
+    }
+
+    public function displayShortDescription(): ?string
+    {
+        return $this->getTranslation('short_description_i18n', app()->getLocale(), false) ?: $this->short_description;
+    }
+
+    public function displayDescription(): ?string
+    {
+        return $this->getTranslation('description_i18n', app()->getLocale(), false) ?: $this->description;
     }
 
     /**

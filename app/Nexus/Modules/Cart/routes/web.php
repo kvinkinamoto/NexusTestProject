@@ -3,10 +3,13 @@
 use App\Nexus\Modules\Cart\Http\Controllers\CartController;
 use App\Nexus\Modules\Cart\Http\Controllers\Public\CartPageController;
 use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-Route::middleware(['web'])->group(function () {
-    Route::get('/cart', [CartPageController::class, 'index'])->name('shop.cart');
-});
+Route::middleware(['web', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'])
+    ->prefix(LaravelLocalization::setLocale())
+    ->group(function () {
+        Route::get('/cart', [CartPageController::class, 'index'])->name('shop.cart');
+    });
 
 Route::prefix('api/cart')
     ->middleware(['web'])

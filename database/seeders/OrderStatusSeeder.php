@@ -18,16 +18,20 @@ class OrderStatusSeeder extends Seeder
     public function run(): void
     {
         $statuses = [
-            ['name' => 'Нове', 'slug' => 'new', 'is_default' => true],
-            ['name' => 'Підтверджено', 'slug' => 'confirmed', 'is_default' => false],
-            ['name' => 'Виконано', 'slug' => 'delivered', 'is_default' => false],
-            ['name' => 'Скасовано', 'slug' => 'cancelled', 'is_default' => false],
+            ['name' => 'Нове', 'name_en' => 'New', 'slug' => 'new', 'is_default' => true],
+            ['name' => 'Підтверджено', 'name_en' => 'Confirmed', 'slug' => 'confirmed', 'is_default' => false],
+            ['name' => 'Виконано', 'name_en' => 'Delivered', 'slug' => 'delivered', 'is_default' => false],
+            ['name' => 'Скасовано', 'name_en' => 'Cancelled', 'slug' => 'cancelled', 'is_default' => false],
         ];
 
         foreach ($statuses as $status) {
             OrderStatus::query()->updateOrCreate(
                 ['slug' => $status['slug']],
-                ['name' => $status['name'], 'is_default' => $status['is_default'], 'publish' => true],
+                [
+                    'name' => ['uk' => $status['name'], 'en' => $status['name_en']],
+                    'is_default' => $status['is_default'],
+                    'publish' => true,
+                ],
             );
         }
     }

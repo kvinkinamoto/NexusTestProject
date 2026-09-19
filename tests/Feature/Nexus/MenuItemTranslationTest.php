@@ -27,11 +27,15 @@ it('stores a plain string under the current app locale', function () {
 it('round-trips per-locale titles independently', function () {
     $item = $this->menu->items()->create(['title' => 'Home']);
     $defaultLocale = config('app.locale');
+    // Picked relative to the app's real default (now 'uk' — see .env) rather
+    // than hardcoded, so this proves two *different* locale keys round-trip
+    // independently regardless of which locale that default is.
+    $otherLocale = $defaultLocale === 'uk' ? 'en' : 'uk';
 
-    $item->setTranslation('title', 'uk', 'Головна');
+    $item->setTranslation('title', $otherLocale, 'Головна');
     $item->save();
     $item->refresh();
 
     expect($item->getTranslation('title', $defaultLocale))->toBe('Home');
-    expect($item->getTranslation('title', 'uk'))->toBe('Головна');
+    expect($item->getTranslation('title', $otherLocale))->toBe('Головна');
 });

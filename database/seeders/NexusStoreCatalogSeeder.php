@@ -22,21 +22,21 @@ class NexusStoreCatalogSeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'ecommerce-modules' => 'E-commerce модулі',
-            'payments-delivery' => 'Платежі та доставка',
-            'marketing-analytics' => 'Маркетинг та аналітика',
-            'social' => 'Соцмережі',
-            'admin-tools' => 'Адміністрування',
-            'library-vertical' => 'Бібліотечна вертикаль',
-            'api-integrations' => 'API та інтеграції',
-            'free-modules' => 'Безкоштовні модулі',
+            'ecommerce-modules' => ['E-commerce модулі', 'E-commerce Modules'],
+            'payments-delivery' => ['Платежі та доставка', 'Payments & Delivery'],
+            'marketing-analytics' => ['Маркетинг та аналітика', 'Marketing & Analytics'],
+            'social' => ['Соцмережі', 'Social Networking'],
+            'admin-tools' => ['Адміністрування', 'Administration'],
+            'library-vertical' => ['Бібліотечна вертикаль', 'Library Vertical'],
+            'api-integrations' => ['API та інтеграції', 'API & Integrations'],
+            'free-modules' => ['Безкоштовні модулі', 'Free Modules'],
         ];
 
         $categoryIds = [];
-        foreach ($categories as $slug => $name) {
+        foreach ($categories as $slug => [$name, $nameEn]) {
             $categoryIds[$slug] = ShopCategory::query()->updateOrCreate(
                 ['slug' => $slug],
-                ['name' => $name, 'publish' => true],
+                ['name' => $name, 'name_i18n' => ['uk' => $name, 'en' => $nameEn], 'publish' => true],
             )->id;
         }
 
@@ -50,6 +50,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 6199,
                 'short_description' => 'Повний набір для запуску інтернет-магазину: каталог, кошик, замовлення, мультивалюта.',
                 'description' => 'Це той момент, коли одного каталогу товарів вже не вистачає, а писати кошик, оформлення замовлення і мультивалютність з нуля — тижні роботи. Пак ставить повноцінний e-commerce-двигун поверх Nexus: категорії з довільною глибиною вкладеності, атрибути й варіації товару (розмір, колір, комплектація — що завгодно), кошик, який пам\'ятає гостя за сесією, і замовлення з власною воронкою статусів. Мультивалютність вбудована одразу, а не докручена збоку — ціни перераховуються автоматично за курсом, який ви задаєте в адмінці. У комплекті йде демо-тема вітрини Storefront, тож після встановлення у вас вже є робочий магазин, а не порожня адмінка. Порівняно з готовими збірками на кшталт October CMS «Shopaholic» тут суттєво глибша варіативність товару — різниця, яку відчуваєш, коли продаєш не футболки одного кольору, а щось із реальними комбінаціями опцій. Технічно це виглядає так: категорії організовуються в дерево довільної глибини з власним SEO і навігаційною групою для мегаменю; атрибути (колір, розмір, матеріал) керують і фільтрами каталогу, і варіаціями — один товар «Футболка» може мати кілька кольорів і розмірів, кожен зі своєю ціною й залишком, з перемикачем варіацій прямо на сторінці товару. Кошик пам\'ятає і гостя за сесією, і залогіненого покупця, а при вході сесійний кошик автоматично зливається з акаунтом. Замовлення проходить через власну воронку статусів із повною історією змін, підтримує «купити як подарунок» з унікальним кодом для отримувача і гостьовий чекаут за бажанням.',
+                'name_en' => 'E-commerce Core Pack',
+                'short_description_en' => 'A complete toolkit to launch an online store: catalog, cart, orders, multi-currency.',
+                'description_en' => 'This is the point where a single product catalog isn\'t enough anymore, and building a cart, checkout, and multi-currency support from scratch is weeks of work. This pack drops a full e-commerce engine on top of Nexus: categories with unlimited nesting, product attributes and variations (size, color, bundle — anything), a cart that remembers guests by session, and orders with their own status pipeline. Multi-currency is built in from day one, not bolted on later — prices convert automatically at the rate you set in the admin panel. The Storefront demo theme is included, so right after installing you already have a working store, not an empty back office. Compared to ready-made bundles like October CMS\'s "Shopaholic," product variation support here goes noticeably deeper — a difference you feel the moment you\'re selling more than one-color T-shirts with real option combinations. Under the hood: categories form a tree of any depth with their own SEO fields and a nav group for the mega-menu; attributes (color, size, material) drive both catalog filters and variations — one "T-Shirt" product can have several colors and sizes, each with its own price and stock, switchable right on the product page. The cart remembers both guests (by session) and logged-in customers, and a guest\'s session cart merges into their account automatically on login. Orders move through their own status pipeline with a full history, support "buy as a gift" with a unique redemption code for the recipient, and optional guest checkout.',
             ],
             [
                 'slug' => 'pricing-promotions-pack',
@@ -59,6 +62,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 1749,
                 'short_description' => 'Промокоди, правила знижок та акції для магазину.',
                 'description' => 'Знижка «-15% до кінця тижня», промокод на перше замовлення, «3 за ціною 2» — рано чи пізно це просить будь-який магазин, і щоразу доводиться городити костиль прямо в коді продукту. Цей пак виносить усю логіку ціноутворення в окремий шар: правила знижок, що спрацьовують за умовами (сума кошика, категорія, кількість), промокоди з лімітом використань і акції з власною історією застосувань. Усе це рахується автоматично при оформленні замовлення, без ручного перерахунку в голові. Аналогічний функціонал у WooCommerce (Dynamic Pricing, Smart Coupons) продають за річною підпискою — тут це одноразова покупка, яка працює, поки працює ваш сайт. DiscountRule — це «мотор» під капотом: один тип правила покриває знижку на товар, знижку за кількість, buy-X-get-Y, поріг суми кошика, безкоштовну доставку, бандл чи флеш-розпродаж, з активністю за днями тижня й годинами доби. Promotion вмикає ці правила автоматично, без коду покупця, і сам вирішує конфлікт, коли активні кілька акцій одразу — обираючи найвигіднішу для покупця або складаючи кілька «стекованих» знижок разом. PromoCode — та сама логіка, але активована вручну кодом, з лімітом використань загалом і на одного покупця.',
+                'name_en' => 'Pricing & Promotions Pack',
+                'short_description_en' => 'Promo codes, discount rules, and store-wide promotions.',
+                'description_en' => 'A "-15% until the end of the week" discount, a first-order promo code, "3 for the price of 2" — sooner or later every store needs this, and every time it means bolting a hack straight onto the product code. This pack moves all pricing logic into its own layer: discount rules that trigger on conditions (cart total, category, quantity), promo codes with usage limits, and promotions with their own application history. Everything is calculated automatically at checkout, with no manual math involved. The same functionality in WooCommerce (Dynamic Pricing, Smart Coupons) is sold as an annual subscription — here it\'s a one-time purchase that keeps working as long as your site does. DiscountRule is the engine under the hood: one rule type covers a flat product discount, a quantity discount, buy-X-get-Y, a cart-value threshold, free shipping, a bundle, or a flash sale, with activity windows by day of week and time of day. Promotion turns these rules on automatically, with no code required from the buyer, and resolves conflicts itself when several promotions are active at once — picking the best deal for the customer or stacking several combinable discounts together. PromoCode is the same logic, triggered manually by a code, with an overall usage limit and a per-customer limit.',
             ],
             [
                 'slug' => 'payments-ua-pack',
@@ -68,6 +74,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 1749,
                 'short_description' => 'Прийом оплат для українського ринку.',
                 'description' => 'Український покупець хоче платити карткою через LiqPay або в розстрочку від Monobank чи PrivatBank — і якщо цього немає на чекауті, він просто закриває вкладку. Пак підключає готові драйвери під ці способи оплати до вже наявного модуля PaymentMethod: жодних окремих інтеграцій писати не треба, достатньо вписати ключі API в адмінці. Вузько заточений під український ринок пак — саме тому й компактніший за ціною порівняно з e-commerce-паками ширшого призначення. У адмінці це один екран: кожен спосіб оплати має назву, опис, провайдера й тип, і чекаут автоматично групує та показує їх покупцю. Розстрочки Monobank і PrivatBank додатково самі опитують платіжний шлюз, щоб тримати статус «зависаючих» розстрочкових замовлень актуальним без ручного втручання.',
+                'name_en' => 'Payments (UA) Pack',
+                'short_description_en' => 'Accepting payments for the Ukrainian market.',
+                'description_en' => 'Ukrainian shoppers want to pay by card through LiqPay or in installments via Monobank or PrivatBank — and if that\'s not on the checkout page, they simply close the tab. This pack plugs ready-made drivers for these payment methods into the existing PaymentMethod module: no separate integration work needed, just enter the API keys in the admin panel. A narrowly focused pack for the Ukrainian payments market — which is also why it\'s more compact in price than the broader-purpose e-commerce packs. In the admin panel it\'s a single screen: every payment method has a title, description, provider, and type, and checkout groups and displays them automatically. The Monobank and PrivatBank installment drivers additionally poll the payment gateway on their own, to keep the status of pending installment orders current without manual intervention.',
             ],
             [
                 'slug' => 'delivery-tracking-ua-pack',
@@ -77,6 +86,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 1749,
                 'short_description' => 'Доставка та трекінг для Нової пошти й Укрпошти.',
                 'description' => 'Доставка — це не тільки поле «вписати адресу», а ще й статуси відправлення і трекінг у реальному часі. Пак додає модулі Delivery, DeliveryType і Shipment з готовою інтеграцією трекінгу Нової Пошти та Укрпошти: покупець бачить статус свого замовлення сам, не питаючи в підтримки «а де моя посилка». Для порівняння — подібні розширення доставки для WooCommerce коштують $79–149 на рік за підпискою; тут це одна покупка назавжди. Перевізник кешує довідник міст і відділень локально, тож пікер на чекауті не смикає API Нової Пошти на кожен введений символ. DeliveryType уточнює конкретний варіант під перевізником — «кур\'єр» чи «відділення» — з власною публікацією. Shipment веде хронологію статусів відправлення і звіряє номер ТТН з реальним статусом перевізника, а адмін може оновити статус вручну одним кліком прямо з картки замовлення.',
+                'name_en' => 'Delivery & Tracking (UA) Pack',
+                'short_description_en' => 'Delivery and tracking for Nova Poshta and Ukrposhta.',
+                'description_en' => 'Delivery isn\'t just an "enter your address" field — it\'s also shipment status and real-time tracking. This pack adds the Delivery, DeliveryType, and Shipment modules with ready-made Nova Poshta and Ukrposhta tracking integration: customers can check their order status themselves instead of asking support "where\'s my package?" For comparison, similar delivery extensions for WooCommerce cost $79–149 a year on subscription; here it\'s one purchase, forever. The carrier caches its directory of cities and branches locally, so the picker at checkout doesn\'t hit the Nova Poshta API on every keystroke. DeliveryType narrows down the specific option under a carrier — "courier" vs. "branch pickup" — each with its own publish toggle. Shipment keeps a timeline of shipment statuses and checks the tracking number against the carrier\'s real status, and an admin can refresh the status manually with one click right from the order screen.',
             ],
             [
                 'slug' => 'loyalty-pack',
@@ -86,6 +98,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 1299,
                 'short_description' => 'Бонусна програма лояльності для покупців.',
                 'description' => 'Постійний покупець, який повертається за бонусами, обходиться дешевше за нового, залученого рекламою — але реалізувати бонусну систему самостійно означає вручну займатися нарахуваннями, списаннями й історією транзакцій. Bonus і BonusTransaction роблять це за вас: бали нараховуються після оплати замовлення, списуються при наступній покупці, і кожна операція лишає слід в історії, яку бачить і покупець, і адміністратор. WooCommerce Points & Rewards просить за подібне $129 щороку — тут це разова інвестиція. Bonus налаштовує типи нарахувань — реєстрація, покупка (сума рахується автоматично від суми замовлення), відгук чи ручне нарахування — із затримкою до «розморожування» балів і терміном їхньої дії. Два фонові завдання самі переводять бали по життєвому циклу: очікують → доступні → згорають, без участі адміністратора. BonusTransaction — незмінний журнал кожної операції з прив\'язкою до джерела (замовлення чи відгуку), тож завжди видно, звідки взялись і куди поділись бали покупця.',
+                'name_en' => 'Loyalty Pack',
+                'short_description_en' => 'A loyalty bonus-points program for customers.',
+                'description_en' => 'A repeat customer who comes back for bonus points costs less than a new one acquired through ads — but building a bonus system yourself means manually handling accrual, redemption, and transaction history. Bonus and BonusTransaction do this for you: points accrue after an order is paid, get spent on the next purchase, and every operation leaves a trace in a history visible to both the customer and the admin. WooCommerce Points & Rewards charges $129 a year for something similar — here it\'s a one-time investment. Bonus configures the accrual types — registration, purchase (the amount is calculated automatically from the order total), a review, or a manual award — with a delay before points become spendable and an expiry period. Two scheduled jobs move points through their lifecycle on their own: pending → available → expired, with no admin involvement. BonusTransaction is an immutable log of every operation, linked back to its source (an order or a review), so it\'s always clear where a customer\'s points came from and where they went.',
             ],
             [
                 'slug' => 'reviews-qa-wishlist-pack',
@@ -95,6 +110,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 1299,
                 'short_description' => 'Відгуки, питання про товар та список бажань.',
                 'description' => 'Три речі, які найбільше підвищують довіру до картки товару — це відгуки з реальними оцінками, можливість запитати щось перед покупкою і список бажань, куди можна відкласти товар «на потім». Пак додає всі три: ProductReview для відгуків з рейтингом, ProductQuestion для запитань-відповідей прямо на сторінці товару, і Wishlist, який працює і для зареєстрованих покупців, і для гостей за сесією. У WooCommerce ці три речі часто продають окремими платними розширеннями — тут вони в одному паці за ціною одного з них. ProductReview дає зірковий рейтинг, плюси/мінуси, відео й фото, обговорення коментарями і бонусні бали за перевірену покупку (з обмеженням, щоб не фармили бали повторними відгуками). ProductQuestion — це «питання-відповідь» прямо на картці товару, з модерацією нових питань і миттєвою публікацією відповідей. Wishlist працює однаково і для гостя за сесією, і для зареєстрованого покупця, автоматично зливаючись при вході — нічого не губиться.',
+                'name_en' => 'Reviews, Q&A & Wishlist Pack',
+                'short_description_en' => 'Product reviews, questions, and a wishlist.',
+                'description_en' => 'Three things that boost trust in a product page the most: reviews with real ratings, the ability to ask something before buying, and a wishlist to save a product "for later." This pack adds all three: ProductReview for star-rated reviews, ProductQuestion for Q&A right on the product page, and Wishlist, which works for both registered customers and session-based guests. In WooCommerce these three things are often sold as separate paid extensions — here they\'re one pack for the price of one of them. ProductReview gives a star rating, pros/cons, video and photos, comment threads, and bonus points for a verified purchase (capped, so points can\'t be farmed with repeat reviews). ProductQuestion is a Q&A thread right on the product card, with moderation for new questions and instant publishing of answers. Wishlist works identically for a session-based guest and a registered customer, merging automatically on login — nothing gets lost.',
             ],
             [
                 'slug' => 'ecommerce-mega-bundle',
@@ -104,6 +122,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 14999,
                 'short_description' => 'Всі e-commerce паки разом зі знижкою проти покупки окремо.',
                 'description' => 'Якщо ви вже знаєте, що вам потрібен повний e-commerce — каталог, ціноутворення, бонуси, відгуки — і не хочете рахувати, скільки виходить купувати паки поштучно, ось відповідь: цей бандл об\'єднує E-commerce Core, Pricing & Promotions, Loyalty та Reviews/Q&A/Wishlist Pack в одній покупці зі знижкою приблизно 25–30% проти суми окремих цін. Це стандартна економіка маркетплейсів на кшталт October чи CodeCanyon — і найпростіший спосіб нічого не пропустити, докуповуючи паки по одному місяцями. Технічно — це та сама варіативність товару, ціноутворення, бонуси й відгуки, що й в окремих паках, просто без потреби рахувати суму чотирьох покупок і встановлювати їх окремо.',
+                'name_en' => 'E-commerce Mega-Bundle',
+                'short_description_en' => 'All e-commerce packs together, at a discount over buying separately.',
+                'description_en' => 'If you already know you need the full e-commerce set — catalog, pricing, bonuses, reviews — and don\'t want to add up the cost of buying packs one by one, here\'s the answer: this bundle combines E-commerce Core, Pricing & Promotions, Loyalty, and the Reviews/Q&A/Wishlist Pack in one purchase at roughly a 25–30% discount over the sum of the individual prices. That\'s standard marketplace economics, the same as October or CodeCanyon — and the simplest way not to miss anything while buying packs one at a time over several months. Technically it\'s the same product variations, pricing, bonuses, and reviews as in the individual packs — just without having to add up four purchases and install them separately.',
             ],
             [
                 'slug' => 'social-network-pack',
@@ -113,6 +134,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 3099,
                 'short_description' => 'Синхронізація публікацій у соцмережі.',
                 'description' => 'Публікувати кожен пост вручну на Facebook, Instagram, TikTok, YouTube і Telegram — та рутина, яку хочеться делегувати комусь іншому. Модуль SocialNetwork підключається через OAuth до кожної платформи і синхронізує публікації прямо з адмінки, без перемикання між десятком вкладок. SaaS-агрегатори на кшталт Buffer чи Later коштують $10–30 на місяць — виходить $120–360 щороку, знову й знову; тут разова оплата, яка окупається вже на другому-третьому місяці використання. Крім простих посилань «підписуйтесь на нас», модуль синхронізує останні пости з Facebook, Instagram і TikTok — текст, медіа, метрики залучення — прямо на сайт як соціальну стрічку. Синхронізацію можна запускати за розкладом або вручну по кожній платформі окремо, а пости фільтрувати за платформою і ховати поштучно.',
+                'name_en' => 'SocialNetwork Pack',
+                'short_description_en' => 'Social media post syncing.',
+                'description_en' => 'Publishing every post by hand to Facebook, Instagram, TikTok, YouTube, and Telegram is the kind of routine you\'d rather hand off to something else. The SocialNetwork module connects via OAuth to each platform and syncs posts right from the admin panel, without switching between a dozen tabs. SaaS aggregators like Buffer or Later cost $10–30 a month — that\'s $120–360 a year, over and over; here it\'s a one-time payment that pays for itself by the second or third month of use. Beyond simple "follow us" links, the module syncs recent posts from Facebook, Instagram, and TikTok — text, media, engagement metrics — straight onto the site as a social feed. Syncing can run on a schedule or be triggered manually per platform, and posts can be filtered by platform and hidden individually.',
             ],
             [
                 'slug' => 'activity-log',
@@ -122,6 +146,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 849,
                 'short_description' => 'Аудит-лог дій в адмін-панелі.',
                 'description' => 'Хтось видалив товар з каталогу, і ніхто не пам\'ятає хто — знайома ситуація для будь-якої команди з кількома адміністраторами. ActivityLog веде повний журнал дій в адмін-панелі: хто, що і коли змінив, з можливістю подивитись деталі кожної дії. Просто, недорого, і рятує години розбирательств. WP Activity Log Premium бере за подібне $49–99 щороку — тут ціна одноразова й суттєво нижча. Кожен запис показує, що саме сталось, яку сутність зачепило, що змінилось (значення до/після) і який адмін це зробив (або «Система» — для гостьових чи фонових дій). З цього екрана нічого не можна створити чи відредагувати навмисно — це журнал для відповіді на питання «хто це зробив і коли», а не робочий інструмент.',
+                'name_en' => 'ActivityLog',
+                'short_description_en' => 'An admin-panel activity audit log.',
+                'description_en' => 'Someone deleted a product from the catalog, and nobody remembers who — a familiar situation for any team with more than one admin. ActivityLog keeps a full log of actions in the admin panel: who changed what and when, with the option to see the details of every action. Simple, inexpensive, and saves hours of investigation. WP Activity Log Premium charges $49–99 a year for something similar — here the price is one-time and noticeably lower. Every entry shows exactly what happened, which record it affected, what changed (before/after values), and which admin did it (or "System" for guest or background actions). Nothing can be created or edited from this screen on purpose — it\'s a log meant to answer "who did this and when," not a working tool.',
             ],
             [
                 'slug' => 'backup-restore',
@@ -131,6 +158,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 1299,
                 'short_description' => 'Резервне копіювання та відновлення сайту.',
                 'description' => 'Резервна копія, зроблена за день до того, як щось зламалось, коштує дорожче за будь-яку підписку на бекап-сервіс. Модуль архівує базу даних, код і файлове сховище за розкладом або вручну, і дозволяє відновити все одним кліком з адмінки, без доступу до сервера через SSH. UpdraftPlus Premium, популярний вибір для WordPress, коштує близько $70 на рік; тут це одна покупка. Backup дозволяє налаштувати кілька іменованих конфігурацій (наприклад «Щонічний бекап БД» і «Щотижневий повний») — кожна незалежно вирішує, бекапити базу, код чи файлове сховище, запускається кнопкою «Виконати зараз» або по крону, і сама прибирає старі архіви понад ліміт зберігання. Restore показує список усіх доступних архівів із типом, розміром і датою, і запускає відновлення в фоновому завданні, щоб не впертися в таймаут — з логом статусу на кожному кроці.',
+                'name_en' => 'Backup + Restore',
+                'short_description_en' => 'Site backup and restore.',
+                'description_en' => 'A backup taken the day before something breaks is worth more than any backup-service subscription. This module archives the database, code, and file storage on a schedule or on demand, and lets you restore everything with one click from the admin panel, no SSH access to the server required. UpdraftPlus Premium, a popular choice for WordPress, costs around $70 a year; here it\'s a one-time purchase. Backup lets you set up several named configurations (say, "Nightly DB backup" and "Weekly full backup") — each independently decides whether to back up the database, code, or file storage, runs via a "Run now" button or on a cron schedule, and cleans up old archives past the retention limit on its own. Restore lists every available archive with its type, size, and date, and runs the restore as a background job so it doesn\'t hit a timeout — with a status log at every step.',
             ],
             [
                 'slug' => 'advanced-translations',
@@ -140,6 +170,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 1749,
                 'short_description' => 'Редактор перекладів контенту та інтерфейсу.',
                 'description' => 'Мультимовний сайт зазвичай означає купу рядків перекладу, розкиданих по коду й базі — і жодного зручного способу побачити, що саме ще не перекладено. Language + Translations дають єдиний адмін-екран з груповим списком усіх рядків, фільтром за мовою і відсотком завершеності перекладу для кожної секції сайту. WPML, найпопулярніший вибір для WordPress, коштує $99 на рік; тут функціонал вужчий (тільки контент і UI-рядки, без мультисайтовості), зате ціна одноразова й суттєво нижча. Language керує самим списком мов сайту (з прапорцем RTL для мов написання справа наліво) і дозволяє адміну перемкнути мову власної адмінки одним кліком; перейменування коду мови безпечно переносить увесь перекладений контент на новий код, нічого не «осиротіє». Translations показує кожну групу перекладів з відсотком завершеності, а редагування рядка одразу застосовується для всіх опублікованих мов з однієї форми.',
+                'name_en' => 'Advanced Translations',
+                'short_description_en' => 'A content and interface translation editor.',
+                'description_en' => 'A multilingual site usually means a pile of translation strings scattered across code and the database — with no convenient way to see what\'s still untranslated. Language + Translations give you a single admin screen with a grouped list of every string, a language filter, and a completion percentage for every section of the site. WPML, the most popular choice for WordPress, costs $99 a year; here the feature set is narrower (content and UI strings only, no multisite support), but the price is one-time and noticeably lower. Language manages the site\'s list of languages itself (with an RTL flag for right-to-left languages) and lets an admin switch their own admin-panel display language with one click; renaming a language code safely migrates every piece of translated content across the whole site to the new code — nothing gets orphaned. Translations shows every translation group with a completion percentage, and editing a string applies immediately across every published language from a single form.',
             ],
             [
                 'slug' => 'library-vertical-pack',
@@ -149,6 +182,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 8399,
                 'short_description' => 'Повний набір модулів для бібліотек і видавництв.',
                 'description' => 'Це не e-commerce в класичному розумінні — цей пак для видавництв, бібліотек і сервісів електронного читання. Author, Book, Edition, BookSeries і BookTranslation описують книжку з усіма її версіями та перекладами; BookFile зберігає самі файли; BookSearchIndex робить пошук по книжках швидким навіть на великих каталогах. ReadingProgress, ReadingDiary і ReaderAnnotation дають читачу власний прогрес читання, щоденник і нотатки прямо в тексті — те, чого немає в жодному звичайному e-commerce-модулі. AiApiKey підключає AI-функції, а TelegramAnnouncement автоматично анонсує нові надходження у Telegram-каналі. Вузька, але платоспроможна аудиторія — і відповідно вища ціна, яка все одно суттєво нижча за вартість розробки такого функціоналу з нуля. Book — серце каталогу: одна книга може мати кілька видань і перекладів, кожне зі своїм файлом-джерелом, з якого система сама генерує PDF, DOCX, FB2 і EPUB на вимогу, і автоматично проставляє водяний знак з email покупця на платних завантаженнях. CopyrightStatus блокує публікацію видання, поки людина-рецензент не підтвердить статус авторського права. ReadingProgress і ReaderAnnotation пам\'ятають, де читач зупинився, і дозволяють лишати закладки й нотатки прямо в тексті; ReadingDiary перетворює це на щоденник читання з публічним рейтингом найактивніших читачів. BookTranslation вміє замовити AI-переклад книги (Claude чи Gemini) частинами, з оцінкою вартості наперед і можливістю продовжити з місця зупинки. TelegramAnnouncement сам сповіщає канал про кожну нову книгу, а AiApiKey тримає пул ключів AI-провайдера, щоб жодна AI-функція не «лягла» через вичерпаний ліміт одного ключа.',
+                'name_en' => 'Book/Library Vertical Pack',
+                'short_description_en' => 'A complete module set for libraries and publishers.',
+                'description_en' => 'This isn\'t e-commerce in the classic sense — this pack is for publishers, libraries, and e-reading services. Author, Book, Edition, BookSeries, and BookTranslation describe a book with all its versions and translations; BookFile stores the actual files; BookSearchIndex keeps search fast across even large catalogs. ReadingProgress, ReadingDiary, and ReaderAnnotation give readers their own reading progress, a diary, and notes right in the text — something no ordinary e-commerce module has. AiApiKey plugs in AI features, and TelegramAnnouncement automatically announces new arrivals in a Telegram channel. A narrow but well-funded audience — and a correspondingly higher price, which is still far below the cost of building this functionality from scratch. Book is the heart of the catalog: one book can have several editions and translations, each with its own source file, from which the system generates PDF, DOCX, FB2, and EPUB on demand, automatically watermarking paid downloads with the buyer\'s email. CopyrightStatus blocks an edition from publishing until a human reviewer confirms its copyright status. ReadingProgress and ReaderAnnotation remember where a reader left off and let them leave bookmarks and notes right in the text; ReadingDiary turns this into a reading diary with a public leaderboard of the most active readers. BookTranslation can commission an AI translation of a book (Claude or Gemini) in chunks, with a cost estimate upfront and the ability to resume from where it stopped. TelegramAnnouncement notifies a channel about every new book on its own, and AiApiKey keeps a pool of AI-provider keys so no AI feature ever goes down because one key hit its limit.',
             ],
             [
                 'slug' => 'graphql-api-plugin',
@@ -158,6 +194,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 2199,
                 'short_description' => 'GraphQL API поверх адмін-панелі Nexus.',
                 'description' => 'REST API в Nexus є з коробки, але якщо ваш фронтенд чи мобільний застосунок хоче отримувати саме ті поля, які йому потрібні, без зайвих запитів — це GraphQL. Плагін додає повноцінну GraphQL-схему поверх існуючих модулів, без переписування бекенду. Statamic ховає GraphQL за повним Pro-тарифом у $259; тут це окремий, набагато дешевший фіч-гейт саме для тих, кому потрібен лише він. Плагін сам генерує запити й мутації для кожного модуля, у якого хоч одне поле позначене для API — get one, list, create, update, delete — дотримуючись тих самих прав доступу, що й адмінка та REST. Ніякої схеми писати вручну не треба.',
+                'name_en' => 'GraphQL API Plugin',
+                'short_description_en' => 'A GraphQL API on top of the Nexus admin panel.',
+                'description_en' => 'Nexus ships with a REST API out of the box, but if your frontend or mobile app wants exactly the fields it needs, without extra requests — that\'s GraphQL. The plugin adds a full GraphQL schema on top of existing modules, with no backend rewrite required. Statamic gates GraphQL behind its full Pro tier at $259; here it\'s a separate, much cheaper feature gate for exactly the people who need just this one thing. The plugin auto-generates queries and mutations for every module with at least one API-exposed field — get one, list, create, update, delete — respecting the same permissions as the admin panel and REST. No schema to write by hand.',
             ],
             [
                 'slug' => 'advertising-pack',
@@ -167,6 +206,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 1299,
                 'short_description' => 'Керування рекламою та трекінг показів.',
                 'description' => 'Рекламний банер на сайті, який реально показує, скільки разів його побачили і скільки разів на нього клікнули, — а не просто картинка в сайдбарі. Модуль Advertising керує рекламними блоками по всьому сайту й рахує покази та кліки в реальному часі, тож видно, яка реклама справді працює. Advanced Ads Pro для WordPress коштує $49–190 на рік залежно від тарифу — тут це одна покупка з тим самим базовим трекінгом. Кожна кампанія — це або HTML/JS-вставка (наприклад блок Google AdSense), або банер-картинка з посиланням, згрупована по «слоту»: кілька кампаній можуть конкурувати за одне й те саме місце на сторінці, і модуль сам ротує їх, враховуючи ліміт показів (загальний і на відвідувача) та дати активності. Тут же зберігаються ID Meta Pixel, Google Ads Conversion і Google AdSense для наскрізного трекінгу конверсій по сайту.',
+                'name_en' => 'Advertising Pack',
+                'short_description_en' => 'Ad management and impression tracking.',
+                'description_en' => 'An ad banner on the site that actually shows how many times it was seen and clicked — not just a picture in the sidebar. The Advertising module manages ad blocks across the whole site and counts impressions and clicks in real time, so you can see which ads actually work. Advanced Ads Pro for WordPress costs $49–190 a year depending on the tier — here it\'s a one-time purchase with the same basic tracking. Each campaign is either an HTML/JS embed (say, a Google AdSense block) or a banner image with a link, grouped by "slot": several campaigns can compete for the same on-page spot, and the module rotates between them automatically, respecting impression limits (both overall and per visitor) and active dates. It also stores the Meta Pixel, Google Ads Conversion, and Google AdSense IDs for site-wide conversion tracking.',
             ],
 
             // --- Безкоштовні модулі (Tier 1/2 + невизначені-раніше, з рекомендаціями документа) ---
@@ -178,6 +220,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Базова аналітика — безкоштовно, як "wow"-фіча.',
                 'description' => 'Базова аналітика — це та річ, яку не хочеться ставити окремим платним модулем, коли достатньо просто бачити, звідки приходять відвідувачі і які сторінки найпопулярніші. Тому дашборд Analytics безкоштовний за замовчуванням — та сама логіка, за якою Statamic дає базову статистику без додаткової оплати. Якщо згодом вам знадобляться глибші звіти й експорт у CSV, це може стати окремим платним доповненням, але базовий дашборд лишається безкоштовним завжди. Технічно це один екран налаштувань: вписуєте Measurement ID Google Analytics 4 і/або Container ID Google Tag Manager — і скрипт трекінгу автоматично з\'являється на кожній публічній сторінці. Один загальний перемикач вимикає весь трекінг миттєво, наприклад на час техробіт чи для відповідності вимогам щодо згоди на обробку даних, без видалення налаштованих ID.',
+                'name_en' => 'Analytics',
+                'short_description_en' => 'Basic analytics — free, as a "wow" feature.',
+                'description_en' => 'Basic analytics is the kind of thing you don\'t want to sell as a separate paid module when all you need is to see where visitors come from and which pages are most popular. That\'s why the Analytics dashboard is free by default — the same logic Statamic uses to give away basic statistics at no extra cost. If you later need deeper reports and CSV export, that could become a separate paid add-on, but the basic dashboard stays free, always. Technically it\'s a single settings screen: enter your Google Analytics 4 Measurement ID and/or Google Tag Manager Container ID, and the tracking script is automatically injected on every public page. One master switch turns off all tracking instantly — say, during maintenance or to comply with a consent requirement — without clearing the configured IDs.',
             ],
             [
                 'slug' => 'storefront-theme',
@@ -187,6 +232,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Демо-тема вітрини — безкоштовний бонус до E-commerce Core.',
                 'description' => 'Встановити e-commerce-двигун і отримати порожню сторінку без жодного дизайну — не найкращий досвід першого запуску. Тому Storefront, готова тема вітрини з каталогом, кошиком і чекаутом, йде безкоштовним бонусом до E-commerce Core Pack: купуєте один пак — отримуєте робочий магазин одразу, а не тільки бекенд. Так само роблять October CMS і Twill зі своїми демо-темами — окремо цю тему не продають. Технічно Storefront — це головна сторінка і спільний layout/header/partials, на яких будуються всі інші публічні сторінки (каталог, товар, вішліст). Головна сама підтягує нові надходження й популярні товари з каталогу без ручного відбору — власного адмін-екрана в модуля немає, це фронтенд-оболонка.',
+                'name_en' => 'Storefront (demo theme)',
+                'short_description_en' => 'A demo storefront theme — a free bonus with E-commerce Core.',
+                'description_en' => 'Installing an e-commerce engine and getting an empty page with no design at all isn\'t the best first-launch experience. That\'s why Storefront, a ready-made theme with catalog, cart, and checkout, comes as a free bonus with the E-commerce Core Pack: buy one pack, get a working store right away, not just a back office. October CMS and Twill do the same with their demo themes — this theme isn\'t sold separately. Technically, Storefront is the homepage and the shared layout/header/partials that every other public page (catalog, product, wishlist) is built on. The homepage automatically pulls in new arrivals and popular products from the catalog with no manual curation — the module has no admin screen of its own, it\'s the front-end shell.',
             ],
             [
                 'slug' => 'forms-module',
@@ -196,6 +244,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Конструктор форм та збір заявок.',
                 'description' => 'Форма зворотного зв\'язку, заявка на консультацію, підписка на розсилку — базова потреба майже будь-якого сайту, тому Forms безкоштовний завжди. Конструктор дозволяє зібрати форму з довільним набором полів прямо в адмінці, без правки коду, а всі заявки складаються в окремий розділ із можливістю позначити оброблені. Поля форми (текст, email, textarea, число, select, radio, checkbox, дата) додаються прямо на екрані редагування форми, кожне зі своїм лейблом, обов\'язковістю і варіантами вибору. Приховане honeypot-поле відсіює найпростіших спам-ботів, не показуючи помилку живим відвідувачам. Усі заявки складаються в окремий, тільки для читання, список — переглянути й видалити можна, редагувати не можна.',
+                'name_en' => 'Forms',
+                'short_description_en' => 'A form builder and submission inbox.',
+                'description_en' => 'A contact form, a consultation request, a newsletter signup — a basic need on almost any site, which is why Forms is always free. The builder lets you assemble a form with any set of fields right in the admin panel, no code changes, and every submission lands in a dedicated section where it can be marked as handled. Form fields (text, email, textarea, number, select, radio, checkbox, date) are added right on the form\'s edit screen, each with its own label, required flag, and choice options. A hidden honeypot field filters out the simplest spam bots without showing an error to real visitors.',
             ],
             [
                 'slug' => 'blog-module',
@@ -205,6 +256,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Блог з категоріями публікацій.',
                 'description' => 'Блог із категоріями і повноцінним редактором постів — стандартна річ, яка мала б бути в кожній CMS без додаткової оплати, і тут вона така. Категорії впорядковують пости по темах, а сам редактор постів підтримує обкладинку, SEO-поля і публікацію за розкладом. Пост пишеться в редакторі з форматуванням, підтримує короткий уривок, обкладинку, категорію, довільну кількість тегів і власні SEO-поля, а перемикач «опубліковано» з датою публікації дозволяє готувати пости наперед. На публічній частині — пагінований список, сторінка окремого поста і фільтрація за категорією; неопубліковані пости ніколи не показуються.',
+                'name_en' => 'Blog',
+                'short_description_en' => 'A blog with post categories.',
+                'description_en' => 'A blog with categories and a full post editor — a standard feature that should be in every CMS at no extra cost, and here it is. Categories organize posts by topic, and the post editor supports a cover image, SEO fields, and scheduled publishing. A post is written in a formatting editor, supports a short excerpt, a cover image, a category, any number of tags, and its own SEO fields, and a "published" toggle with a publish date lets you prepare posts in advance. On the public side: a paginated list, individual post pages, and category filtering; unpublished posts are never shown.',
             ],
             [
                 'slug' => 'slider-module',
@@ -214,6 +268,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Слайдер для головної сторінки.',
                 'description' => 'Банер на головній сторінці, який покупці бачать першим, — і прибивати його намертво в коді теми не варіант, якщо контент має мінятись частіше за реліз коду. Slider дозволяє керувати слайдами прямо з адмінки: картинка, текст, посилання, порядок показу — усе редагується без розробника. Кожен слайдер має власний унікальний ключ, тож на сайті можна одночасно тримати кілька незалежних слайдерів (наприклад окремо для головної і для промо на чекауті) і вмикати чи вимикати кожен окремо. Слайди редагуються прямо на екрані слайдера з перетягуванням для зміни порядку.',
+                'name_en' => 'Slider',
+                'short_description_en' => 'A homepage slider.',
+                'description_en' => 'The banner on the homepage that customers see first — hardcoding it into the theme isn\'t an option if the content needs to change more often than a code release. Slider lets you manage slides right from the admin panel: image, text, link, display order — all editable without a developer. Every slider has its own unique key, so a site can run several independent sliders at once (say, one for the homepage and another for a checkout promo) and toggle each on or off independently. Slides are edited right on the slider\'s own screen, with drag-to-reorder.',
             ],
             [
                 'slug' => 'menu-module',
@@ -223,6 +280,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Керування меню сайту.',
                 'description' => 'Пункти навігації змінюються частіше, ніж хотілося б переносити структуру меню в код теми щоразу. Menu дає адмінці повний контроль над навігацією сайту — довільна вкладеність пунктів, посилання на будь-яку сторінку чи зовнішній URL, перетягування для зміни порядку. Пункт меню можна або вписати вручну (довільний URL), або прив\'язати напряму до сторінки, поста чи товару — тоді посилання саме оновиться, якщо адреса того контенту згодом зміниться, і ніколи не «зогниє». Вкладеність необмежена, з кнопками підняти/опустити/додати рівень для побудови dropdown-структур.',
+                'name_en' => 'Menu',
+                'short_description_en' => 'Site navigation management.',
+                'description_en' => 'Navigation items change more often than anyone wants to move the menu structure into theme code. Menu gives the admin panel full control over site navigation — unlimited item nesting, links to any page or external URL, drag-and-drop reordering. A menu item can either be entered manually (any URL) or linked directly to a page, post, or product — in which case its live URL resolves automatically, so the link never goes stale even if that content\'s URL changes later. Nesting is unlimited, with up/down/indent/outdent controls for building dropdown structures.',
             ],
             [
                 'slug' => 'redirect-module',
@@ -232,6 +292,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => '301-редиректи для SEO.',
                 'description' => 'Сторінка переїхала, URL змінився, а старе посилання все ще індексоване в Google — без 301-редиректу це втрачений трафік і зіпсоване SEO. Redirect дозволяє додати правило переспрямування за секунди прямо з адмінки, без правки .htaccess чи конфігів сервера. Кожен редирект — це пара «звідки → куди» з вибором постійного (301) чи тимчасового (302) типу, перевіряється ще до звичайної маршрутизації сторінок, тож старий URL ловиться раніше, ніж встиг би віддати 404. Адмінський, API- і GraphQL-трафік навмисно виключені з перевірки, щоб не заважати їм.',
+                'name_en' => 'Redirect',
+                'short_description_en' => '301 redirects for SEO.',
+                'description_en' => 'A page moved, the URL changed, and the old link is still indexed by Google — without a 301 redirect, that\'s lost traffic and damaged SEO. Redirect lets you add a redirect rule in seconds right from the admin panel, with no editing of .htaccess or server configs. Each redirect is a "from → to" pair with a choice of permanent (301) or temporary (302), checked ahead of normal page routing, so old URLs get caught before they\'d otherwise return a 404. Admin, API, and GraphQL traffic are deliberately excluded from the check so they\'re never affected.',
             ],
             [
                 'slug' => 'sitemap-module',
@@ -241,6 +304,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Автогенерація sitemap.xml.',
                 'description' => 'Пошуковики індексують сайт швидше й повніше, коли мають актуальну карту сайту, — а оновлювати sitemap.xml вручну після кожної нової сторінки чи товару ніхто не хоче. Sitemap генерує карту сайту автоматично на основі опублікованого контенту, оновлюючи її щоразу, коли щось змінюється в каталозі чи блозі. Можна обрати один комбінований файл або багатофайловий режим з індексом, який сам ділить велику карту на частини після заданої кількості URL, і додати свої URL (зовнішні сторінки, старі посилання) з пріоритетом і частотою оновлення. Регенерація — одна консольна команда.',
+                'name_en' => 'Sitemap',
+                'short_description_en' => 'Automatic sitemap.xml generation.',
+                'description_en' => 'Search engines index a site faster and more completely when they have an up-to-date sitemap — and updating sitemap.xml by hand after every new page or product is something nobody wants to do. Sitemap generates the site map automatically from published content, updating it whenever something changes in the catalog or blog. You can choose a single combined file or a multi-file setup with an index that automatically splits a large sitemap into chunks past a configurable URL count, and add your own URLs (external pages, legacy links) with a priority and change frequency. Regeneration is a single console command.',
             ],
             [
                 'slug' => 'demo-module',
@@ -250,6 +316,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Навчальний приклад модуля для розробників.',
                 'description' => 'Найкращий спосіб зрозуміти, як влаштований модуль у Nexus, — це подивитись на реальний, робочий приклад, а не тільки читати документацію. Demo саме для цього: навчальний модуль, що охоплює майже всі типи полів, секції форми і варіанти relation-зв\'язків, які підтримує фреймворк. Лишається безкоштовним навмисно — це водночас підручник для розробників і привід для них знайти Nexus через пошук. Це не реальна бізнес-сутність, а один приклад поля майже кожного підтримуваного типу — текст, редактор, числа, дати, зображення, галереї, відео, перемикачі, випадаючі списки, зв\'язки, повторювані рядки, рейтинги, кольори, іконки, markdown — розкладених по вкладках і секціях, плюс приклад дашборд-віджета і власного екрана налаштувань модуля.',
+                'name_en' => 'Demo',
+                'short_description_en' => 'A developer reference module.',
+                'description_en' => 'The best way to understand how a Nexus module is built is to look at a real, working example — not just read the docs. Demo is exactly that: a reference module covering nearly every field type, form section, and relation variant the framework supports. Kept free on purpose — it doubles as a developer tutorial and a reason for them to find Nexus through search. It\'s not a real business entity, just one example field for almost every supported type — text, rich editor, numbers, dates, images, galleries, video, toggles, dropdowns, relations, repeatable rows, ratings, colors, icons, markdown — laid out across tabs and sections, plus a sample dashboard widget and its own settings panel.',
             ],
             [
                 'slug' => 'widgets-pack',
@@ -259,6 +328,9 @@ class NexusStoreCatalogSeeder extends Seeder
                 'price' => 0,
                 'short_description' => 'Базові дашборд-віджети.',
                 'description' => 'Дашборд адмінки виглядає живим, коли на ньому є хоч якісь цифри в реальному часі, а не тільки список пунктів меню зліва. Пак додає базовий набір віджетів — лічильник користувачів, рекламний слот прямо на дашборді, стрічку останніх записів — які можна перетягувати й вмикати за потреби. Базовий набір, входить безкоштовно. AdvertisingSlot показує рекламу з потрібного «слота» на будь-якій позиції сторінки і рахує покази, працюючи в парі з модулем Advertising. UsersCount — це завжди актуальна цифра зареєстрованих користувачів прямо на дашборді. RecentDemoRecords показує компактний список останніх записів як приклад того, як міг би виглядати власний «останні дії» віджет.',
+                'name_en' => 'Dashboard Widgets Pack',
+                'short_description_en' => 'Basic dashboard widgets.',
+                'description_en' => 'An admin dashboard feels alive when it has at least a few real-time numbers on it, not just a list of menu items on the left. This pack adds a basic set of widgets — a user counter, an ad slot right on the dashboard, a feed of recent entries — that can be dragged around and toggled on as needed. Basic set, included free. AdvertisingSlot displays an ad from the right "slot" at any position on the page and counts impressions, working together with the Advertising module. UsersCount is an always-current count of registered users right on the dashboard. RecentDemoRecords shows a compact list of the latest entries as an example of what a custom "recent activity" widget could look like.',
             ],
         ];
 
@@ -267,8 +339,11 @@ class NexusStoreCatalogSeeder extends Seeder
                 ['slug' => $data['slug']],
                 [
                     'name' => $data['name'],
+                    'name_i18n' => ['uk' => $data['name'], 'en' => $data['name_en']],
                     'short_description' => $data['short_description'],
+                    'short_description_i18n' => ['uk' => $data['short_description'], 'en' => $data['short_description_en']],
                     'description' => $data['description'],
+                    'description_i18n' => ['uk' => $data['description'], 'en' => $data['description_en']],
                     'category_id' => $categoryIds[$data['category']],
                     'package_type' => $data['package_type'],
                     'min_core_version' => '1.0',
