@@ -11,10 +11,13 @@ class AdminStoreRequest extends NexusFormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'array'],
+            'name.*' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'alpha_dash', Rule::unique('shop_products', 'slug')],
-            'short_description' => ['nullable', 'string'],
-            'description' => ['nullable', 'string'],
+            'short_description' => ['nullable', 'array'],
+            'short_description.*' => ['nullable', 'string'],
+            'description' => ['nullable', 'array'],
+            'description.*' => ['nullable', 'string'],
             'image' => ['nullable', 'string'],
             'package_type' => ['nullable', Rule::enum(PackageType::class)],
             'github_owner' => ['nullable', 'string', 'max:255'],

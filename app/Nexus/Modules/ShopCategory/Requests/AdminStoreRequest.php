@@ -10,7 +10,8 @@ class AdminStoreRequest extends NexusFormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'array'],
+            'name.*' => ['nullable', 'string', 'max:255'],
             'slug' => ['nullable', 'string', 'alpha_dash', Rule::unique('shop_categories', 'slug')],
             'short_description' => ['nullable', 'string'],
             'description' => ['nullable', 'string'],

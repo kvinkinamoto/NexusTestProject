@@ -36,7 +36,7 @@ class NexusStoreCatalogSeeder extends Seeder
         foreach ($categories as $slug => [$name, $nameEn]) {
             $categoryIds[$slug] = ShopCategory::query()->updateOrCreate(
                 ['slug' => $slug],
-                ['name' => $name, 'name_i18n' => ['uk' => $name, 'en' => $nameEn], 'publish' => true],
+                ['name' => ['uk' => $name, 'en' => $nameEn], 'publish' => true],
             )->id;
         }
 
@@ -338,12 +338,9 @@ class NexusStoreCatalogSeeder extends Seeder
             ShopProduct::query()->updateOrCreate(
                 ['slug' => $data['slug']],
                 [
-                    'name' => $data['name'],
-                    'name_i18n' => ['uk' => $data['name'], 'en' => $data['name_en']],
-                    'short_description' => $data['short_description'],
-                    'short_description_i18n' => ['uk' => $data['short_description'], 'en' => $data['short_description_en']],
-                    'description' => $data['description'],
-                    'description_i18n' => ['uk' => $data['description'], 'en' => $data['description_en']],
+                    'name' => ['uk' => $data['name'], 'en' => $data['name_en']],
+                    'short_description' => ['uk' => $data['short_description'], 'en' => $data['short_description_en']],
+                    'description' => ['uk' => $data['description'], 'en' => $data['description_en']],
                     'category_id' => $categoryIds[$data['category']],
                     'package_type' => $data['package_type'],
                     'min_core_version' => '1.0',

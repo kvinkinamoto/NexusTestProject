@@ -69,34 +69,18 @@ class ShopProduct extends Model
     use HasAttributeSchemaProperties, HasAutoSlug, HasTranslations, LogsActivityWithTranslatable;
 
     #[Column(label: 'Name', sortable: true, searchable: true)]
-    #[Field(type: 'string', section: 'main', label: 'Name', required: true, rules: ['max:255'])]
+    #[Field(type: 'string', section: 'main', label: 'Name', required: true, rules: ['max:255'], translated: true)]
     protected $name;
-
-    /**
-     * Per-locale override of `name`, shown on the storefront when present
-     * for the current locale (falls back to the plain `name` above) — added
-     * for the EN storefront pass. `name` itself stays untranslated so the
-     * admin list/search/sort and any existing snapshot (e.g. order line
-     * `product_data`) keep working unchanged.
-     */
-    #[Field(type: 'string', section: 'main', label: 'Translated name', required: false, translated: true)]
-    protected $name_i18n;
 
     #[Column(label: 'Slug', sortable: true, searchable: true)]
     #[Field(type: 'slug', section: 'main', label: 'Slug', required: false, slugSource: 'name')]
     protected $slug;
 
-    #[Field(type: 'text', section: 'main', label: 'Short description', required: false)]
+    #[Field(type: 'text', section: 'main', label: 'Short description', required: false, translated: true)]
     protected $short_description;
 
-    #[Field(type: 'text', section: 'main', label: 'Translated short description', required: false, translated: true)]
-    protected $short_description_i18n;
-
-    #[Field(type: 'text', section: 'main', label: 'Description', required: false)]
+    #[Field(type: 'text', section: 'main', label: 'Description', required: false, translated: true)]
     protected $description;
-
-    #[Field(type: 'text', section: 'main', label: 'Translated description', required: false, translated: true)]
-    protected $description_i18n;
 
     #[Column(label: 'Image', customField: 'showImage')]
     #[Field(type: 'image', section: 'main', label: 'Image', required: false)]
@@ -168,6 +152,21 @@ class ShopProduct extends Model
         return $this->belongsToMany(self::class, 'products_related', 'product_id', 'related_id')->withTimestamps();
     }
 
+    /**
+     * The real, individually-releasable module products a "pack" bundles —
+     * e.g. E-commerce Core Pack's items are the actual ShopCategory/Cart/
+     * Order/... module products, each with its own ProductRelease zip.
+     * CartService::add() expands a pack into these instead of adding the
+     * pack itself as a cart line. Same self-pivot shape as
+     * relatedProducts()/products_related above.
+     */
+    #[Field(type: 'relation', section: 'relations_section', label: 'Pack items', required: false)]
+    #[Relation(type: 'belongsToMany', show: 'name', ajax: true)]
+    public function packItems(): BelongsToMany
+    {
+        return $this->belongsToMany(self::class, 'shop_product_pack_items', 'pack_id', 'item_id')->withTimestamps();
+    }
+
     #[Field(type: 'relationManager', section: 'relations_section', label: 'Releases', required: false)]
     #[Relation(type: 'hasMany')]
     public function releases(): HasMany
@@ -182,8 +181,7 @@ class ShopProduct extends Model
     protected $meta_description;
 
     protected $fillable = [
-        'name', 'name_i18n', 'slug', 'short_description', 'short_description_i18n',
-        'description', 'description_i18n', 'image',
+        'name', 'slug', 'short_description', 'description', 'image',
         'category_id', 'type_id', 'variation_group_id',
         'package_type', 'github_owner', 'github_repo', 'min_core_version',
         'price', 'price_discount', 'bonuses', 'stock', 'publish',
@@ -199,7 +197,7 @@ class ShopProduct extends Model
         'publish' => 'boolean',
     ];
 
-    public $translatable = ['name_i18n', 'short_description_i18n', 'description_i18n'];
+    public $translatable = ['name', 'short_description', 'description'];
 
     public function scopePublish($query)
     {
@@ -207,23 +205,23 @@ class ShopProduct extends Model
     }
 
     /**
-     * Localized display name — the translated override when the current
-     * locale has one, otherwise the plain `name`. Storefront views read
-     * this instead of `name` directly.
+     * Kept as the storefront's call site (rather than switching every view
+     * to read `name` directly) — Spatie already resolves `name` to the
+     * current locale's translation, with its own fallback-locale handling.
      */
     public function displayName(): string
     {
-        return $this->getTranslation('name_i18n', app()->getLocale(), false) ?: $this->name;
+        return $this->name;
     }
 
     public function displayShortDescription(): ?string
     {
-        return $this->getTranslation('short_description_i18n', app()->getLocale(), false) ?: $this->short_description;
+        return $this->short_description;
     }
 
     public function displayDescription(): ?string
     {
-        return $this->getTranslation('description_i18n', app()->getLocale(), false) ?: $this->description;
+        return $this->description;
     }
 
     /**

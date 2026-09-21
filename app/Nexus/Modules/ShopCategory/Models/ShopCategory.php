@@ -53,17 +53,8 @@ class ShopCategory extends Model
     use HasAttributeSchemaProperties, HasAutoSlug, HasTranslations, NodeTrait;
 
     #[Column(label: 'Name', sortable: true, searchable: true)]
-    #[Field(type: 'string', section: 'main', label: 'Name', required: true, rules: ['max:255'])]
+    #[Field(type: 'string', section: 'main', label: 'Name', required: true, rules: ['max:255'], translated: true)]
     protected $name;
-
-    /**
-     * Overrides $name for the current locale on the storefront, falling back
-     * to it — same separate-column convention as ShopProduct's name_i18n
-     * (kept apart from $name so admin search/sort/slug-source stay on the
-     * plain field).
-     */
-    #[Field(type: 'string', section: 'main', label: 'Name (translations)', required: false, translated: true)]
-    protected $name_i18n;
 
     #[Column(label: 'Slug', sortable: true, searchable: true)]
     #[Field(type: 'slug', section: 'main', label: 'Slug', required: false, slugSource: 'name')]
@@ -115,10 +106,10 @@ class ShopCategory extends Model
     #[Field(type: 'text', section: 'seo_section', label: 'Meta description', required: false)]
     protected $meta_description;
 
-    public $translatable = ['name_i18n'];
+    public $translatable = ['name'];
 
     protected $fillable = [
-        'name', 'name_i18n', 'slug', 'short_description', 'description', 'image', 'parent_id', 'nav_group',
+        'name', 'slug', 'short_description', 'description', 'image', 'parent_id', 'nav_group',
         'publish', 'meta_title', 'meta_description',
     ];
 
@@ -133,6 +124,6 @@ class ShopCategory extends Model
 
     public function displayName(): string
     {
-        return $this->getTranslation('name_i18n', app()->getLocale(), false) ?: $this->name;
+        return $this->name;
     }
 }

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900">
+    <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="900" gradientUnits="userSpaceOnUse">
+            <stop offset="0" stop-color="#171717"/>
+            <stop offset="1" stop-color="#080808"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#b45309" stop-opacity="0.55"/>
+            <stop offset="1" stop-color="#b45309" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#000000" stop-opacity="0"/>
+            <stop offset="1" stop-color="#000000" stop-opacity="0.75"/>
+        </linearGradient>
+        <pattern id="dots" width="36" height="36" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1.4" fill="#ffffff" fill-opacity="0.06"/>
+        </pattern>
+    </defs>
+
+    <rect width="1200" height="900" fill="url(#bg)"/>
+    <rect width="1200" height="900" fill="url(#dots)"/>
+    <circle cx="950" cy="180" r="380" fill="url(#glow)"/>
+    <circle cx="200" cy="760" r="280" fill="url(#glow)" opacity="0.4"/>
+
+    <rect x="24" y="24" width="1152" height="852" rx="28" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="2"/>
+
+    <text x="836" y="74" text-anchor="end" font-family="system-ui,-apple-system,Segoe UI,sans-serif" font-size="18" font-weight="600" letter-spacing="4" fill="#ffffff" fill-opacity="0.35">NEXUS</text>
+
+    <circle cx="600" cy="370" r="150" fill="#ffffff" fill-opacity="0.07"/>
+    <circle cx="600" cy="370" r="150" fill="none" stroke="#ffffff" stroke-opacity="0.14" stroke-width="2"/>
+    <g transform="translate(600,370)">
+        <path d="M0,-50 C-20,-60 -55,-58 -65,-50 L-65,55 C-55,47 -20,49 0,58" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0,-50 C20,-60 55,-58 65,-50 L65,55 C55,47 20,49 0,58" stroke="#fff" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <rect x="0" y="560" width="1200" height="340" fill="url(#fade)"/>
+</svg>

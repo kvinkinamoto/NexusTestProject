@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
+            LanguageSeeder::class,
             CurrencySeeder::class,
             OrderStatusSeeder::class,
             PaymentMethodSeeder::class,

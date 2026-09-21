@@ -33,7 +33,7 @@ it('creates a product through the generic admin CRUD', function () {
     $category = ShopCategory::create(['name' => 'Electronics', 'slug' => 'electronics']);
 
     Livewire::test(ModuleForm::class, ['moduleName' => 'ShopProduct'])
-        ->set('data.name', 'iPhone')
+        ->set('data.name.'.config('app.locale'), 'iPhone')
         ->set('data.price', 999)
         ->set('data.stock', 10)
         ->set('data.publish', true)
@@ -41,7 +41,7 @@ it('creates a product through the generic admin CRUD', function () {
         ->call('save')
         ->assertHasNoErrors();
 
-    $product = ShopProduct::where('name', 'iPhone')->firstOrFail();
+    $product = ShopProduct::where('slug', 'iphone')->firstOrFail();
 
     expect($product->slug)->toBe('iphone');
     expect($product->category_id)->toBe($category->id);
@@ -50,7 +50,7 @@ it('creates a product through the generic admin CRUD', function () {
 
 it('rejects a discount price that is not lower than the regular price', function () {
     Livewire::test(ModuleForm::class, ['moduleName' => 'ShopProduct'])
-        ->set('data.name', 'iPhone')
+        ->set('data.name.'.config('app.locale'), 'iPhone')
         ->set('data.price', 100)
         ->set('data.price_discount', 150)
         ->call('save')
@@ -62,13 +62,13 @@ it('attaches attribute option values to a product', function () {
     $red = AttributeOption::create(['attribute_id' => $attribute->id, 'value' => 'Red']);
 
     Livewire::test(ModuleForm::class, ['moduleName' => 'ShopProduct'])
-        ->set('data.name', 'T-Shirt')
+        ->set('data.name.'.config('app.locale'), 'T-Shirt')
         ->set('data.price', 20)
         ->set('data.attributeOptions', [$red->id])
         ->call('save')
         ->assertHasNoErrors();
 
-    $product = ShopProduct::where('name', 'T-Shirt')->firstOrFail();
+    $product = ShopProduct::where('slug', 't-shirt')->firstOrFail();
     expect($product->attributeOptions()->pluck('value')->all())->toBe(['Red']);
 });
 

@@ -14,14 +14,14 @@ beforeEach(function () {
     $this->artisan('nexus:module:install', ['name' => 'Promotion'])->run();
 });
 
-it('logs a created event with dirty attributes for a plain (non-translated) model', function () {
+it('logs a created event with dirty attributes for a plain (non-translated) attribute', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100]);
 
     $activity = ActivityLog::query()->forSubject($product)->latest('id')->first();
 
     expect($activity)->not->toBeNull();
     expect($activity->event)->toBe('created');
-    expect($activity->attribute_changes['attributes']['name'])->toBe('Shirt');
+    expect($activity->attribute_changes['attributes']['slug'])->toBe('shirt');
 });
 
 it('logs an updated event only for dirty attributes and skips a no-op save', function () {
