@@ -27,6 +27,9 @@ Route::middleware(['web', 'localeSessionRedirect', 'localizationRedirect', 'loca
 
         Route::middleware(['auth'])->prefix('account')->name('account.')->group(function () {
             Route::get('/orders', [AccountOrdersController::class, 'index'])->name('orders');
+            Route::get('/orders/{order}', [AccountOrdersController::class, 'show'])->name('orders.show');
+            Route::put('/orders/{order}', [AccountOrdersController::class, 'update'])->name('orders.update');
+            Route::delete('/orders/{order}', [AccountOrdersController::class, 'destroy'])->name('orders.destroy');
             Route::get('/redeem-gift', [GiftRedemptionController::class, 'show'])->name('redeem-gift.show');
             Route::post('/redeem-gift', [GiftRedemptionController::class, 'store'])->name('redeem-gift.store');
         });
