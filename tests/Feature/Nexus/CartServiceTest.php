@@ -102,6 +102,32 @@ it('always returns the same cart for the same user', function () {
     expect($first->id)->toBe($second->id);
 });
 
+it('adds a pack\'s member products instead of the pack itself', function () {
+    $itemA = ShopProduct::create(['name' => 'Currency', 'slug' => 'currency', 'price' => 0, 'publish' => false]);
+    $itemB = ShopProduct::create(['name' => 'Cart', 'slug' => 'cart-module', 'price' => 0, 'publish' => false]);
+    $pack = ShopProduct::create(['name' => 'E-commerce Core Pack', 'slug' => 'ecommerce-core-pack', 'price' => 6199, 'publish' => true]);
+    $pack->packItems()->attach([$itemA->id, $itemB->id]);
+
+    $this->service->add($this->user, null, $pack->id, 2);
+
+    $cart = $this->service->resolveCart($this->user, null);
+    expect($cart->products()->where('product_id', $pack->id)->exists())->toBeFalse();
+    expect($cart->products()->where('product_id', $itemA->id)->first()->quantity)->toBe(2);
+    expect($cart->products()->where('product_id', $itemB->id)->first()->quantity)->toBe(2);
+});
+
+it('accumulates quantity for a pack\'s items when the pack is added again', function () {
+    $item = ShopProduct::create(['name' => 'Currency', 'slug' => 'currency', 'price' => 0, 'publish' => false]);
+    $pack = ShopProduct::create(['name' => 'E-commerce Core Pack', 'slug' => 'ecommerce-core-pack', 'price' => 6199, 'publish' => true]);
+    $pack->packItems()->attach($item->id);
+
+    $this->service->add($this->user, null, $pack->id, 1);
+    $this->service->add($this->user, null, $pack->id, 1);
+
+    $cart = $this->service->resolveCart($this->user, null);
+    expect($cart->products()->where('product_id', $item->id)->first()->quantity)->toBe(2);
+});
+
 it('resolves a session-scoped cart for a guest, separate from any user cart', function () {
     $product = ShopProduct::create(['name' => 'iPhone', 'slug' => 'iphone', 'price' => 999, 'stock' => 10]);
 

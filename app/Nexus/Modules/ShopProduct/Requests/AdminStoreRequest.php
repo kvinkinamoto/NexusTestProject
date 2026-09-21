@@ -39,6 +39,8 @@ class AdminStoreRequest extends NexusFormRequest
             'relation.attributeOptions.*' => ['integer', 'exists:attribute_options,id'],
             'relation.relatedProducts' => ['nullable', 'array'],
             'relation.relatedProducts.*' => ['integer', 'exists:shop_products,id'],
+            'relation.packItems' => ['nullable', 'array'],
+            'relation.packItems.*' => ['integer', 'exists:shop_products,id'],
         ];
     }
 }

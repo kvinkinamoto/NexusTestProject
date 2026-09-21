@@ -93,6 +93,8 @@ class OrderService
             $cart?->products()->delete();
             $cart?->update(['promo_code_id' => null]);
 
+            $this->markPaidIfFree($order, $totalPrice);
+
             return $order;
         });
     }
@@ -119,8 +121,25 @@ class OrderService
             $promotions = $built['promotion'] !== null ? [$built['promotion']] : [];
             $this->recordPromotionUsage($user, $order, $promotions, []);
 
+            $this->markPaidIfFree($order, $productsPrice);
+
             return $order;
         });
+    }
+
+    /**
+     * A free order (every line free, or a 100% discount) has nothing to
+     * charge — it must never reach the payment gateway. Flips payment_status
+     * straight to PAID once the order's lines/promotion usage/cart-clearing
+     * are already done, so OrderObserver::updated()'s `wasChanged('payment_status')`
+     * check fires OrderPaid (license issuance, etc.) exactly like a real
+     * gateway callback would, just without a callback ever happening.
+     */
+    private function markPaidIfFree(Order $order, float $totalPrice): void
+    {
+        if ($totalPrice <= 0.0) {
+            $order->update(['payment_status' => PaymentStatus::PAID]);
+        }
     }
 
     public function cancelOrder(Order $order): void

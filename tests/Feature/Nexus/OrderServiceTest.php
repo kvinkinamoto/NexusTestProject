@@ -6,6 +6,7 @@ use App\Nexus\Modules\DiscountRule\Enums\DiscountRuleType;
 use App\Nexus\Modules\DiscountRule\Enums\ValueType;
 use App\Nexus\Modules\DiscountRule\Models\DiscountRule;
 use App\Nexus\Modules\Order\Enums\PaymentStatus;
+use App\Nexus\Modules\Order\Events\OrderPaid;
 use App\Nexus\Modules\Order\Services\OrderService;
 use App\Nexus\Modules\OrderStatus\Models\OrderStatus;
 use App\Nexus\Modules\PromoCode\Models\PromoCode;
@@ -13,6 +14,7 @@ use App\Nexus\Modules\PromoCode\Models\PromoCodeUsage;
 use App\Nexus\Modules\Promotion\Models\Promotion;
 use App\Nexus\Modules\Promotion\Models\PromotionUsage;
 use App\Nexus\Modules\ShopProduct\Models\ShopProduct;
+use Illuminate\Support\Facades\Event;
 use Nodex\Nexus\Services\SettingsBuilder;
 
 beforeEach(function () {
@@ -129,6 +131,49 @@ it('records automatic promotion usage on the order', function () {
     $usage = PromotionUsage::where('order_id', $order->id)->firstOrFail();
     expect($usage->promotion_id)->toBe($promotion->id);
     expect((float) $usage->applied_amount)->toBe(20.0);
+});
+
+it('marks a free order as paid immediately instead of leaving it pending for a gateway', function () {
+    $product = ShopProduct::create(['name' => 'Sitemap', 'slug' => 'sitemap', 'price' => 0, 'stock' => null]);
+    $this->cartService->add($this->user, null, $product->id, 1);
+
+    $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
+
+    expect((float) $order->total_price)->toBe(0.0);
+    expect($order->payment_status)->toBe(PaymentStatus::PAID);
+});
+
+it('leaves a paid-total order pending until the gateway confirms it', function () {
+    $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
+    $this->cartService->add($this->user, null, $product->id, 1);
+
+    $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
+
+    expect($order->payment_status)->toBe(PaymentStatus::PENDING);
+});
+
+it('marks a free quick order as paid immediately', function () {
+    $product = ShopProduct::create(['name' => 'Sitemap', 'slug' => 'sitemap', 'price' => 0, 'stock' => null, 'publish' => true]);
+
+    $order = $this->service->createQuickOrder($this->user, [
+        'user_name' => 'Bob',
+        'user_phone' => '+380000000',
+        'product_id' => $product->id,
+        'quantity' => 1,
+    ]);
+
+    expect($order->payment_status)->toBe(PaymentStatus::PAID);
+});
+
+it('dispatches OrderPaid (and so issues licenses) for a free order without any gateway callback', function () {
+    Event::fake([OrderPaid::class]);
+
+    $product = ShopProduct::create(['name' => 'Sitemap', 'slug' => 'sitemap', 'price' => 0, 'stock' => null]);
+    $this->cartService->add($this->user, null, $product->id, 1);
+
+    $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
+
+    Event::assertDispatched(OrderPaid::class, fn ($event) => $event->order->id === $order->id);
 });
 
 it('creates a quick order for a single product without a cart', function () {

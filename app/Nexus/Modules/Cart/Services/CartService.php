@@ -25,27 +25,44 @@ use Illuminate\Support\Facades\DB;
  */
 class CartService
 {
+    /**
+     * A pack product (one with packItems()) never becomes a cart line
+     * itself — its real, individually-licensed/downloadable member products
+     * do, each at the requested quantity. Non-pack products (the common
+     * case) behave exactly as before. Wrapped in one transaction so a stock
+     * failure partway through a multi-item pack doesn't leave it half-added.
+     */
     public function add(?User $user, ?string $sessionId, int $productId, int $quantity): void
     {
         DB::transaction(function () use ($user, $sessionId, $productId, $quantity) {
             $product = $this->getProduct($productId);
-            $cart = $this->resolveCart($user, $sessionId);
-            $existing = $cart->products()->where('product_id', $productId)->first();
-            $targetQuantity = ($existing?->quantity ?? 0) + $quantity;
+            $items = $product->packItems;
+            $targets = $items->isNotEmpty() ? $items : collect([$product]);
 
-            EnsureProductStockAction::handle($product, $targetQuantity);
-
-            if ($existing) {
-                $existing->update(['quantity' => $targetQuantity]);
-
-                return;
+            foreach ($targets as $target) {
+                $this->addProductToCart($user, $sessionId, $target, $quantity);
             }
-
-            $cart->products()->create([
-                'product_id' => $productId,
-                'quantity' => $quantity,
-            ]);
         });
+    }
+
+    private function addProductToCart(?User $user, ?string $sessionId, ShopProduct $product, int $quantity): void
+    {
+        $cart = $this->resolveCart($user, $sessionId);
+        $existing = $cart->products()->where('product_id', $product->id)->first();
+        $targetQuantity = ($existing?->quantity ?? 0) + $quantity;
+
+        EnsureProductStockAction::handle($product, $targetQuantity);
+
+        if ($existing) {
+            $existing->update(['quantity' => $targetQuantity]);
+
+            return;
+        }
+
+        $cart->products()->create([
+            'product_id' => $product->id,
+            'quantity' => $quantity,
+        ]);
     }
 
     public function updateQuantity(?User $user, ?string $sessionId, int $productId, int $quantity): void

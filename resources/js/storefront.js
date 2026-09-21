@@ -386,7 +386,8 @@ Alpine.data('checkoutForm', (defaultDelivery = null) => ({
             payload.is_another_recipient = this.another ? 1 : 0;
             const res = await window.storefrontFetch('/api/orders', { method: 'POST', body: payload });
             const selectedPayment = el.querySelector('input[name="payment_method"]:checked');
-            if (selectedPayment?.dataset.type === 'gateway') {
+            const isFree = Number(res.order.total_price) <= 0;
+            if (!isFree && selectedPayment?.dataset.type === 'gateway') {
                 window.location = '/payment/' + res.order.id;
             } else {
                 window.location = '/checkout/thank-you?order=' + res.order.id;
