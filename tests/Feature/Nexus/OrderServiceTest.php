@@ -190,6 +190,19 @@ it('creates a quick order for a single product without a cart', function () {
     expect($order->products()->first()->quantity)->toBe(2);
 });
 
+it('checks out a discounted pack at its own price, not the sum of its real members\' list prices', function () {
+    $itemA = ShopProduct::create(['name' => 'Currency', 'slug' => 'currency', 'price' => 619, 'publish' => false]);
+    $itemB = ShopProduct::create(['name' => 'Cart', 'slug' => 'cart-module', 'price' => 619, 'publish' => false]);
+    $bundle = ShopProduct::create(['name' => 'Mega Bundle', 'slug' => 'mega-bundle', 'price' => 900, 'publish' => true]);
+    $bundle->packItems()->attach([$itemA->id, $itemB->id]);
+    $this->cartService->add($this->user, null, $bundle->id, 1);
+
+    $order = $this->service->createOrder($this->user, ['user_name' => 'Bob', 'user_phone' => '+380000000']);
+
+    expect((float) $order->products_price)->toBe(900.0);
+    expect((float) $order->total_price)->toBe(900.0);
+});
+
 it('reduces stock once the order is confirmed', function () {
     $product = ShopProduct::create(['name' => 'Shirt', 'slug' => 'shirt', 'price' => 100, 'stock' => 5]);
     $this->cartService->add($this->user, null, $product->id, 2);

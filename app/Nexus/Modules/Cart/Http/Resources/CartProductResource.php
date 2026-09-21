@@ -12,7 +12,9 @@ class CartProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         $product = $this->resource->product;
-        $price = $product->effectivePrice();
+        $price = $this->resource->unit_price !== null
+            ? (float) $this->resource->unit_price
+            : $product->effectivePrice();
 
         return [
             'id' => $product->id,

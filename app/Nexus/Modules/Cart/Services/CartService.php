@@ -37,15 +37,51 @@ class CartService
         DB::transaction(function () use ($user, $sessionId, $productId, $quantity) {
             $product = $this->getProduct($productId);
             $items = $product->packItems;
-            $targets = $items->isNotEmpty() ? $items : collect([$product]);
 
-            foreach ($targets as $target) {
-                $this->addProductToCart($user, $sessionId, $target, $quantity);
+            if ($items->isEmpty()) {
+                $this->addProductToCart($user, $sessionId, $product, $quantity);
+
+                return;
+            }
+
+            foreach ($this->splitPackPrice($product, $items) as [$item, $unitPrice]) {
+                $this->addProductToCart($user, $sessionId, $item, $quantity, $unitPrice);
             }
         });
     }
 
-    private function addProductToCart(?User $user, ?string $sessionId, ShopProduct $product, int $quantity): void
+    /**
+     * A pack's own listed price can differ from the sum of its member
+     * products' own `price` column — e.g. E-commerce Mega-Bundle reuses its
+     * 4 sub-packs' components at a ~27.5% blended discount (see
+     * SyncModulesFromArchiveCommand). Without pinning each member's price
+     * for this purchase, decomposing the pack into its real member products
+     * would charge the sum of the members' full list prices instead of the
+     * pack's own (possibly discounted) price the customer actually saw —
+     * the discount would just silently never apply. Splits the pack's own
+     * price across members proportional to their own price (matching the
+     * split SyncModulesFromArchiveCommand::syncMultiItemPack() used to set
+     * those prices in the first place), last member absorbing the rounding
+     * remainder.
+     *
+     * @return list<array{0: ShopProduct, 1: float}>
+     */
+    private function splitPackPrice(ShopProduct $pack, Collection $items): array
+    {
+        $count = $items->count();
+        $packPriceCents = (int) round($pack->price * 100);
+        $perItemCents = intdiv($packPriceCents, $count);
+
+        return $items->values()->map(function (ShopProduct $item, int $index) use ($count, $packPriceCents, $perItemCents) {
+            $cents = $index === $count - 1
+                ? $packPriceCents - $perItemCents * ($count - 1)
+                : $perItemCents;
+
+            return [$item, round($cents / 100, 2)];
+        })->all();
+    }
+
+    private function addProductToCart(?User $user, ?string $sessionId, ShopProduct $product, int $quantity, ?float $unitPrice = null): void
     {
         $cart = $this->resolveCart($user, $sessionId);
         $existing = $cart->products()->where('product_id', $product->id)->first();
@@ -54,7 +90,7 @@ class CartService
         EnsureProductStockAction::handle($product, $targetQuantity);
 
         if ($existing) {
-            $existing->update(['quantity' => $targetQuantity]);
+            $existing->update(['quantity' => $targetQuantity, 'unit_price' => $unitPrice]);
 
             return;
         }
@@ -62,6 +98,7 @@ class CartService
         $cart->products()->create([
             'product_id' => $product->id,
             'quantity' => $quantity,
+            'unit_price' => $unitPrice,
         ]);
     }
 
@@ -201,8 +238,10 @@ class CartService
                 continue;
             }
             $quantity = (int) $cartProduct->quantity;
-            $unit = ResolveProductPriceAction::handle($product, $quantity);
-            $sum += round($unit['price'] * $quantity, 2);
+            $unitPrice = $cartProduct->unit_price !== null
+                ? (float) $cartProduct->unit_price
+                : ResolveProductPriceAction::handle($product, $quantity)['price'];
+            $sum += round($unitPrice * $quantity, 2);
         }
 
         return $sum;

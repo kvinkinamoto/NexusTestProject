@@ -128,6 +128,23 @@ it('accumulates quantity for a pack\'s items when the pack is added again', func
     expect($cart->products()->where('product_id', $item->id)->first()->quantity)->toBe(2);
 });
 
+it('charges a pack\'s own (possibly discounted) price, not the sum of its members\' list prices', function () {
+    // Mirrors E-commerce Mega-Bundle: its components are shared with other
+    // packs and priced there, but the bundle itself sells at a discount —
+    // decomposing it into cart lines must not silently drop that discount.
+    $itemA = ShopProduct::create(['name' => 'Currency', 'slug' => 'currency', 'price' => 619, 'publish' => false]);
+    $itemB = ShopProduct::create(['name' => 'Cart', 'slug' => 'cart-module', 'price' => 619, 'publish' => false]);
+    $bundle = ShopProduct::create(['name' => 'Mega Bundle', 'slug' => 'mega-bundle', 'price' => 900, 'publish' => true]);
+    $bundle->packItems()->attach([$itemA->id, $itemB->id]);
+
+    $this->service->add($this->user, null, $bundle->id, 1);
+
+    $cart = $this->service->resolveCart($this->user, null);
+    $total = $this->service->calculateTotal($cart->products()->with('product')->get());
+
+    expect($total)->toBe(900.0);
+});
+
 it('resolves a session-scoped cart for a guest, separate from any user cart', function () {
     $product = ShopProduct::create(['name' => 'iPhone', 'slug' => 'iphone', 'price' => 999, 'stock' => 10]);
 

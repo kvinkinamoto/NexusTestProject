@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CartProduct extends Model
 {
-    protected $fillable = ['cart_id', 'product_id', 'quantity'];
+    protected $fillable = ['cart_id', 'product_id', 'quantity', 'unit_price'];
 
     protected $casts = [
         'quantity' => 'integer',
+        'unit_price' => 'float',
     ];
 
     public function cart(): BelongsTo

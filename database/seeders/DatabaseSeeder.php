@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             CurrencySeeder::class,
             OrderStatusSeeder::class,
             PaymentMethodSeeder::class,
+            PageSeeder::class,
         ]);
     }
 }

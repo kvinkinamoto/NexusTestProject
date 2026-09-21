@@ -12,6 +12,7 @@ class BlogPostController extends Controller
     public function index(): View
     {
         $posts = BlogPost::query()
+            ->with('category')
             ->where('is_published', true)
             ->orderByDesc('published_at')
             ->paginate(12);
@@ -21,7 +22,7 @@ class BlogPostController extends Controller
 
     public function show(string $slug): View
     {
-        $post = BlogPost::query()->where('slug', $slug)->where('is_published', true)->firstOrFail();
+        $post = BlogPost::query()->with(['category', 'tags'])->where('slug', $slug)->where('is_published', true)->firstOrFail();
 
         return view('blogPost::public.post', ['post' => $post]);
     }
@@ -31,6 +32,7 @@ class BlogPostController extends Controller
         $category = BlogCategory::query()->where('slug', $slug)->firstOrFail();
 
         $posts = BlogPost::query()
+            ->with('category')
             ->where('blog_category_id', $category->id)
             ->where('is_published', true)
             ->orderByDesc('published_at')

@@ -234,7 +234,7 @@ class OrderService
                 continue;
             }
 
-            $built = $this->buildOrderProductData($product, (int) $line->quantity);
+            $built = $this->buildOrderProductData($product, (int) $line->quantity, $line->unit_price ?? null);
             $rows[] = $built['row'];
             if ($built['promotion'] !== null) {
                 $promotions[] = $built['promotion'];
@@ -244,20 +244,36 @@ class OrderService
         return ['rows' => $rows, 'promotions' => $promotions];
     }
 
-    private function buildOrderProductData(ShopProduct $product, int $quantity): array
+    /**
+     * $unitPriceOverride comes from a cart line's pinned pack-decomposition
+     * price (see CartService::splitPackPrice()) — when set, it's used as-is
+     * instead of re-resolving the member product's own price/promotions, so
+     * a pack bought at a discount (e.g. E-commerce Mega-Bundle) charges the
+     * price the customer actually saw rather than the sum of its real
+     * member products' full list prices.
+     */
+    private function buildOrderProductData(ShopProduct $product, int $quantity, ?float $unitPriceOverride = null): array
     {
         EnsureProductStockAction::handle($product, $quantity);
 
-        $priceData = ResolveProductPriceAction::handle($product, $quantity);
-        $price = (float) $priceData['price'];
+        if ($unitPriceOverride !== null) {
+            $price = $unitPriceOverride;
+            $promotion = null;
+            $productData = $this->buildProductData($product, ['price' => $price, 'original_price' => null]);
+        } else {
+            $priceData = ResolveProductPriceAction::handle($product, $quantity);
+            $price = (float) $priceData['price'];
 
-        $promotion = null;
-        if (! empty($priceData['applied_promotion_id']) && ! empty($priceData['original_price'])) {
-            $promotion = [
-                'promotion_id' => $priceData['applied_promotion_id'],
-                'amount' => round(((float) $priceData['original_price'] - $price) * $quantity, 2),
-                'quantity' => $quantity,
-            ];
+            $promotion = null;
+            if (! empty($priceData['applied_promotion_id']) && ! empty($priceData['original_price'])) {
+                $promotion = [
+                    'promotion_id' => $priceData['applied_promotion_id'],
+                    'amount' => round(((float) $priceData['original_price'] - $price) * $quantity, 2),
+                    'quantity' => $quantity,
+                ];
+            }
+
+            $productData = $this->buildProductData($product, $priceData);
         }
 
         return [
@@ -266,7 +282,7 @@ class OrderService
                 'quantity' => $quantity,
                 'price' => $price,
                 'total_price' => round($price * $quantity, 2),
-                'product_data' => $this->buildProductData($product, $priceData),
+                'product_data' => $productData,
             ],
             'promotion' => $promotion,
         ];

@@ -97,7 +97,7 @@
                         <button type="button" @click="qty++" class="size-9 flex items-center justify-center text-lg" aria-label="{{ __('Збільшити') }}">+</button>
                     </div>
                     <button type="button" @click="add(qty)" :disabled="busy" class="flex-1 h-12 rounded-full bg-neutral-900 text-white text-sm font-semibold hover:bg-neutral-800 inline-flex items-center justify-center gap-2">
-                        <span x-show="!added">{{ __('Купити ліцензію') }}</span>
+                        <span x-show="!added">{{ (float) $price <= 0 ? __('Отримати безкоштовно') : __('Купити ліцензію') }}</span>
                         <span x-show="added" x-cloak>{{ __('Додано в кошик ✓') }}</span>
                     </button>
                 </div>
