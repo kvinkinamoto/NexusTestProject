@@ -26,7 +26,7 @@ class FormEmbedBlockType implements BlockTypeDefinition
     public function fields(): array
     {
         return [
-            new BlockFieldDefinition('heading', 'string', 'Heading'),
+            new BlockFieldDefinition('heading', 'string', 'Heading', translatable: true),
             new BlockFieldDefinition('form_slug', 'string', 'Form slug', required: true),
         ];
     }

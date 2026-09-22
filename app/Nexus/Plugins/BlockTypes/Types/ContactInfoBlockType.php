@@ -26,11 +26,11 @@ class ContactInfoBlockType implements BlockTypeDefinition
     public function fields(): array
     {
         return [
-            new BlockFieldDefinition('address', 'string', 'Address', required: true),
+            new BlockFieldDefinition('address', 'string', 'Address', required: true, translatable: true),
             new BlockFieldDefinition('phone', 'string', 'Phone', required: true),
             new BlockFieldDefinition('email', 'string', 'Email'),
-            new BlockFieldDefinition('hours', 'string', 'Working hours'),
-            new BlockFieldDefinition('map_label', 'string', 'Map label'),
+            new BlockFieldDefinition('hours', 'string', 'Working hours', translatable: true),
+            new BlockFieldDefinition('map_label', 'string', 'Map label', translatable: true),
         ];
     }
 }

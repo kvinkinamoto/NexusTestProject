@@ -30,7 +30,7 @@ class GalleryBlockType implements BlockTypeDefinition
     public function fields(): array
     {
         return [
-            new BlockFieldDefinition('heading', 'string', 'Heading'),
+            new BlockFieldDefinition('heading', 'string', 'Heading', translatable: true),
             new BlockFieldDefinition('image_1', 'image', 'Image 1', required: true),
             new BlockFieldDefinition('image_2', 'image', 'Image 2'),
             new BlockFieldDefinition('image_3', 'image', 'Image 3'),

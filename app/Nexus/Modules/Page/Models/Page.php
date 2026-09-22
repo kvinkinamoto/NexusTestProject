@@ -16,6 +16,7 @@ use Nodex\Nexus\Attributes\Section;
 use Nodex\Nexus\Attributes\TableAction;
 use Nodex\Nexus\Attributes\TableGroupAction;
 use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
+use Spatie\Translatable\HasTranslations;
 
 #[Module(
     name: 'page',
@@ -35,7 +36,7 @@ use Nodex\Nexus\Concerns\HasAttributeSchemaProperties;
 #[Section(name: 'blocks_section', column: 'left', type: 'base', icon: 'solar:widget-bold')]
 class Page extends Model
 {
-    use HasAttributeSchemaProperties;
+    use HasAttributeSchemaProperties, HasTranslations;
 
     #[Field(type: 'string', section: 'main', label: 'Title', required: true, rules: ['max:255'], apiExpose: true)]
     protected $title;
@@ -43,10 +44,10 @@ class Page extends Model
     #[Field(type: 'slug', section: 'main', label: 'Slug', required: false, slugSource: 'title', apiExpose: true)]
     protected $slug;
 
-    #[Field(type: 'string', section: 'seo_section', label: 'Meta title', required: false, rules: ['max:255'], apiExpose: true)]
+    #[Field(type: 'string', section: 'seo_section', label: 'Meta title', required: false, rules: ['max:255'], translated: true, apiExpose: true)]
     protected $meta_title;
 
-    #[Field(type: 'text', section: 'seo_section', label: 'Meta description', required: false, apiExpose: true)]
+    #[Field(type: 'text', section: 'seo_section', label: 'Meta description', required: false, translated: true, apiExpose: true)]
     protected $meta_description;
 
     #[Field(type: 'boolean', section: 'main', label: 'Is active', required: false, default: true, apiExpose: true)]
@@ -75,6 +76,8 @@ class Page extends Model
     {
         return $query->where('is_active', true);
     }
+
+    public $translatable = ['meta_title', 'meta_description'];
 
     protected $fillable = [
         'title', 'slug', 'meta_title', 'meta_description', 'is_active',

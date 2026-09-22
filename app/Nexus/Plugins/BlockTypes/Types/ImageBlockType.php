@@ -26,7 +26,7 @@ class ImageBlockType implements BlockTypeDefinition
     {
         return [
             new BlockFieldDefinition('image', 'image', 'Image', required: true),
-            new BlockFieldDefinition('caption', 'string', 'Caption'),
+            new BlockFieldDefinition('caption', 'string', 'Caption', translatable: true),
         ];
     }
 }

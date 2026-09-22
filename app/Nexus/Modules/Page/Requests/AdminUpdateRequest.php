@@ -12,8 +12,10 @@ class AdminUpdateRequest extends NexusFormRequest
         return [
             'title' => 'required|string|max:255',
             'slug' => ['nullable', 'string', 'alpha_dash', Rule::unique('pages', 'slug')->ignore($this->id)],
-            'meta_title' => 'nullable|string|max:255',
-            'meta_description' => 'nullable|string',
+            'meta_title' => 'nullable|array',
+            'meta_title.*' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|array',
+            'meta_description.*' => 'nullable|string',
             'is_active' => 'nullable|boolean',
 
             'relation' => 'nullable|array',

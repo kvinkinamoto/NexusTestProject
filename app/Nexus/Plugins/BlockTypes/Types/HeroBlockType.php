@@ -25,10 +25,10 @@ class HeroBlockType implements BlockTypeDefinition
     public function fields(): array
     {
         return [
-            new BlockFieldDefinition('headline', 'string', 'Headline', required: true),
-            new BlockFieldDefinition('subheadline', 'text', 'Subheadline'),
+            new BlockFieldDefinition('headline', 'string', 'Headline', required: true, translatable: true),
+            new BlockFieldDefinition('subheadline', 'text', 'Subheadline', translatable: true),
             new BlockFieldDefinition('image', 'image', 'Image'),
-            new BlockFieldDefinition('cta_label', 'string', 'Button label'),
+            new BlockFieldDefinition('cta_label', 'string', 'Button label', translatable: true),
             new BlockFieldDefinition('cta_url', 'url', 'Button URL'),
         ];
     }

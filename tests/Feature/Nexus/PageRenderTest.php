@@ -31,3 +31,40 @@ it('returns 404 for an unknown or inactive page', function () {
     Page::create(['title' => 'Draft', 'slug' => 'draft', 'is_active' => false]);
     $this->get('/pages/draft')->assertNotFound();
 });
+
+/**
+ * Coverage for BlockDataLocalizer + the translatable block fields marked in
+ * app/Nexus/Plugins/BlockTypes/Types/*.php (BlockFieldDefinition::$translatable)
+ * — a translated field's value is stored as a locale-keyed map in
+ * PageBlock::$data and BlockDataLocalizer::resolve() (wired into the
+ * nexusBlocks Blade directive) collapses it to the current app locale's
+ * string before the block_types/{type}.blade.php partial ever sees it.
+ */
+it('resolves a translated block field to the current locale, falling back when missing', function () {
+    $page = Page::create(['title' => 'Home', 'slug' => 'home-i18n', 'is_active' => true]);
+    $page->blocks()->create([
+        'type' => 'hero',
+        'data' => ['headline' => ['uk' => 'Ласкаво просимо', 'en' => 'Welcome']],
+        'position' => 0,
+    ]);
+    $page->blocks()->create([
+        'type' => 'cta',
+        // 'en' missing on purpose — falls back to app.fallback_locale, then to
+        // the first available translation (see BlockDataLocalizer::resolve()).
+        'data' => ['heading' => ['uk' => 'Готові?'], 'button_label' => 'OK', 'button_url' => '#'],
+        'position' => 1,
+    ]);
+
+    app()->setLocale('uk');
+    $this->get('/pages/home-i18n')->assertSee('Ласкаво просимо');
+
+    app()->setLocale('en');
+    $this->get('/pages/home-i18n')->assertSee('Welcome')->assertSee('Готові?');
+});
+
+it('leaves a legacy plain-string block value untouched when the field became translatable later', function () {
+    $page = Page::create(['title' => 'Home', 'slug' => 'home-legacy', 'is_active' => true]);
+    $page->blocks()->create(['type' => 'hero', 'data' => ['headline' => 'Legacy headline'], 'position' => 0]);
+
+    $this->get('/pages/home-legacy')->assertSee('Legacy headline');
+});

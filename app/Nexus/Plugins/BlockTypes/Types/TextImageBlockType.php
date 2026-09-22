@@ -31,8 +31,8 @@ class TextImageBlockType implements BlockTypeDefinition
     public function fields(): array
     {
         return [
-            new BlockFieldDefinition('heading', 'string', 'Heading', required: true),
-            new BlockFieldDefinition('body', 'text', 'Body', required: true),
+            new BlockFieldDefinition('heading', 'string', 'Heading', required: true, translatable: true),
+            new BlockFieldDefinition('body', 'text', 'Body', required: true, translatable: true),
             new BlockFieldDefinition('image', 'image', 'Image'),
             new BlockFieldDefinition('image_position', 'string', "Image position ('left' or 'right')"),
         ];

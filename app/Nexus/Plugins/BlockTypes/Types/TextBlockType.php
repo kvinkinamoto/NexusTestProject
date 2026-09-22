@@ -25,8 +25,8 @@ class TextBlockType implements BlockTypeDefinition
     public function fields(): array
     {
         return [
-            new BlockFieldDefinition('heading', 'string', 'Heading'),
-            new BlockFieldDefinition('body', 'text', 'Body', required: true),
+            new BlockFieldDefinition('heading', 'string', 'Heading', translatable: true),
+            new BlockFieldDefinition('body', 'text', 'Body', required: true, translatable: true),
         ];
     }
 }

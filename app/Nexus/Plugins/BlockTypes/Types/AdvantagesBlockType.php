@@ -32,15 +32,15 @@ class AdvantagesBlockType implements BlockTypeDefinition
     public function fields(): array
     {
         return [
-            new BlockFieldDefinition('heading', 'string', 'Heading'),
-            new BlockFieldDefinition('item1_title', 'string', 'Item 1 — title', required: true),
-            new BlockFieldDefinition('item1_text', 'string', 'Item 1 — text'),
-            new BlockFieldDefinition('item2_title', 'string', 'Item 2 — title'),
-            new BlockFieldDefinition('item2_text', 'string', 'Item 2 — text'),
-            new BlockFieldDefinition('item3_title', 'string', 'Item 3 — title'),
-            new BlockFieldDefinition('item3_text', 'string', 'Item 3 — text'),
-            new BlockFieldDefinition('item4_title', 'string', 'Item 4 — title'),
-            new BlockFieldDefinition('item4_text', 'string', 'Item 4 — text'),
+            new BlockFieldDefinition('heading', 'string', 'Heading', translatable: true),
+            new BlockFieldDefinition('item1_title', 'string', 'Item 1 — title', required: true, translatable: true),
+            new BlockFieldDefinition('item1_text', 'string', 'Item 1 — text', translatable: true),
+            new BlockFieldDefinition('item2_title', 'string', 'Item 2 — title', translatable: true),
+            new BlockFieldDefinition('item2_text', 'string', 'Item 2 — text', translatable: true),
+            new BlockFieldDefinition('item3_title', 'string', 'Item 3 — title', translatable: true),
+            new BlockFieldDefinition('item3_text', 'string', 'Item 3 — text', translatable: true),
+            new BlockFieldDefinition('item4_title', 'string', 'Item 4 — title', translatable: true),
+            new BlockFieldDefinition('item4_text', 'string', 'Item 4 — text', translatable: true),
         ];
     }
 }
