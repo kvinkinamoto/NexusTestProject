@@ -16,4 +16,5 @@ Route::middleware(['web', 'localeSessionRedirect', 'localizationRedirect', 'loca
         Route::get('/contacts', fn () => redirect()->route('nexus.page.show', 'contacts'));
         Route::get('/delivery', fn () => redirect()->route('nexus.page.show', 'delivery'));
         Route::get('/nodex', fn () => redirect()->route('nexus.page.show', 'nodex'));
+        Route::get('/comparison', fn () => redirect()->route('nexus.page.show', 'comparison'));
     });

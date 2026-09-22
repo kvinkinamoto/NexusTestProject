@@ -3,6 +3,7 @@
 namespace App\Nexus\Plugins\BlockTypes;
 
 use App\Nexus\Plugins\BlockTypes\Types\AdvantagesBlockType;
+use App\Nexus\Plugins\BlockTypes\Types\ComparisonTableBlockType;
 use App\Nexus\Plugins\BlockTypes\Types\ContactInfoBlockType;
 use App\Nexus\Plugins\BlockTypes\Types\CtaBlockType;
 use App\Nexus\Plugins\BlockTypes\Types\FormEmbedBlockType;
@@ -57,6 +58,11 @@ class BlockTypesPlugin
         $registry->register(new GalleryBlockType);
         $registry->register(new ContactInfoBlockType);
         $registry->register(new FormEmbedBlockType);
+
+        // Added for the /comparison landing page — a "modern SaaS" feature
+        // grid (own product vs. 3 competitors), the format none of the
+        // above block types can express.
+        $registry->register(new ComparisonTableBlockType);
 
         View::addNamespace('nexus', __DIR__.'/resources/views');
     }

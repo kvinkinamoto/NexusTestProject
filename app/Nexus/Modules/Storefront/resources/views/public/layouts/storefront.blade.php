@@ -64,6 +64,7 @@
                 <a href="{{ url('/delivery') }}" class="hover:text-neutral-900">{{ __('Ліцензування') }}</a>
                 <a href="{{ url('/about') }}" class="hover:text-neutral-900">{{ __('Про нас') }}</a>
                 <a href="{{ url('/nodex') }}" class="hover:text-neutral-900">{{ __('Про Nodex') }}</a>
+                <a href="{{ url('/comparison') }}" class="hover:text-neutral-900">{{ __('Порівняння') }}</a>
                 <a href="{{ url('/contacts') }}" class="hover:text-neutral-900">{{ __('Контакти') }}</a>
             </div>
             <div class="flex items-center gap-5">
@@ -72,7 +73,7 @@
                     <span>/</span>
                     <a href="{{ LaravelLocalization::getLocalizedURL('en', null, [], true) }}" class="hover:text-neutral-900 {{ app()->getLocale() === 'en' ? 'font-semibold text-neutral-900' : '' }}">EN</a>
                 </div>
-                <a href="mailto:support@nexus-store.dev" class="hover:text-neutral-900">support@nexus-store.dev</a>
+                <a href="mailto:support@nexus-cms.shop" class="hover:text-neutral-900">support@nexus-cms.shop</a>
             </div>
         </div>
     </div>
@@ -187,6 +188,7 @@
                 <a href="{{ route('shop.catalog') }}" class="block py-2.5 border-b border-neutral-100">{{ __('Каталог модулів') }}</a>
                 <a href="{{ url('/about') }}" class="block py-2.5 border-b border-neutral-100 text-neutral-500">{{ __('Про нас') }}</a>
                 <a href="{{ url('/nodex') }}" class="block py-2.5 border-b border-neutral-100 text-neutral-500">{{ __('Про Nodex') }}</a>
+                <a href="{{ url('/comparison') }}" class="block py-2.5 border-b border-neutral-100 text-neutral-500">{{ __('Порівняння') }}</a>
                 <a href="{{ url('/contacts') }}" class="block py-2.5 border-b border-neutral-100 text-neutral-500">{{ __('Контакти') }}</a>
                 <div class="flex items-center gap-3 py-2.5 text-neutral-500">
                     <a href="{{ LaravelLocalization::getLocalizedURL('uk', null, [], true) }}" class="{{ app()->getLocale() === 'uk' ? 'font-semibold text-neutral-900' : '' }}">УКР</a>
@@ -200,11 +202,21 @@
                 @else
                     <a href="{{ route('login') }}" class="flex items-center gap-2 text-sm font-medium">{{ __('Увійти') }}</a>
                 @endauth
-                <a href="mailto:support@nexus-store.dev" class="flex items-center gap-2 text-sm text-neutral-500">support@nexus-store.dev</a>
+                <a href="mailto:support@nexus-cms.shop" class="flex items-center gap-2 text-sm text-neutral-500">support@nexus-cms.shop</a>
             </div>
         </div>
     </div>
 </header>
+
+<div class="bg-sand-100 border-b border-sand-300">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-xs sm:text-sm text-neutral-800">
+        <span>{{ __('Користуєтесь лише безкоштовними модулями Nexus?') }}</span>
+        <a href="https://send.monobank.ua/jar/2V1YcJMoCr" target="_blank" rel="noopener" class="inline-flex items-center gap-1 font-semibold underline decoration-neutral-400 underline-offset-2 hover:text-neutral-950">
+            <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.716-4.35-9.428-8.06C.86 10.42 1.2 7.02 3.9 5.2c2.28-1.54 5.07-.98 6.6.98.5.64.9 1.28 1.5 2.22.6-.94 1-1.58 1.5-2.22 1.53-1.96 4.32-2.52 6.6-.98 2.7 1.82 3.04 5.22 1.33 7.74C18.716 16.65 12 21 12 21Z"/></svg>
+            {{ __('Підтримайте розвиток проєкту донатом') }}
+        </a>
+    </div>
+</div>
 
 <main>
     @yield('content')
@@ -223,6 +235,7 @@
                 <li><a href="{{ route('shop.catalog') }}" class="hover:text-white">{{ __('Каталог модулів') }}</a></li>
                 <li><a href="{{ url('/about') }}" class="hover:text-white">{{ __('Про нас') }}</a></li>
                 <li><a href="{{ url('/nodex') }}" class="hover:text-white">{{ __('Про Nodex') }}</a></li>
+                <li><a href="{{ url('/comparison') }}" class="hover:text-white">{{ __('Порівняння') }}</a></li>
                 <li><a href="{{ url('/contacts') }}" class="hover:text-white">{{ __('Контакти') }}</a></li>
             </ul>
         </div>
@@ -239,7 +252,7 @@
         <div>
             <h4 class="text-white font-semibold text-sm mb-4">{{ __('Контакти') }}</h4>
             <ul class="space-y-2.5 text-sm text-neutral-400">
-                <li><a href="mailto:support@nexus-store.dev" class="hover:text-white">support@nexus-store.dev</a></li>
+                <li><a href="mailto:support@nexus-cms.shop" class="hover:text-white">support@nexus-cms.shop</a></li>
             </ul>
         </div>
     </div>
