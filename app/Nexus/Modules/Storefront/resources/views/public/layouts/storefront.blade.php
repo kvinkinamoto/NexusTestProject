@@ -62,7 +62,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between h-9 text-xs text-neutral-500">
             <div class="flex items-center gap-5">
                 <a href="{{ url('/delivery') }}" class="hover:text-neutral-900">{{ __('Ліцензування') }}</a>
-                <a href="{{ url('/about') }}" class="hover:text-neutral-900">{{ __('Про нас') }}</a>
+                <a href="{{ url('/about') }}" class="hover:text-neutral-90й0">{{ __('Про нас') }}</a>
                 <a href="{{ url('/nodex') }}" class="hover:text-neutral-900">{{ __('Про Nodex') }}</a>
                 <a href="{{ url('/comparison') }}" class="hover:text-neutral-900">{{ __('Порівняння') }}</a>
                 <a href="{{ url('/contacts') }}" class="hover:text-neutral-900">{{ __('Контакти') }}</a>

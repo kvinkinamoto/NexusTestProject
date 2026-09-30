@@ -140,19 +140,17 @@
             <h2 class="font-outfit text-xl sm:text-2xl font-bold mb-5">{{ __('Категорії модулів') }}</h2>
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
                 @foreach($categories as $cat)
-                    <a href="{{ route('shop.catalog.category', $cat->slug) }}" class="group relative ph aspect-[4/3] rounded-2xl overflow-hidden flex items-end p-5">
+                    <a href="{{ route('shop.catalog.category', $cat->slug) }}" class="group relative ph aspect-[4/3] rounded-2xl overflow-hidden flex flex-col p-5" style="flex-direction:column;justify-content:space-between;align-items:flex-start">
                         @if($cat->image)
                             <img src="{{ '/'.ltrim($cat->image, '/') }}" alt="{{ $cat->displayName() }}" class="absolute inset-0 size-full object-cover" />
                         @else
                             <svg class="absolute inset-0 m-auto size-14 opacity-40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6.75V15m6-8.25V15M4.5 4.5h15A1.5 1.5 0 0 1 21 6v13.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 19.5V6a1.5 1.5 0 0 1 1.5-1.5Z" /></svg>
                         @endif
-                        <div class="relative">
-                            <h3 class="text-white font-outfit font-semibold text-base sm:text-lg drop-shadow">{{ $cat->displayName() }}</h3>
-                            <span class="text-white/90 text-xs sm:text-sm inline-flex items-center gap-1 mt-0.5">{{ __('Перейти') }}
-                                <svg class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" /></svg>
-                            </span>
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/40"></div>
+                        <h3 class="relative text-white font-outfit font-semibold text-base sm:text-lg drop-shadow">{{ $cat->displayName() }}</h3>
+                        <span class="relative text-white/90 text-xs sm:text-sm inline-flex items-center gap-1">{{ __('Перейти') }}
+                            <svg style="width:14px;height:14px;opacity:1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" /></svg>
+                        </span>
                     </a>
                 @endforeach
             </div>
