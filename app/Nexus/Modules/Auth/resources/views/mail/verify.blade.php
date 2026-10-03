@@ -14,6 +14,6 @@
         <li>{{ __('Auth::Auth.mail_confirmation.repeat') }}</li>
     </ul>
     <p>{{ __('Auth::Auth.mail_confirmation.ignore') }}</p>
-    <p>{{ __('Auth::Auth.mail_confirmation.support') }} <a href="mailto:support@oiltime.com">support@oiltime.com</a></p>
+    <p>{{ __('Auth::Auth.mail_confirmation.support') }} <a href="mailto:kvin_kinamoto@ukr.net">kvin_kinamoto@ukr.net</a></p>
     <p>{!! __('Auth::Auth.mail_confirmation.team') !!}</p>
 @endsection

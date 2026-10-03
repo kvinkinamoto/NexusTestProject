@@ -76,7 +76,7 @@ class PageSeeder extends Seeder
                 'data' => [
                     'address' => ['uk' => 'Україна (віддалена команда)', 'en' => 'Ukraine (remote team)'],
                     'phone' => '',
-                    'email' => 'support@nexus-cms.shop',
+                    'email' => 'kvin_kinamoto@ukr.net',
                     'hours' => ['uk' => 'Пн–Пт, 10:00–18:00', 'en' => 'Mon–Fri, 10:00–18:00'],
                     'map_label' => '',
                 ],
@@ -114,8 +114,8 @@ class PageSeeder extends Seeder
                 'data' => [
                     'heading' => ['uk' => 'Оновлення та підтримка', 'en' => 'Updates and support'],
                     'body' => [
-                        'uk' => "Усі майбутні оновлення ядра й функціоналу вже куплених модулів безкоштовні та доступні у вашому кабінеті без повторної оплати. Питання з встановленням чи роботою модуля — на support@nexus-cms.shop.\n\nПри купівлі модуля під певну версію всі його подальші оновлення й виправлення багів залишаються з вами назавжди — ви можете використовувати їх і в наступних своїх проєктах, без додаткової оплати.",
-                        'en' => "All future core and feature updates for modules you already own are free and available in your account with no repeat payment. Questions about installing or running a module — reach us at support@nexus-cms.shop.\n\nWhen you buy a module for a specific version, all its future updates and bug fixes stay yours for good — you can reuse them in your next projects too, at no extra cost.",
+                        'uk' => "Усі майбутні оновлення ядра й функціоналу вже куплених модулів безкоштовні та доступні у вашому кабінеті без повторної оплати. Питання з встановленням чи роботою модуля — на kvin_kinamoto@ukr.net.\n\nПри купівлі модуля під певну версію всі його подальші оновлення й виправлення багів залишаються з вами назавжди — ви можете використовувати їх і в наступних своїх проєктах, без додаткової оплати.",
+                        'en' => "All future core and feature updates for modules you already own are free and available in your account with no repeat payment. Questions about installing or running a module — reach us at kvin_kinamoto@ukr.net.\n\nWhen you buy a module for a specific version, all its future updates and bug fixes stay yours for good — you can reuse them in your next projects too, at no extra cost.",
                     ],
                 ],
             ],

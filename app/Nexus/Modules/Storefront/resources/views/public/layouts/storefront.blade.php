@@ -90,7 +90,7 @@
                     <span>/</span>
                     <a href="{{ LaravelLocalization::getLocalizedURL('en', null, [], true) }}" class="hover:text-neutral-900 {{ app()->getLocale() === 'en' ? 'font-semibold text-neutral-900' : '' }}">EN</a>
                 </div>
-                <a href="mailto:support@nexus-cms.shop" class="hover:text-neutral-900">support@nexus-cms.shop</a>
+                <a href="mailto:kvin_kinamoto@ukr.net" class="hover:text-neutral-900">kvin_kinamoto@ukr.net</a>
             </div>
         </div>
     </div>
@@ -219,7 +219,7 @@
                 @else
                     <a href="{{ route('login') }}" class="flex items-center gap-2 text-sm font-medium">{{ __('Увійти') }}</a>
                 @endauth
-                <a href="mailto:support@nexus-cms.shop" class="flex items-center gap-2 text-sm text-neutral-500">support@nexus-cms.shop</a>
+                <a href="mailto:kvin_kinamoto@ukr.net" class="flex items-center gap-2 text-sm text-neutral-500">kvin_kinamoto@ukr.net</a>
             </div>
         </div>
     </div>
@@ -269,7 +269,7 @@
         <div>
             <h4 class="text-white font-semibold text-sm mb-4">{{ __('Контакти') }}</h4>
             <ul class="space-y-2.5 text-sm text-neutral-400">
-                <li><a href="mailto:support@nexus-cms.shop" class="hover:text-white">support@nexus-cms.shop</a></li>
+                <li><a href="mailto:kvin_kinamoto@ukr.net" class="hover:text-white">kvin_kinamoto@ukr.net</a></li>
             </ul>
         </div>
     </div>

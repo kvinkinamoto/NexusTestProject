@@ -41,7 +41,7 @@ return [
     'language' => 'Language',
     'not_found_user' => 'Account with this email not found',
     'not_confirmed_user' => 'Your account is not verified. Please check your email and activate your account',
-    'blocked_user' => 'Your account has been blocked. Please contact support at support@oiltime.com',
+    'blocked_user' => 'Your account has been blocked. Please contact support at kvin_kinamoto@ukr.net',
     'not_robot' => 'Please confirm that you are not a robot',
     'required' => 'This field is required',
     'only_letters' => 'Only letters are allowed',
@@ -82,7 +82,7 @@ return [
     ],
     'mail_confirmation' => [
         'pls_verify' => 'An email has been sent to your email address to confirm your registration',
-        'too_many_requests' => 'Пожалуйста, обратитесь в службу поддержки по адресу support@oiltime.com',
+        'too_many_requests' => 'Пожалуйста, обратитесь в службу поддержки по адресу kvin_kinamoto@ukr.net',
         'subject' => 'Registration on the OilTime platform',
         'greeting' => 'Dear :name,',
         'thanks' => 'Thank you for registering on the <strong>OilTime</strong> platform!',
@@ -115,7 +115,7 @@ return [
             <p><strong>Didn\'t request a password reset?</strong></p>
             <p>If you did not request a password reset, please ignore this email.</p>
             <p><strong>Need additional help?</strong></p>
-            <p>If you did not receive the link or encountered other issues, please contact our support team: <a href=\'mailto:support@oiltime.com\'>support@oiltime.com</a>.</p>
+            <p>If you did not receive the link or encountered other issues, please contact our support team: <a href=\'mailto:kvin_kinamoto@ukr.net\'>kvin_kinamoto@ukr.net</a>.</p>
             <p>Best regards,<br><strong>The OilTime Team</strong></p>
         ',
     ],

@@ -36,7 +36,7 @@ return [
     'language' => 'Language',
     'not_found_Auth' => 'Account with this email not found',
     'not_confirmed_Auth' => 'Your account is not verified. Please check your email and activate your account',
-    'blocked_Auth' => 'Your account has been blocked. Please contact support at support@oiltime.com',
+    'blocked_Auth' => 'Your account has been blocked. Please contact support at kvin_kinamoto@ukr.net',
     'not_robot' => 'Please confirm that you are not a robot',
     'required' => 'This field is required',
     'only_letters' => 'Only letters are allowed',
@@ -95,7 +95,7 @@ return [
     ],
     'mail_confirmation' => [
         'pls_verify' => 'An email has been sent to your email address to confirm your registration',
-        'too_many_requests' => 'Пожалуйста, обратитесь в службу поддержки по адресу support@oiltime.com',
+        'too_many_requests' => 'Пожалуйста, обратитесь в службу поддержки по адресу kvin_kinamoto@ukr.net',
         'subject' => 'Registration on the OilTime platform',
         'greeting' => 'Dear :name,',
         'thanks' => 'Thank you for registering on the <strong>OilTime</strong> platform!',
@@ -135,7 +135,7 @@ return [
             <p><strong>Didn't request a password reset?</strong></p>
             <p>If you did not request a password reset, please ignore this email.</p>
             <p><strong>Need additional help?</strong></p>
-            <p>If you did not receive the link or encountered other issues, please contact our support team: <a href='mailto:support@oiltime.com'>support@oiltime.com</a>.</p>
+            <p>If you did not receive the link or encountered other issues, please contact our support team: <a href='mailto:kvin_kinamoto@ukr.net'>kvin_kinamoto@ukr.net</a>.</p>
             <p>Best regards,<br><strong>The OilTime Team</strong></p>
         ",
     ],
@@ -159,7 +159,7 @@ return [
         'content' => "
             <p>Dear :name,</p>
             <p>We are pleased to inform you that your account on the <strong>OilTime</strong> platform has been successfully activated! You now have access to all the features and resources of the platform.</p>
-            <p>If you experience any difficulties, please contact our support team at: <a href='mailto:support@oiltime.com'>support@oiltime.com</a>.</p>
+            <p>If you experience any difficulties, please contact our support team at: <a href='mailto:kvin_kinamoto@ukr.net'>kvin_kinamoto@ukr.net</a>.</p>
             <p>We are happy to have you among our Auths!</p>
             <p>Best regards,<br><strong>The OilTime Team</strong></p>
         ",
@@ -170,7 +170,7 @@ return [
             <p>Dear :name,</p>
             <p>We would like to inform you that your account on the OilTime platform has been deleted. This may be the result of the termination of your collaboration with our company or the conclusion of your need for access to our platform.</p>
             <p>Your account has been deleted, and access to the OilTime platform has been terminated. If this was done in error, please contact us using the following details.</p>
-            <p>If you experience any difficulties, please reach out to our support team at: <a href='mailto:support@oiltime.com'>support@oiltime.com</a>.</p>
+            <p>If you experience any difficulties, please reach out to our support team at: <a href='mailto:kvin_kinamoto@ukr.net'>kvin_kinamoto@ukr.net</a>.</p>
             <p>Best regards,<br><strong>The OilTime Team</strong></p>
         ",
     ],
