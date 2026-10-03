@@ -52,6 +52,23 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/storefront.js'])
+    <style>
+        @media (prefers-reduced-motion: no-preference) {
+            .js-reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.2,1); transition-delay: var(--reveal-delay, 0ms); }
+            .js-reveal.is-visible { opacity: 1; transform: none; }
+            main a.group { transition: box-shadow .3s ease; }
+            main a.group:hover { box-shadow: 0 14px 30px -12px rgba(0,0,0,.35); }
+            main div.group > .ph { transition: transform .3s ease, box-shadow .3s ease; }
+            main div.group:hover > .ph { transform: translateY(-4px); box-shadow: 0 14px 30px -12px rgba(0,0,0,.25); }
+            main .group img { transition: transform .5s ease; }
+            main .group:hover img { transform: scale(1.06); }
+            main a.group span svg { transition: transform .3s ease; }
+            main a.group:hover span svg { transform: translateX(4px); }
+            main a[class*="rounded-full"], main button[class*="rounded-full"] { transition: transform .2s ease, background-color .2s ease; }
+            main a[class*="rounded-full"]:hover, main button[class*="rounded-full"]:hover { transform: translateY(-2px); }
+            main a[class*="rounded-full"]:active, main button[class*="rounded-full"]:active { transform: scale(.97); }
+        }
+    </style>
     @include('storefront::public.partials.tracking-scripts', ['position' => 'head'])
 </head>
 <body class="bg-white text-neutral-900 antialiased font-sans">
@@ -268,6 +285,24 @@
     </div>
 </footer>
 
+<script>
+    (function () {
+        if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) { return; }
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+        document.querySelectorAll('main section, main section .grid > *').forEach(function (el) {
+            var parent = el.parentElement;
+            if (parent && parent.classList.contains('grid')) {
+                el.style.setProperty('--reveal-delay', (Array.prototype.indexOf.call(parent.children, el) % 5) * 70 + 'ms');
+            }
+            el.classList.add('js-reveal');
+            io.observe(el);
+        });
+    })();
+</script>
 @stack('scripts')
 </body>
 </html>
